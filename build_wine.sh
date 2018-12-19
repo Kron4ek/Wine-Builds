@@ -8,6 +8,8 @@
 ## ./build_wine.sh 4.0-rc2
 ## ./build_wine.sh 4.0-rc2 staging
 ## ./build_wine.sh 4.0-rc2 esync
+## ./build_wine.sh 3.16-5 proton
+## ./build_wine.sh 4.0-rc2 esync nopba exit
 
 export USERHOME="/home/builder"
 
