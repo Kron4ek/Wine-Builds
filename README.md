@@ -56,7 +56,7 @@ cards, and more.
 
 =======================================================================
 
-Links to sources and patches which these builds are uses:
+Links to sources and patches:
 
 * https://dl.winehq.org/wine/source/
 * https://github.com/wine-staging/wine-staging
