@@ -1,5 +1,14 @@
 #!/bin/bash
 
+## Script for compiling Wine (vanilla, staging, esync, pba, proton).
+## It uses two chroots for building (x32 chroot and x64 chroot).
+##
+## Examples of how to use it:
+##
+## ./build_wine.sh 4.0-rc2
+## ./build_wine.sh 4.0-rc2 staging
+## ./build_wine.sh 4.0-rc2 esync
+
 export USERHOME="/home/builder"
 
 build_in_chroot () {
