@@ -32,7 +32,7 @@ Other patches that are used in these builds:
 * Steam fix					(fix for Steam Web Browser)
 * CSMT toggle fix			(fix for CSMT toggle logic in winecfg)
 
-Fshack additionally contains patch for changing a game's internal resolution 
+Fshack builds additionally contains patch for changing a game's internal resolution 
 without  changing the screen resolution. These builds requires libxinerama 
 to work properly.
 
