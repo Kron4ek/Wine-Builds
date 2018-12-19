@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Script for compiling Wine (vanilla, staging, esync, pba, proton).
-## It uses two chroots for building (x32 chroot and x64 chroot).
+## It use two chroots for building (x32 chroot and x64 chroot).
 ##
 ## Examples of how to use it:
 ##
