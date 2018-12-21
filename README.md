@@ -3,6 +3,7 @@ Compiled on Ubuntu 16.04 with GCC 8.1.
 =======================================================================
 
 Build flags (x86): -march=pentium4 -O2
+
 Build flags (amd64): -march=nocona -O2
 
 Configure options: --without-coreaudio --without-curses --without-gstreamer \
@@ -10,6 +11,7 @@ Configure options: --without-coreaudio --without-curses --without-gstreamer \
 					--disable-tests --disable-win16
 
 All builds compiled with Vulkan support.
+
 All builds requires GLIBC version 2.23 or newer.
 
 =======================================================================
@@ -22,7 +24,7 @@ run only pure 64-bit applications.
 =======================================================================
 
 ESYNC-Staging-PBA builds compiled with Staging, ESYNC and PBA patches.
-They are also contains ESYNC compatibility fixes from Tk-Glitch
+They are also contain ESYNC compatibility fixes from Tk-Glitch
 github repository.
 
 Other patches that are used in these builds:
@@ -32,7 +34,7 @@ Other patches that are used in these builds:
 * Steam fix					(fix for Steam Web Browser)
 * CSMT toggle fix			(fix for CSMT toggle logic in winecfg)
 
-Fshack builds additionally contains patch for changing a game's internal resolution 
+Fshack builds additionally contain patch for changing a game's internal resolution 
 without  changing the screen resolution. These builds requires libxinerama 
 to work properly.
 
