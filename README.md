@@ -12,11 +12,11 @@ Configure options: --without-coreaudio --without-curses --without-gstreamer \
 
 All builds compiled with Vulkan support.
 
-All builds requires GLIBC version 2.23 or newer.
+All builds require GLIBC version 2.23 or newer.
 
 =======================================================================
 
-* amd64-nomultilib builds do not requires 32-bit dependencies and can
+* amd64-nomultilib builds do not require 32-bit dependencies and can
 run only pure 64-bit applications.
 * amd64 builds can run both 32-bit and 64-bit applications.
 * x86 builds can run only 32-bit applications.
@@ -30,12 +30,12 @@ github repository.
 Other patches that are used in these builds:
 
 * Use Clock Monotonic		(for better performance)
-* PoE fix					(fix for Path of Exile DX11 renderer)
-* Steam fix					(fix for Steam Web Browser)
-* CSMT toggle fix			(fix for CSMT toggle logic in winecfg)
+* PoE fix			(fix for Path of Exile DX11 renderer)
+* Steam fix			(fix for Steam Web Browser)
+* CSMT toggle fix		(fix for CSMT toggle logic in winecfg)
 
 Fshack builds additionally contain patch for changing a game's internal resolution 
-without  changing the screen resolution. These builds requires libxinerama 
+without  changing the screen resolution. These builds require libxinerama 
 to work properly.
 
 Remember that ESYNC is disabled by default. It's necessary to export
@@ -52,7 +52,7 @@ Proton is a Wine with additional patches from Valve (mostly). It mostly
 used in Steam to run Windows games on Linux. Of course it can be used
 outside of Steam with no problems.
 
-It contains: esync, fullscreen hack, performance improvements,
+It contain: esync, fullscreen hack, performance improvements,
 better support for controllers, faking an AMD card in place of Nvidia
 cards, and more.
 
