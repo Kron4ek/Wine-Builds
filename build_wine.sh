@@ -244,6 +244,8 @@ xz -9 wine-$WINE_VERSION-amd64.tar
 xz -9 wine-$WINE_VERSION-amd64-nomultilib.tar
 xz -9 wine-$WINE_VERSION-x86.tar
 
-rm -r wine-$WINE_VERSION-*
+rm -r wine-$WINE_VERSION-amd64
+rm -r wine-$WINE_VERSION-amd64-nomultilib
+rm -r wine-$WINE_VERSION-x86
 
 clear; echo "Done."
