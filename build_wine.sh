@@ -37,21 +37,21 @@ build_in_chroot () {
 	fi
 
 	echo "Unmount chroot directories. Just in case."
-	sudo umount -Rl "$CHROOT_PATH"
+	umount -Rl "$CHROOT_PATH"
 
 	echo "Mount directories for chroot"
-	sudo mount --bind "$CHROOT_PATH" "$CHROOT_PATH"
-	sudo mount --bind /dev "$CHROOT_PATH/dev"
-	sudo mount --bind /dev/shm "$CHROOT_PATH/dev/shm"
-	sudo mount --bind /dev/pts "$CHROOT_PATH/dev/pts"
-	sudo mount --bind /proc "$CHROOT_PATH/proc"
-	sudo mount --bind /sys "$CHROOT_PATH/sys"
+	mount --bind "$CHROOT_PATH" "$CHROOT_PATH"
+	mount --bind /dev "$CHROOT_PATH/dev"
+	mount --bind /dev/shm "$CHROOT_PATH/dev/shm"
+	mount --bind /dev/pts "$CHROOT_PATH/dev/pts"
+	mount --bind /proc "$CHROOT_PATH/proc"
+	mount --bind /sys "$CHROOT_PATH/sys"
 
 	echo "Chrooting into $CHROOT_PATH"
-	sudo chroot "$CHROOT_PATH" /usr/bin/env LANG=en_US.UTF-8 TERM=xterm PATH="/bin:/sbin:/usr/bin:/usr/sbin" /opt/build.sh
+	chroot "$CHROOT_PATH" /usr/bin/env LANG=en_US.UTF-8 TERM=xterm PATH="/bin:/sbin:/usr/bin:/usr/sbin" /opt/build.sh
 
 	echo "Unmount chroot directories"
-	sudo umount -Rl "$CHROOT_PATH"
+	umount -Rl "$CHROOT_PATH"
 }
 
 create_build_scripts () {
@@ -89,8 +89,8 @@ create_build_scripts () {
 	chmod +x "$MAINDIR/build64.sh"
 	chmod +x "$MAINDIR/build32.sh"
 
-	sudo mv "$MAINDIR/build64.sh" "$CHROOT_X64/opt/build.sh"
-	sudo mv "$MAINDIR/build32.sh" "$CHROOT_X32/opt/build.sh"
+	mv "$MAINDIR/build64.sh" "$CHROOT_X64/opt/build.sh"
+	mv "$MAINDIR/build32.sh" "$CHROOT_X32/opt/build.sh"
 }
 
 patching_error () {
@@ -207,30 +207,26 @@ clear; echo "Creating build scripts"
 create_build_scripts
 
 clear; echo "Compiling 64-bit Wine"
-sudo cp -r "$SOURCES_DIR/wine" "$CHROOT_X64/opt"
+cp -r "$SOURCES_DIR/wine" "$CHROOT_X64/opt"
 build_in_chroot 64
 
-sudo mv "$CHROOT_X64/opt/wine-build" "$CHROOT_X32/opt"
-sudo cp -r "$CHROOT_X32/opt/wine-build" "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib"
-sudo mv "$CHROOT_X64/opt/build64" "$CHROOT_X32/opt"
+mv "$CHROOT_X64/opt/wine-build" "$CHROOT_X32/opt"
+cp -r "$CHROOT_X32/opt/wine-build" "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib"
+mv "$CHROOT_X64/opt/build64" "$CHROOT_X32/opt"
 
 clear; echo "Compiling 32-bit Wine"
-sudo mv "$CHROOT_X64/opt/wine" "$CHROOT_X32/opt"
+mv "$CHROOT_X64/opt/wine" "$CHROOT_X32/opt"
 build_in_chroot 32
 
 clear; echo "Compiling is done. Packing Wine."
 
-sudo mv "$CHROOT_X32/opt/wine-build" "$MAINDIR/wine-$WINE_VERSION-amd64"
-sudo mv "$CHROOT_X32/opt/wine32-build" "$MAINDIR/wine-$WINE_VERSION-x86"
+mv "$CHROOT_X32/opt/wine-build" "$MAINDIR/wine-$WINE_VERSION-amd64"
+mv "$CHROOT_X32/opt/wine32-build" "$MAINDIR/wine-$WINE_VERSION-x86"
 
-sudo chown -R $USER:$USER "$MAINDIR/wine-$WINE_VERSION-amd64"
-sudo chown -R $USER:$USER "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib"
-sudo chown -R $USER:$USER "$MAINDIR/wine-$WINE_VERSION-x86"
-
-sudo rm -r "$CHROOT_X64/opt"
-sudo mkdir "$CHROOT_X64/opt"
-sudo rm -r "$CHROOT_X32/opt"
-sudo mkdir "$CHROOT_X32/opt"
+rm -r "$CHROOT_X64/opt"
+mkdir "$CHROOT_X64/opt"
+rm -r "$CHROOT_X32/opt"
+mkdir "$CHROOT_X32/opt"
 
 cd "$MAINDIR/wine-$WINE_VERSION-x86" && rm -r include && rm -r share/applications && rm -r share/man
 cd "$MAINDIR/wine-$WINE_VERSION-amd64" && rm -r include && rm -r share/applications && rm -r share/man
