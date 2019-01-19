@@ -1,6 +1,6 @@
 ## Download builds
 
-Check **releases** page for download 3-5 latest Wine builds.
+Check **releases** page to download 3-5 latest Wine builds.
 
 All other builds (including stable and old versions) can be downloaded from: 
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
