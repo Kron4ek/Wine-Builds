@@ -127,7 +127,6 @@ if [ "$2" = "esync" ]; then
 	wget https://github.com/wine-staging/wine-staging/archive/v$1.tar.gz
 	wget https://github.com/zfigura/wine/releases/download/esync$ESYNC_VERSION/esync.tgz
 	git clone https://github.com/Tk-Glitch/PKGBUILDS.git
-	git clone https://github.com/Firerat/wine-pba.git
 
 	tar xf wine-$1.tar.xz
 	tar xf v$1.tar.gz
@@ -145,7 +144,6 @@ if [ "$2" = "esync" ]; then
 	cd patches
 	./patchinstall.sh DESTDIR=../../wine --all || patching_error
 
-
 	# Apply fixes for esync patches
 	cd ../../esync
 	patch -Np1 < "$PATCHES_DIR"/esync-staging-fixes-r3.patch || patching_error
@@ -161,18 +159,20 @@ if [ "$2" = "esync" ]; then
 	if [ "$3" = "pba" ] || [ "$4" = "pba" ] || [ "$5" = "pba" ]; then
 		WINE_VERSION="$WINE_VERSION-pba"
 
+		git clone https://github.com/Firerat/wine-pba.git
+
 		# Apply pba patches
 		for f in $(ls ../wine-pba/patches); do
 			patch -Np1 < ../wine-pba/patches/"${f}" || patching_error
 		done
 	fi
 
-	if [ "$3" = "fshack" ] || [ "$4" = "fshack" ] || [ "$5" = "fshack" ]; then
-		WINE_VERSION="$WINE_VERSION-fshack"
+	patch -Np1 < "$PATCHES_DIR"/GLSL-toggle.patch || patching_error
 
-		patch -Np1 < "$PATCHES_DIR"/FS_bypass_compositor.patch || patching_error
-		patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
-	fi
+	patch -Np1 < "$PATCHES_DIR"/FS_bypass_compositor.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
+
+	patch -Np1 < "$PATCHES_DIR"/large_address_aware-staging.patch || patching_error
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$1-proton"
 
