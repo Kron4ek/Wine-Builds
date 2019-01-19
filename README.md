@@ -77,12 +77,6 @@ cards, and more.
 
 =======================================================================
 
-All other builds (including stable and old versions) can be downloaded from: 
-* **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
-* **[Yandex Disk](https://yadi.sk/d/IrofgqFSqHsPu/wine_builds)**
-
-=======================================================================
-
 Links to sources and patches:
 
 * https://dl.winehq.org/wine/source/
