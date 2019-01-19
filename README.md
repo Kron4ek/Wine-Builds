@@ -39,7 +39,7 @@ run only pure 64-bit applications.
 They are also contain ESYNC compatibility fixes from Tk-Glitch
 GitHub repository.
 
-Other patches that are used in these builds:
+Other **patches** that are used in these builds:
 
 * Use Clock Monotonic		(for better performance)
 * PoE fix			(fix for Path of Exile DX11 renderer)
