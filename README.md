@@ -1,12 +1,12 @@
 ## Download builds
 
-Check releases page for download 3-5 latest Wine builds.
+Check **releases** page for download 3-5 latest Wine builds.
 
 All other builds (including stable and old versions) can be downloaded from: 
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
 * **[Yandex Disk](https://yadi.sk/d/IrofgqFSqHsPu/wine_builds)**
 
-All builds compiled with "**build_wine.sh**" script, which lies in this repo.
+All builds compiled with **build_wine.sh** script, which lies in this repo.
 
 =======================================================================
 
