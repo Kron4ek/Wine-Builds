@@ -45,7 +45,8 @@ run only pure 64-bit applications.
 
 ---
 
-**Vanilla** builds is a regular upstream Wine without additional patches.
+**Vanilla** builds compiled from official Wine sources without additional
+patches.
 
 ---
 
