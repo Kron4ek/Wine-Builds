@@ -38,19 +38,21 @@ Configure options: --without-coreaudio --without-curses --without-gstreamer \
 
 ---
 
-* **amd64-nomultilib** builds do not require 32-bit dependencies and can
-run only pure 64-bit applications.
-* **amd64** builds can run both 32-bit and 64-bit applications.
-* **x86** builds can run only 32-bit applications.
+### Architectures
+
+* **amd64** - for 64-bit systems. Can run both 32-bit and 64-bit applications.
+* **amd64-nomultilib** - for 64-bit systems. Can run only pure 64-bit
+applications. It doesn't require 32-bit dependencies.
+* **x86** - for 32-bit systems. Can run only 32-bit applications.
 
 ---
 
-**Vanilla** builds compiled from official Wine sources without additional
+**Vanilla** builds compiled from upstream Wine sources without additional
 patches.
 
 ---
 
-**Staging** builds compiled with Staging patch set. Staging contain many
+**Staging** builds compiled with Staging patchset. Staging contain many
 patches that are not present in regular (vanilla) Wine. It adds new
 functions to Wine, fixes many bugs and sometimes improves performance.
 
@@ -61,7 +63,7 @@ also compiled with **PBA** patches. They are also contain ESYNC compatibility
 fixes from Tk-Glitch github repository.
 
 **ESYNC** improves performance in games by reducing CPU load. **PBA** improves
-performance many Direct3D games (but not all).
+performance in many Direct3D games (but not all).
 
 Other patches that are used in ESYNC builds:
 
@@ -98,7 +100,7 @@ environment variable.
 virtually the same as Proton in Steam, but opposed to Steam's Proton,
 these builds work without Steam Runtime.
 
-It contains many useful patches, especially for better gaming experience.
+**Proton** contain many useful patches, primarily for better gaming experience.
 
 ---
 
