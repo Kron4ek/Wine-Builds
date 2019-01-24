@@ -40,10 +40,10 @@ Configure options: --without-coreaudio --without-curses --without-gstreamer \
 
 ### Architectures
 
-* **amd64** - for 64-bit systems. Can run both 32-bit and 64-bit applications.
-* **amd64-nomultilib** - for 64-bit systems. Can run only pure 64-bit
+* **amd64** - for 64-bit systems. It can run both 32-bit and 64-bit applications.
+* **amd64-nomultilib** - for 64-bit systems. It can run only pure 64-bit
 applications. It doesn't require 32-bit dependencies.
-* **x86** - for 32-bit systems. Can run only 32-bit applications.
+* **x86** - for 32-bit systems. It can run only 32-bit applications.
 
 ---
 
