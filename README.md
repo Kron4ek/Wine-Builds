@@ -79,17 +79,17 @@ for native Direct3D 9 support. If your graphics drivers support Gallium3D
 (Mesa support it for AMD gpus and for Nouveau) you should use these builds
 as they are drastically improve performance in Direct3D 9 games.
 
-LibXinerama (32-bit or 64-bit - depends on game architecture) is required
+**LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
 for fullscreen games to work properly.
 
-Remember that ESYNC is disabled by default. To use ESYNC it's necessary to export
+Remember that **ESYNC** is **disabled** by default. To use ESYNC it's necessary to export
 WINEESYNC=1 environment variable and increase file descriptors limits (soft and hard)
 in /etc/security/limits.conf. If file descriptors limit is not high enough 
 then games will crash often.
 
-PBA can be disabled by exporting PBA_DISABLE=1 environment variable.
+**PBA** can be disabled by exporting PBA_DISABLE=1 environment variable.
 
-LARGE_ADDRESS_AWARE can be enabled by exporting WINE_LARGE_ADDRESS_AWARE=1
+**LARGE_ADDRESS_AWARE** can be enabled by exporting WINE_LARGE_ADDRESS_AWARE=1
 environment variable.
 
 ---
