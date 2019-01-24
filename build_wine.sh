@@ -240,7 +240,8 @@ fi
 # Replace version string in winecfg and "wine --version" output
 sed -i "s/  (Staging)//g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
 sed -i "s/\\\1/\\\1  (${WINE_VERSION_STRING})/g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
-sed -i "s/ (Staging)/ (${WINE_VERSION_STRING})/g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
+sed -i "s/ \" (Staging)\"//g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
+sed -i "s/PACKAGE_VERSION/PACKAGE_VERSION \"(${WINE_VERSION_STRING})\"/g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
 
 if [ "$2" = "exit" ] || [ "$3" = "exit" ] || [ "$4" = "exit" ] || [ "$5" = "exit" ] || [ "$6" = "exit" ]; then
 	echo "Force exiting"
