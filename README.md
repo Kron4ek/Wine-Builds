@@ -6,21 +6,31 @@ All other builds (including stable and old versions) can be downloaded from:
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
 * **[Yandex Disk](https://yadi.sk/d/IrofgqFSqHsPu/wine_builds)**
 
-All builds compiled using **build_wine.sh** script, which lies in this repo.
+All builds compiled using **build_wine.sh** script.
 
 ---
 
 ## Builds description
 
-Compiled on Ubuntu 16.04 with GCC 8.1. Compiled with Vulkan support.
+All builds (except "old_glibc" and "gallium_nine) compiled on Ubuntu
+16.04 with GCC 5.4 and require **GLIBC 2.23** or newer.
 
-Builds require at least **GLIBC 2.23**.
+Builds from "**old_glibc**" directory require at least **GLIBC 2.13** and work
+on very old Linux distros. Don't use "old_glibc" builds if your GLIBC
+version is **2.23** or newer.
+
+Builds from "**gallium_nine**" directory compiled on Ubuntu 18.04 with GCC
+8.2 and require at least **GLIBC 2.27**.
+
+All builds (except "old_glibc") compiled with Vulkan support.
 
 ---
 
+Build flags (amd64): -march=nocona -O2
+
 Build flags (x86): -march=pentium4 -O2
 
-Build flags (amd64): -march=nocona -O2
+Build flags "old_glibc" (x86): -march=pentium3 -O2
 
 Configure options: --without-coreaudio --without-curses --without-gstreamer \
 					--without-oss --disable-winemenubuilder \
@@ -35,11 +45,24 @@ run only pure 64-bit applications.
 
 ---
 
-**ESYNC** builds compiled with Staging, ESYNC and PBA patches.
-They are also contain ESYNC compatibility fixes from Tk-Glitch
-GitHub repository.
+**Vanilla** builds is a regular upstream Wine without additional patches.
 
-Other **patches** that are used in these builds:
+---
+
+**Staging** builds compiled with Staging patch set. Staging contain many
+patches that are not present in regular (vanilla) Wine. It adds new
+functions to Wine, fixes many bugs and sometimes improves performance.
+
+---
+
+**ESYNC** builds compiled with **Staging** and **ESYNC** patches, and some versions
+also compiled with **PBA** patches. They are also contain ESYNC compatibility
+fixes from Tk-Glitch github repository.
+
+**ESYNC** improves performance in games by reducing CPU load. **PBA** improves
+performance many Direct3D games (but not all).
+
+Other patches that are used in ESYNC builds:
 
 * Use Clock Monotonic		(for better performance)
 * PoE fix			(fix for Path of Exile DX11 renderer)
@@ -49,6 +72,11 @@ Other **patches** that are used in these builds:
 * LARGE_ADDRESS_AWARE		(solve hitting address space limitations in 32-bit games)
 * FS_bypass_compositor		(bypass compositor in fullscreen mode)
 * Fullscreen_hack		(change resoltuion for fullscreen games without changing desktop resolution)
+
+Builds from "**gallium_nine**" directory also contain **Gallium Nine** patches
+for native Direct3D 9 support. If your graphics drivers support Gallium3D
+(Mesa support it for AMD gpus and for Nouveau) you should use these builds
+as they are drastically improve performance in Direct3D 9 games.
 
 LibXinerama (32-bit or 64-bit - depends on game architecture) is required
 for fullscreen games to work properly.
@@ -65,15 +93,11 @@ environment variable.
 
 ---
 
-**Proton** builds compiled from sources from Valve github repository.
+**Proton** builds compiled from sources from Valve github repository. It's
+virtually the same as Proton in Steam, but opposed to Steam's Proton,
+these builds work without Steam Runtime.
 
-Proton is a Wine with additional patches from Valve (mostly). It mostly
-used in Steam to run Windows games on Linux. Of course it can be used
-outside of Steam with no problems.
-
-It contain: esync, fullscreen hack, performance improvements,
-better support for controllers, faking an AMD card in place of Nvidia
-cards, and more.
+It contains many useful patches, especially for better gaming experience.
 
 ---
 
@@ -85,3 +109,4 @@ Links to sources and patches:
 * https://github.com/zfigura/wine/tree/esync
 * https://github.com/Firerat/wine-pba
 * https://github.com/ValveSoftware/wine
+* https://github.com/sarnex/wine-d3d9-patches
