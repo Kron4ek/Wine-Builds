@@ -12,7 +12,7 @@ All builds compiled using **build_wine.sh** script.
 
 ## Builds description
 
-All builds (except "old_glibc" and "gallium_nine) compiled on Ubuntu
+All builds (except "old_glibc" and "gallium_nine") compiled on Ubuntu
 16.04 with GCC 5.4 and require **GLIBC 2.23** or newer.
 
 Builds from "**old_glibc**" directory require at least **GLIBC 2.13** and work
