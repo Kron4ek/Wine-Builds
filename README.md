@@ -16,7 +16,7 @@ All builds (except "old_glibc" and "gallium_nine) compiled on Ubuntu
 16.04 with GCC 5.4 and require **GLIBC 2.23** or newer.
 
 Builds from "**old_glibc**" directory require at least **GLIBC 2.13** and work
-on very old Linux distros. Don't use "old_glibc" builds if your GLIBC
+on very old Linux distros. Don't use "**old_glibc**" builds if your GLIBC
 version is **2.23** or newer.
 
 Builds from "**gallium_nine**" directory compiled on Ubuntu 18.04 with GCC
