@@ -80,7 +80,7 @@ Builds from "**gallium_nine**" directory also contain **Gallium Nine** patches
 for native Direct3D 9 support. If your graphics drivers support Gallium3D
 (Mesa support it for AMD gpus and for Nouveau) you should use these builds
 as they are drastically improve performance in Direct3D 9 games. **Gallium
-Nine** is disabled by default, it can be enable in winecfg under "Staging"
+Nine** is disabled by default, it can be enabled in winecfg under "Staging"
 tab.
 
 **LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
