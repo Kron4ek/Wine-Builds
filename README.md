@@ -65,7 +65,7 @@ fixes from Tk-Glitch github repository.
 **ESYNC** improves performance in games by reducing CPU load. **PBA** improves
 performance in many Direct3D games (but not all).
 
-Other patches that are used in ESYNC builds:
+Other patches that are used in **ESYNC** builds:
 
 * Use Clock Monotonic		(for better performance)
 * PoE fix			(fix for Path of Exile DX11 renderer)
