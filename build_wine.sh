@@ -3,21 +3,24 @@
 ## Script for building Wine (vanilla, staging, esync, pba, proton).
 ## It use two chroots for compiling (x32 chroot and x64 chroot).
 ##
+## This script require packages: git, wget, autoconf
+##
 ## You can change env variables to desired values.
 ##
 ## Examples of how to use it:
 ##
-## ./build_wine.sh 4.0-rc3						(build Wine 4.0-rc3)
-## ./build_wine.sh 4.0-rc3 exit					(download Wine sources and exit)
-## ./build_wine.sh 4.0-rc3 staging				(build Wine 4.0-rc3 with Staging patches)
-## ./build_wine.sh 4.0-rc3 esync				(build Wine 4.0-rc3 with ESYNC patches)
-## ./build_wine.sh 3.16-6 proton				(build latest Proton and name it 3.16-6)
-## ./build_wine.sh 4.0-rc3 esync pba fshack		(build WIne 4.0-rc3 with ESYNC, PBA and FSHACK patches)
+## ./build_wine.sh latest				(download and build latest Wine version)
+## ./build_wine.sh 4.0					(download and build Wine 4.0)
+## ./build_wine.sh 4.0 exit				(download and prepare Wine sources and exit)
+## ./build_wine.sh 4.0 staging			(build Wine 4.0 with Staging patches)
+## ./build_wine.sh 4.0 esync			(build Wine 4.0 with ESYNC patches)
+## ./build_wine.sh 3.16-6 proton		(build latest Proton and name it 3.16-6)
+## ./build_wine.sh 3.16 esync pba		(build Wine 3.16 with Staging, Esync and PBA patches)
 
-export MAINDIR="$HOME"
+export MAINDIR="/home/builder"
 export SOURCES_DIR="$MAINDIR/sources_dir"
 export CHROOT_X64="$MAINDIR/xenial64_chroot"
-export CHROOT_X32="$MAINDIR/xenial_chroot"
+export CHROOT_X32="$MAINDIR/xenial32_chroot"
 
 export C_COMPILER="gcc-8"
 export CXX_COMPILER="g++-8"
@@ -27,6 +30,7 @@ export CFLAGS_X64="-march=nocona -O2"
 export FLAGS_LD="-O2"
 export WINE_BUILD_OPTIONS="--without-coreaudio --without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-tests --disable-win16"
 
+export WINE_VERSION_NUMBER="$1"
 export ESYNC_VERSION="ce79346"
 
 build_in_chroot () {
@@ -99,20 +103,34 @@ patching_error () {
 	exit
 }
 
-if [ ! "$1" ]; then
+if [ ! "$WINE_VERSION_NUMBER" ]; then
 	echo "No version specified"
 	exit
 fi
 
-if [ "$(echo "$1" | cut -c3)" = "0" ]; then
-	WINE_SOURCES_VERSION=$(echo "$1" | cut -c1).0
-else
-	WINE_SOURCES_VERSION=$(echo "$1" | cut -c1).x
+if [ "$MAINDIR" = "$SOURCES_DIR" ]; then
+	echo "Don't use the same directory for MAINDIR and SOURCES_DIR"
+	exit
 fi
 
 rm -rf "$SOURCES_DIR"
 mkdir "$SOURCES_DIR"
 cd "$SOURCES_DIR" || exit
+
+# Replace latest argument with actual latest Wine version
+if [ "$WINE_VERSION_NUMBER" = "latest" ]; then
+	wget https://raw.githubusercontent.com/wine-mirror/wine/master/VERSION
+
+	WINE_VERSION_NUMBER="$(cat VERSION | sed "s/Wine version //g")"
+fi
+
+# Stable and Development version has different sources location
+# Determine if we trying to build stable or development version
+if [ "$(echo "$WINE_VERSION_NUMBER" | cut -c3)" = "0" ]; then
+	WINE_SOURCES_VERSION=$(echo "$WINE_VERSION_NUMBER" | cut -c1).0
+else
+	WINE_SOURCES_VERSION=$(echo "$WINE_VERSION_NUMBER" | cut -c1).x
+fi
 
 clear
 echo "Downloading sources and patches."
@@ -120,26 +138,28 @@ echo "Preparing Wine for compiling."
 echo
 
 if [ "$2" = "esync" ]; then
-	WINE_VERSION="$1-esync-staging"
+	WINE_VERSION="$WINE_VERSION_NUMBER-esync-staging"
+	WINE_VERSION_STRING="Staging Esync"
+
 	PATCHES_DIR="$SOURCES_DIR/PKGBUILDS/wine-tkg-git/wine-tkg-patches"
 
-	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$1.tar.xz
-	wget https://github.com/wine-staging/wine-staging/archive/v$1.tar.gz
+	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
+	wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
 	wget https://github.com/zfigura/wine/releases/download/esync$ESYNC_VERSION/esync.tgz
 	git clone https://github.com/Tk-Glitch/PKGBUILDS.git
 
-	tar xf wine-$1.tar.xz
-	tar xf v$1.tar.gz
+	tar xf wine-$WINE_VERSION_NUMBER.tar.xz
+	tar xf v$WINE_VERSION_NUMBER.tar.gz
 	tar xf esync.tgz
 
-	mv wine-$1 wine
+	mv wine-$WINE_VERSION_NUMBER wine
 
 	cd wine
 	patch -Np1 < "$PATCHES_DIR"/use_clock_monotonic.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/poe-fix.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/steam.patch || patching_error
 
-	cd ../wine-staging-$1
+	cd ../wine-staging-$WINE_VERSION_NUMBER
 	patch -Np1 < "$PATCHES_DIR"/CSMT-toggle.patch || patching_error
 	cd patches
 	./patchinstall.sh DESTDIR=../../wine --all || patching_error
@@ -157,46 +177,70 @@ if [ "$2" = "esync" ]; then
 	patch -Np1 < "$PATCHES_DIR"/esync-no_alloc_handle.patch || patching_error
 
 	if [ "$3" = "pba" ] || [ "$4" = "pba" ] || [ "$5" = "pba" ]; then
-		WINE_VERSION="$WINE_VERSION-pba"
+		if [ "$3" != "nine" ] && [ "$4" != "nine" ] && [ "$5" != "nine" ]; then
+			WINE_VERSION="$WINE_VERSION-pba"
+			WINE_VERSION_STRING="$WINE_VERSION_STRING PBA"
 
-		git clone https://github.com/Firerat/wine-pba.git
+			git clone https://github.com/Firerat/wine-pba.git
 
-		# Apply pba patches
-		for f in $(ls ../wine-pba/patches); do
-			patch -Np1 < ../wine-pba/patches/"${f}" || patching_error
-		done
+			# Apply pba patches
+			for f in $(ls ../wine-pba/patches); do
+				patch -Np1 < ../wine-pba/patches/"${f}" || patching_error
+			done
+		fi
 	fi
 
-	patch -Np1 < "$PATCHES_DIR"/GLSL-toggle.patch || patching_error
+	if [ "$3" = "nine" ] || [ "$4" = "nine" ] || [ "$5" = "nine" ]; then
+		WINE_VERSION="$WINE_VERSION-nine"
+		WINE_VERSION_STRING="$WINE_VERSION_STRING Nine"
+
+		wget -O "$PATCHES_DIR"/wine-d3d9.patch https://raw.githubusercontent.com/sarnex/wine-d3d9-patches/master/wine-d3d9.patch
+		wget -O "$PATCHES_DIR"/staging-helper.patch https://raw.githubusercontent.com/sarnex/wine-d3d9-patches/master/staging-helper.patch
+
+		patch -Np1 < "$PATCHES_DIR"/staging-helper.patch || patching_error
+		patch -Np1 < "$PATCHES_DIR"/wine-d3d9.patch || patching_error
+
+		autoreconf -f
+	else
+		patch -Np1 < "$PATCHES_DIR"/GLSL-toggle.patch || patching_error
+	fi
 
 	patch -Np1 < "$PATCHES_DIR"/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/large_address_aware-staging.patch || patching_error
 elif [ "$2" = "proton" ]; then
-	WINE_VERSION="$1-proton"
+	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
+	WINE_VERSION_STRING="Proton"
 
 	git clone https://github.com/ValveSoftware/wine.git
 else
-	WINE_VERSION="$1"
+	WINE_VERSION="$WINE_VERSION_NUMBER"
+	WINE_VERSION_STRING="Vanilla"
 
-	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$1.tar.xz
+	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
 
-	tar xf wine-$1.tar.xz
+	tar xf wine-$WINE_VERSION_NUMBER.tar.xz
 
-	mv wine-$1 wine
+	mv wine-$WINE_VERSION_NUMBER wine
 
 	if [ "$2" = "staging" ]; then
-		WINE_VERSION="$1-staging"
+		WINE_VERSION="$WINE_VERSION_NUMBER-staging"
+		WINE_VERSION_STRING="Staging"
 
-		wget https://github.com/wine-staging/wine-staging/archive/v$1.tar.gz
+		wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
 
-		tar xf v$1.tar.gz
+		tar xf v$WINE_VERSION_NUMBER.tar.gz
 
-		cd wine-staging-$1/patches
+		cd wine-staging-$WINE_VERSION_NUMBER/patches
 		./patchinstall.sh DESTDIR=../../wine --all || patching_error
 	fi
 fi
+
+# Replace version string in winecfg and "wine --version" output
+sed -i "s/  (Staging)//g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
+sed -i "s/\\\1/\\\1  (${WINE_VERSION_STRING})/g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
+sed -i "s/ (Staging)/ (${WINE_VERSION_STRING})/g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
 
 if [ "$2" = "exit" ] || [ "$3" = "exit" ] || [ "$4" = "exit" ] || [ "$5" = "exit" ] || [ "$6" = "exit" ]; then
 	echo "Force exiting"
