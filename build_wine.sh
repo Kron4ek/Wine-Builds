@@ -22,8 +22,8 @@ export SOURCES_DIR="$MAINDIR/sources_dir"
 export CHROOT_X64="$MAINDIR/xenial64_chroot"
 export CHROOT_X32="$MAINDIR/xenial32_chroot"
 
-export C_COMPILER="gcc-8"
-export CXX_COMPILER="g++-8"
+export C_COMPILER="gcc"
+export CXX_COMPILER="g++"
 
 export CFLAGS_X32="-march=pentium4 -O2"
 export CFLAGS_X64="-march=nocona -O2"
