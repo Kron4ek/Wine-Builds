@@ -121,6 +121,8 @@ these builds work without Steam Runtime.
 
 ### FAudio
 
+**FAudio** fixes many sound issues in many games.
+
 **Proton** builds (starting from version 3.16-5), as well as builds from
 "**faudio**" directory, use **FAudio** (XAudio reimplementation). So it's necessary
 to compile and install **libFAudio.so** into system. If **libFAudio.so** is not
