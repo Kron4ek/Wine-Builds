@@ -13,10 +13,10 @@ All builds compiled using **build_wine.sh** script.
 ## Builds description
 
 All builds (except "old_glibc" and "gallium_nine") compiled on Ubuntu
-16.04 with GCC 5.4 and require **GLIBC 2.23** or newer.
+16.04 with GCC 5.4 and require at least **GLIBC 2.23**.
 
 Builds from "**old_glibc**" directory require at least **GLIBC 2.13** and work
-on very old Linux distros. Don't use "**old_glibc**" builds if your GLIBC
+on very old Linux distros. Don't use "**old_glibc**" builds if your **GLIBC**
 version is **2.23** or newer.
 
 Builds from "**gallium_nine**" directory compiled on Ubuntu 18.04 with GCC
@@ -47,8 +47,8 @@ applications. It doesn't require 32-bit dependencies.
 
 ---
 
-**Vanilla** builds compiled from upstream Wine sources without additional
-patches.
+**Vanilla** builds compiled from official WineHQ sources without additional
+patches. It's a clean unmodified Wine.
 
 ---
 
