@@ -2,7 +2,7 @@
 
 Check **releases** page to download 3-5 latest Wine builds.
 
-All other builds (FAudio, OldGlibc and also Stable and old versions) can be downloaded from: 
+All other builds (FAudio, OldGlibc, Stable and old versions) can be downloaded from: 
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
 * **[Yandex Disk](https://yadi.sk/d/IrofgqFSqHsPu/wine_builds)**
 
