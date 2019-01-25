@@ -97,10 +97,10 @@ See notes about **FAudio** below.
 **LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
 for fullscreen games to work properly.
 
-Remember that **ESYNC** is **disabled** by default. To use ESYNC it's necessary to export
-WINEESYNC=1 environment variable and increase file descriptors limits (soft and hard)
-in /etc/security/limits.conf. If file descriptors limit is not high enough 
-then games will crash often.
+Remember that **ESYNC** is **disabled** by default. To use ESYNC it's necessary 
+to export WINEESYNC=1 environment variable and increase file descriptors limit 
+(soft and hard).  If file descriptors limit is not high enough  then games will 
+crash often.
 
 **PBA** can be disabled by exporting PBA_DISABLE=1 environment variable.
 
