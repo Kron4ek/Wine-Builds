@@ -2,7 +2,7 @@
 
 Check **releases** page to download 3-5 latest Wine builds.
 
-All other builds (including stable and old versions) can be downloaded from: 
+All other builds (galliumNine, faudio, oldglibc and also Stable and old versions) can be downloaded from: 
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
 * **[Yandex Disk](https://yadi.sk/d/IrofgqFSqHsPu/wine_builds)**
 
@@ -26,6 +26,8 @@ All builds (except "old_glibc") compiled with Vulkan support.
 
 ---
 
+### Compilation parameters
+
 Build flags (amd64): -march=nocona -O2
 
 Build flags (x86): -march=pentium4 -O2
@@ -47,16 +49,22 @@ applications. It doesn't require 32-bit dependencies.
 
 ---
 
+### Vanilla
+
 **Vanilla** builds compiled from official WineHQ sources without additional
 patches. It's a clean unmodified Wine.
 
 ---
+
+### Staging
 
 **Staging** builds compiled with Staging patchset. Staging contain many
 patches that are not present in regular (vanilla) Wine. It adds new
 functions to Wine, fixes many bugs and sometimes improves performance.
 
 ---
+
+### ESYNC/PBA/GalliumNine
 
 **ESYNC** builds compiled with **Staging** and **ESYNC** patches, and some versions
 also compiled with **PBA** patches. They are also contain ESYNC compatibility
@@ -83,6 +91,9 @@ as they are drastically improve performance in Direct3D 9 games. **Gallium
 Nine** is disabled by default, it can be enabled in winecfg under "Staging"
 tab.
 
+Builds from "**faudio**" directory use **FAudio** (XAudio reimplementation).
+See notes about **FAudio** below.
+
 **LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
 for fullscreen games to work properly.
 
@@ -98,6 +109,8 @@ environment variable.
 
 ---
 
+### Proton
+
 **Proton** builds compiled from sources from Valve github repository. It's
 virtually the same as Proton in Steam, but opposed to Steam's Proton,
 these builds work without Steam Runtime.
@@ -106,7 +119,18 @@ these builds work without Steam Runtime.
 
 ---
 
-Links to sources and patches:
+### FAudio
+
+**Proton** builds (starting from version 3.16-5), as well as builds from
+"**faudio**" directory, use **FAudio** (XAudio reimplementation). So it's necessary
+to compile and install **libFAudio.so** into system. If **libFAudio.so** is not
+installed then many games will not work or there will be no sound.
+
+**FAudio** sources are [here](https://github.com/FNA-XNA/FAudio). Use them to compile and install **libFAudio.so**.
+
+---
+
+### Links to sources and patches:
 
 * https://dl.winehq.org/wine/source/
 * https://github.com/wine-staging/wine-staging
