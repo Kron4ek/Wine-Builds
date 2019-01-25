@@ -119,9 +119,14 @@ cd "$SOURCES_DIR" || exit
 
 # Replace latest argument with actual latest Wine version
 if [ "$WINE_VERSION_NUMBER" = "latest" ]; then
-	wget https://raw.githubusercontent.com/wine-mirror/wine/master/VERSION
+	if [ "$2" != "proton" ]; then
+		wget https://raw.githubusercontent.com/wine-mirror/wine/master/VERSION
 
-	WINE_VERSION_NUMBER="$(cat VERSION | sed "s/Wine version //g")"
+		WINE_VERSION_NUMBER="$(cat VERSION | sed "s/Wine version //g")"
+	else
+		echo "Please, specify real version to build Proton"
+		exit
+	fi
 fi
 
 # Stable and Development version has different sources location
@@ -159,10 +164,22 @@ if [ "$2" = "esync" ]; then
 	patch -Np1 < "$PATCHES_DIR"/poe-fix.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/steam.patch || patching_error
 
+	if [ "$3" = "faudio" ] || [ "$4" = "faudio" ] || [ "$5" = "faudio" ]; then
+		WINE_VERSION="$WINE_VERSION-faudio"
+		WINE_VERSION_STRING="$WINE_VERSION_STRING FAudio"
+
+		patch -Np1 < "$PATCHES_DIR"/faudio-exp.patch || patching_error
+	fi
+
 	cd ../wine-staging-$WINE_VERSION_NUMBER
 	patch -Np1 < "$PATCHES_DIR"/CSMT-toggle.patch || patching_error
+
 	cd patches
-	./patchinstall.sh DESTDIR=../../wine --all || patching_error
+	if [ "$3" = "faudio" ] || [ "$4" = "faudio" ] || [ "$5" = "faudio" ]; then
+		./patchinstall.sh DESTDIR=../../wine --all -W xaudio2_7-CreateFX-FXEcho -W xaudio2_7-WMA_support -W xaudio2_CommitChanges -W winepulse-PulseAudio_Support || patching_error
+	else
+		./patchinstall.sh DESTDIR=../../wine --all || patching_error
+	fi
 
 	# Apply fixes for esync patches
 	cd ../../esync
@@ -213,7 +230,13 @@ elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
 
-	git clone https://github.com/ValveSoftware/wine.git
+	if [ "$(echo $WINE_VERSION_NUMBER | head -c3)" = "3.7" ]; then
+		git clone https://github.com/ValveSoftware/wine.git -b proton_3.7
+	elif [ "$(echo $WINE_VERSION_NUMBER | head -c4)" = "3.16" ]; then
+		git clone https://github.com/ValveSoftware/wine.git -b proton_3.16
+	else
+		git clone https://github.com/ValveSoftware/wine.git
+	fi
 else
 	WINE_VERSION="$WINE_VERSION_NUMBER"
 	WINE_VERSION_STRING="Vanilla"
@@ -241,7 +264,7 @@ fi
 sed -i "s/  (Staging)//g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
 sed -i "s/\\\1/\\\1  (${WINE_VERSION_STRING})/g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
 sed -i "s/ \" (Staging)\"//g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
-sed -i "s/PACKAGE_VERSION/PACKAGE_VERSION \"(${WINE_VERSION_STRING})\"/g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
+sed -i "s/PACKAGE_VERSION/PACKAGE_VERSION \" (${WINE_VERSION_STRING})\"/g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
 
 if [ "$2" = "exit" ] || [ "$3" = "exit" ] || [ "$4" = "exit" ] || [ "$5" = "exit" ] || [ "$6" = "exit" ]; then
 	echo "Force exiting"
