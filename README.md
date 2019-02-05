@@ -12,17 +12,9 @@ All builds compiled using **build_wine.sh** script.
 
 ## Builds description
 
-All builds (except "old_glibc" and "gallium_nine") compiled on Ubuntu
-16.04 with GCC 5.4 and require at least **GLIBC 2.23**.
+Builds compiled on Ubuntu 16.04 and requires at least **GLIBC 2.23**.
 
-Builds from "**old_glibc**" directory require at least **GLIBC 2.13** and work
-on very old Linux distros. Don't use "**old_glibc**" builds if your **GLIBC**
-version is **2.23** or newer.
-
-Builds from "**gallium_nine**" directory compiled on Ubuntu 18.04 with GCC
-8.2 and require at least **GLIBC 2.27**.
-
-All builds (except "old_glibc") compiled with Vulkan support.
+Compiled with Vulkan support.
 
 ---
 
@@ -31,8 +23,6 @@ All builds (except "old_glibc") compiled with Vulkan support.
 Build flags (amd64): -march=nocona -O2
 
 Build flags (x86): -march=pentium4 -O2
-
-Build flags "old_glibc" (x86): -march=pentium3 -O2
 
 Configure options: --without-coreaudio --without-curses --without-gstreamer \
 					--without-oss --disable-winemenubuilder \
@@ -64,11 +54,10 @@ functions to Wine, fixes many bugs and sometimes improves performance.
 
 ---
 
-### ESYNC/PBA/GalliumNine
+### ESYNC / PBA
 
 **ESYNC** builds compiled with **Staging** and **ESYNC** patches, and some versions
-also compiled with **PBA** patches. They are also contain ESYNC compatibility
-fixes from Tk-Glitch github repository.
+also compiled with **PBA** patches.
 
 **ESYNC** improves performance in games by reducing CPU load. **PBA** improves
 performance in many Direct3D games (but not all).
@@ -84,21 +73,11 @@ Other patches that are used in **ESYNC** builds:
 * FS_bypass_compositor		(bypass compositor in fullscreen mode)
 * Fullscreen_hack		(change resoltuion for fullscreen games without changing desktop resolution)
 
-Builds from "**gallium_nine**" directory also contain **Gallium Nine** patches
-for native Direct3D 9 support. If your graphics drivers support Gallium3D
-(Mesa support it for AMD gpus and for Nouveau) you should use these builds
-as they are drastically improve performance in Direct3D 9 games. **Gallium
-Nine** is disabled by default, it can be enabled in winecfg under "Staging"
-tab.
-
-Builds from "**faudio**" directory use **FAudio** (XAudio reimplementation).
-See notes about **FAudio** below.
-
 **LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
 for fullscreen games to work properly.
 
-Remember that **ESYNC** is **disabled** by default. To use ESYNC it's necessary 
-to export WINEESYNC=1 environment variable and increase file descriptors limit 
+**ESYNC** is **disabled** by default. To use ESYNC it's necessary  to export 
+WINEESYNC=1 environment variable and increase file descriptors limit 
 (soft and hard).  If file descriptors limit is not high enough  then games will 
 crash often.
 
@@ -117,16 +96,9 @@ these builds work without Steam Runtime.
 
 **Proton** contain many useful patches, primarily for better gaming experience.
 
----
-
-### FAudio
-
-**FAudio** fixes sound issues in many games.
-
-**Proton** builds (starting from version 3.16-5), as well as builds from
-"**faudio**" directory, use **FAudio** (XAudio reimplementation). So it's necessary
-to compile and install **libFAudio.so** into system. If **libFAudio.so** is not
-installed then many games will not work or there will be no sound.
+**Proton** builds (starting with version 3.16-5) use **FAudio** (XAudio reimplementation). 
+So it's necessary to compile and install **libFAudio.so** into system. If **libFAudio.so** 
+is not installed then many games will not work or there will be no sound.
 
 **FAudio** sources are [here](https://github.com/FNA-XNA/FAudio). Use them to compile and install **libFAudio.so**.
 
@@ -140,4 +112,3 @@ installed then many games will not work or there will be no sound.
 * https://github.com/zfigura/wine/tree/esync
 * https://github.com/Firerat/wine-pba
 * https://github.com/ValveSoftware/wine
-* https://github.com/sarnex/wine-d3d9-patches
