@@ -25,8 +25,8 @@ export CHROOT_X32="$MAINDIR/xenial32_chroot"
 export C_COMPILER="gcc"
 export CXX_COMPILER="g++"
 
-export CFLAGS_X32="-march=pentium4 -O2"
-export CFLAGS_X64="-march=nocona -O2"
+export CFLAGS_X32="-march=pentium4 -O2 -DWINE_NO_TRACE_MSGS -DWINE_NO_DEBUG_MSGS"
+export CFLAGS_X64="-march=nocona -O2 -DWINE_NO_TRACE_MSGS -DWINE_NO_DEBUG_MSGS"
 export FLAGS_LD="-O2"
 export WINE_BUILD_OPTIONS="--without-coreaudio --without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-tests --disable-win16"
 
@@ -161,25 +161,12 @@ if [ "$2" = "esync" ]; then
 
 	cd wine
 	patch -Np1 < "$PATCHES_DIR"/use_clock_monotonic.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/poe-fix.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/steam.patch || patching_error
-
-	if [ "$3" = "faudio" ] || [ "$4" = "faudio" ] || [ "$5" = "faudio" ]; then
-		WINE_VERSION="$WINE_VERSION-faudio"
-		WINE_VERSION_STRING="$WINE_VERSION_STRING FAudio"
-
-		patch -Np1 < "$PATCHES_DIR"/faudio-exp.patch || patching_error
-	fi
 
 	cd ../wine-staging-$WINE_VERSION_NUMBER
 	patch -Np1 < "$PATCHES_DIR"/CSMT-toggle.patch || patching_error
 
 	cd patches
-	if [ "$3" = "faudio" ] || [ "$4" = "faudio" ] || [ "$5" = "faudio" ]; then
-		./patchinstall.sh DESTDIR=../../wine --all -W xaudio2_7-CreateFX-FXEcho -W xaudio2_7-WMA_support -W xaudio2_CommitChanges -W winepulse-PulseAudio_Support || patching_error
-	else
-		./patchinstall.sh DESTDIR=../../wine --all || patching_error
-	fi
+	./patchinstall.sh DESTDIR=../../wine --all || patching_error
 
 	# Apply fixes for esync patches
 	cd ../../esync
@@ -194,38 +181,23 @@ if [ "$2" = "esync" ]; then
 	patch -Np1 < "$PATCHES_DIR"/esync-no_alloc_handle.patch || patching_error
 
 	if [ "$3" = "pba" ] || [ "$4" = "pba" ] || [ "$5" = "pba" ]; then
-		if [ "$3" != "nine" ] && [ "$4" != "nine" ] && [ "$5" != "nine" ]; then
-			WINE_VERSION="$WINE_VERSION-pba"
-			WINE_VERSION_STRING="$WINE_VERSION_STRING PBA"
+		WINE_VERSION="$WINE_VERSION-pba"
+		WINE_VERSION_STRING="$WINE_VERSION_STRING PBA"
 
-			git clone https://github.com/Firerat/wine-pba.git
+		git clone https://github.com/Firerat/wine-pba.git
 
-			# Apply pba patches
-			for f in $(ls ../wine-pba/patches); do
-				patch -Np1 < ../wine-pba/patches/"${f}" || patching_error
-			done
-		fi
+		# Apply pba patches
+		for f in $(ls ../wine-pba/patches); do
+			patch -Np1 < ../wine-pba/patches/"${f}" || patching_error
+		done
 	fi
 
-	if [ "$3" = "nine" ] || [ "$4" = "nine" ] || [ "$5" = "nine" ]; then
-		WINE_VERSION="$WINE_VERSION-nine"
-		WINE_VERSION_STRING="$WINE_VERSION_STRING Nine"
-
-		wget -O "$PATCHES_DIR"/wine-d3d9.patch https://raw.githubusercontent.com/sarnex/wine-d3d9-patches/master/wine-d3d9.patch
-		wget -O "$PATCHES_DIR"/staging-helper.patch https://raw.githubusercontent.com/sarnex/wine-d3d9-patches/master/staging-helper.patch
-
-		patch -Np1 < "$PATCHES_DIR"/staging-helper.patch || patching_error
-		patch -Np1 < "$PATCHES_DIR"/wine-d3d9.patch || patching_error
-
-		autoreconf -f
-	else
-		patch -Np1 < "$PATCHES_DIR"/GLSL-toggle.patch || patching_error
-	fi
+	patch -Np1 < "$PATCHES_DIR"/GLSL-toggle.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
 
-	patch -Np1 < "$PATCHES_DIR"/large_address_aware-staging.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/enable_stg_shared_mem_def.patch || patching_error
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
