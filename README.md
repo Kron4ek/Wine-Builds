@@ -60,11 +60,11 @@ functions to Wine, fixes many bugs and sometimes improves performance.
 also compiled with **PBA** patches.
 
 **ESYNC** improves performance in games by reducing CPU load. **PBA** improves
-performance in many Direct3D games (but not all).
+performance in many Direct3D games.
 
 Other patches that are used in **ESYNC** builds:
 
-* Use Clock Monotonic		(for better performance)
+* Use Clock Monotonic		(use CLOCK_MONOTONIC; for better performance)
 * PoE fix			(fix for Path of Exile DX11 renderer)
 * Steam fix			(fix for Steam Web Browser)
 * CSMT toggle fix		(fix for CSMT toggle logic in winecfg)
@@ -72,6 +72,7 @@ Other patches that are used in **ESYNC** builds:
 * LARGE_ADDRESS_AWARE		(solve hitting address space limitations in 32-bit games)
 * FS_bypass_compositor		(bypass compositor in fullscreen mode)
 * Fullscreen_hack		(change resoltuion for fullscreen games without changing desktop resolution)
+* STG_shared_mem_def 		(enable STAGING_SHARED_MEMORY by default; for better performance)
 
 **LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
 for fullscreen games to work properly.
