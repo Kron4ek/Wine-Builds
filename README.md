@@ -1,12 +1,10 @@
 ## Download builds
 
-Check **releases** page to download 3-5 latest Wine builds.
+Check **releases** page to download some of recent Wine builds.
 
 All other builds (including stable and old versions) can be downloaded from: 
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
 * **[Yandex Disk](https://yadi.sk/d/IrofgqFSqHsPu/wine_builds)**
-
-All builds compiled using **build_wine.sh** script.
 
 ---
 
@@ -15,6 +13,8 @@ All builds compiled using **build_wine.sh** script.
 Builds compiled on Ubuntu 16.04 and requires at least **GLIBC 2.23**.
 
 Compiled with Vulkan support.
+
+All builds compiled using **build_wine.sh** script.
 
 ---
 
@@ -70,7 +70,7 @@ Other patches that are used in **ESYNC** builds:
 * CSMT toggle fix		(fix for CSMT toggle logic in winecfg)
 * GLSL toggle			(add GLSL toggle into winecfg)
 * LARGE_ADDRESS_AWARE		(solve hitting address space limitations in 32-bit games)
-* FS_bypass_compositor		(bypass compositor in fullscreen mode)
+* FS_bypass_compositor		(bypass compositor in fullscreen mode; for better performance)
 * Fullscreen_hack		(change resoltuion for fullscreen games without changing desktop resolution)
 * STG_shared_mem_def 		(enable STAGING_SHARED_MEMORY by default; for better performance)
 
