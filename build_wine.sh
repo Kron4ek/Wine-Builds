@@ -25,8 +25,8 @@ export CHROOT_X32="$MAINDIR/xenial32_chroot"
 export C_COMPILER="gcc"
 export CXX_COMPILER="g++"
 
-export CFLAGS_X32="-march=pentium4 -O2 -DWINE_NO_TRACE_MSGS -DWINE_NO_DEBUG_MSGS"
-export CFLAGS_X64="-march=nocona -O2 -DWINE_NO_TRACE_MSGS -DWINE_NO_DEBUG_MSGS"
+export CFLAGS_X32="-march=pentium4 -O2"
+export CFLAGS_X64="-march=nocona -O2"
 export FLAGS_LD="-O2"
 export WINE_BUILD_OPTIONS="--without-coreaudio --without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-tests --disable-win16"
 
@@ -197,6 +197,7 @@ if [ "$2" = "esync" ]; then
 	patch -Np1 < "$PATCHES_DIR"/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
 
+	patch -Np1 < "$PATCHES_DIR"/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/enable_stg_shared_mem_def.patch || patching_error
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
