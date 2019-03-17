@@ -172,6 +172,7 @@ if [ "$2" = "esync" ]; then
 	cd ../../esync
 	patch -Np1 < "$PATCHES_DIR"/esync-staging-fixes-r3.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/esync-compat-fixes-r3.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/esync-compat-fixes-r3.1.patch || patching_error
 
 	# Apply esync patches
 	cd ../wine
