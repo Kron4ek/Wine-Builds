@@ -109,7 +109,7 @@ Wine (only Vanilla, Staging doesn't use FAudio yet) versions newer than **4.2** 
 
 **Proton** builds (**3.16-5** and newer) uses **FAudio** as well.
 
-If there is no FAudio in your distribution repository then you can [manually compile](https://github.com/FNA-XNA/FAudio) it.
+If there is no **FAudio** in package repository of your distribution then you can [manually compile](https://github.com/FNA-XNA/FAudio) it.
 
 ### Links to sources and patches:
 
