@@ -65,8 +65,6 @@ performance in many Direct3D games.
 Other patches that are used in **ESYNC** builds:
 
 * Use Clock Monotonic		(use CLOCK_MONOTONIC; for better performance)
-* PoE fix			(fix for Path of Exile DX11 renderer)
-* Steam fix			(fix for Steam Web Browser)
 * CSMT toggle fix		(fix for CSMT toggle logic in winecfg)
 * GLSL toggle			(add GLSL toggle into winecfg)
 * LARGE_ADDRESS_AWARE		(solve hitting address space limitations in 32-bit games)
@@ -82,7 +80,7 @@ WINEESYNC=1 environment variable and increase file descriptors limit
 (soft and hard).  If file descriptors limit is not high enough  then games will 
 crash often.
 
-**PBA** can be disabled by exporting PBA_DISABLE=1 environment variable.
+**PBA** can be disabled using PBA_ENABLE=0 environment variable.
 
 **LARGE_ADDRESS_AWARE** can be enabled by exporting WINE_LARGE_ADDRESS_AWARE=1
 environment variable.
