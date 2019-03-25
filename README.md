@@ -8,6 +8,14 @@ All other builds (including stable and old versions) can be downloaded from:
 
 ---
 
+## How to use
+
+To use these builds just unpack archive to any desired directory and run applications using path to Wine binary. For example:
+
+    /home/user/wine-4.4-x86/bin/wine application.exe
+
+---
+
 ## Builds description
 
 These builds requires at least **GLIBC 2.23** to work properly.
@@ -91,15 +99,17 @@ environment variable.
 virtually the same as Proton in Steam, but opposed to Steam's Proton,
 these builds work without Steam Runtime.
 
-**Proton** contain many useful patches, primarily for better gaming experience.
-
-**Proton** builds (starting with version 3.16-5) use **FAudio** (XAudio reimplementation). 
-So it's necessary to compile and install **libFAudio.so** into system. If **libFAudio.so** 
-is not installed then many games will not work or there will be no sound.
-
-**FAudio** sources are [here](https://github.com/FNA-XNA/FAudio). Use them to compile and install **libFAudio.so**.
+**Proton** contains many useful patches, primarily for better gaming experience.
 
 ---
+
+### FAudio
+
+Wine (only Vanilla, Staging doesn't use FAudio yet) versions newer than **4.2** uses **FAudio** (XAudio reimplementation), so it's necessary to install **libFAudio.so** to use these versions. If **libFAudio.so** is not installed then many games will not work or there will be no sound.
+
+**Proton** builds (**3.16-5** and newer) uses **FAudio** as well.
+
+If there is no FAudio in your distribution repository then you can [manually compile](https://github.com/FNA-XNA/FAudio) it.
 
 ### Links to sources and patches:
 
