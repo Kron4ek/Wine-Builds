@@ -10,12 +10,9 @@
 ## Examples of how to use it:
 ##
 ## ./build_wine.sh latest				(download and build latest Wine version)
-## ./build_wine.sh 4.0					(download and build Wine 4.0)
-## ./build_wine.sh 4.0 exit				(download and prepare Wine sources and exit)
-## ./build_wine.sh 4.0 staging			(build Wine 4.0 with Staging patches)
-## ./build_wine.sh 4.0 esync			(build Wine 4.0 with ESYNC patches)
-## ./build_wine.sh 3.16-6 proton		(build latest Proton and name it 3.16-6)
-## ./build_wine.sh 3.16 esync pba		(build Wine 3.16 with Staging, Esync and PBA patches)
+## ./build_wine.sh latest staging			(download and build latest Wine-Staging version)
+## ./build_wine.sh latest esync				(download and build latest Wine-Staging version with ESYNC patches)
+## ./build_wine.sh 3.16-8 proton			(download and build Proton 3.16-8)
 
 export MAINDIR="/home/builder"
 export SOURCES_DIR="$MAINDIR/sources_dir"
@@ -25,10 +22,9 @@ export CHROOT_X32="$MAINDIR/xenial32_chroot"
 export C_COMPILER="gcc"
 export CXX_COMPILER="g++"
 
-export CFLAGS_X32="-march=pentium4 -O2"
-export CFLAGS_X64="-march=nocona -O2"
-export FLAGS_LD="-O2"
-export WINE_BUILD_OPTIONS="--without-coreaudio --without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-tests --disable-win16"
+export CFLAGS_X32="-march=pentium3 -O2"
+export CFLAGS_X64="-O2"
+export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --disable-winemenubuilder"
 
 export WINE_VERSION_NUMBER="$1"
 export ESYNC_VERSION="ce79346"
@@ -65,7 +61,6 @@ create_build_scripts () {
 	echo 'export CXX="'${CXX_COMPILER}'"' >> $MAINDIR/build32.sh
 	echo 'export CFLAGS="'${CFLAGS_X32}'"' >> $MAINDIR/build32.sh
 	echo 'export CXXFLAGS="'${CFLAGS_X32}'"' >> $MAINDIR/build32.sh
-	echo 'export LDFLAGS="'${FLAGS_LD}'"' >> $MAINDIR/build32.sh
 	echo 'mkdir build-tools && cd build-tools' >> $MAINDIR/build32.sh
 	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --prefix /opt/wine32-build' >> $MAINDIR/build32.sh
 	echo 'make -j2' >> $MAINDIR/build32.sh
@@ -84,7 +79,6 @@ create_build_scripts () {
 	echo 'export CXX="'${CXX_COMPILER}'"' >> $MAINDIR/build64.sh
 	echo 'export CFLAGS="'${CFLAGS_X64}'"' >> $MAINDIR/build64.sh
 	echo 'export CXXFLAGS="'${CFLAGS_X64}'"' >> $MAINDIR/build64.sh
-	echo 'export LDFLAGS="'${FLAGS_LD}'"' >> $MAINDIR/build64.sh
 	echo 'mkdir build64 && cd build64' >> $MAINDIR/build64.sh
 	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --enable-win64 --prefix /opt/wine-build' >> $MAINDIR/build64.sh
 	echo 'make -j2' >> $MAINDIR/build64.sh
