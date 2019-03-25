@@ -96,9 +96,9 @@ environment variable.
 
 ### Proton
 
-**Proton** builds compiled from sources from Valve github repository. It's
-virtually the same as Proton in Steam, but opposed to Steam's Proton,
-these builds work without Steam Runtime.
+**Proton** builds compiled from sources from Valve github repository. This Proton 
+is virtually the same as Proton in Steam, but opposed to Steam's Proton these 
+builds doesn't requires Steam Runtime.
 
 **Proton** contains many useful patches, primarily for better gaming experience.
 
