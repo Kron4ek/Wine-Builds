@@ -1,4 +1,4 @@
-## Download builds
+## Download
 
 Check **releases** page to download some of recent Wine builds.
 
@@ -10,9 +10,11 @@ All other builds (including stable and old versions) can be downloaded from:
 
 ## How to use
 
-To use these builds just unpack archive to any desired directory and run applications using path to Wine binary. For example:
+Just unpack archive to any desired directory and run applications using path to Wine binary. For example:
 
     /home/user/wine-4.4-x86/bin/wine application.exe
+    
+Some libraries (libfreetype6, libpng12-0, libopenal1, etc.) are required for these builds to work properly. The easiest way to install required libraries is to install Wine from package repository of your distribution.
 
 ---
 
