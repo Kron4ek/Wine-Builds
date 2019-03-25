@@ -12,19 +12,19 @@ All other builds (including stable and old versions) can be downloaded from:
 
 Just unpack archive to any desired directory and run applications using path to Wine binary. For example:
 
-    /home/user/wine-4.4-x86/bin/wine application.exe
+    /home/user/wine-4.4-amd64/bin/wine application.exe
     
-Some libraries (libfreetype6, libpng12-0, libopenal1, etc.) are required for these builds to work properly. The easiest way to install required libraries is to install Wine from package repository of your distribution.
-
 ---
 
 ## Builds description
 
-These builds requires at least **GLIBC 2.23** to work properly.
+### Requirements
 
-Compiled with Vulkan support.
+Some libraries (libfreetype6, libpng12-0, libopenal1, etc.) are required for these builds to work properly.
 
-Compiled using **build_wine.sh** script.
+The easiest way to install required libraries is to install Wine from package repository of your distribution.
+
+**GLIBC** version newer than **2.22** is required.
 
 ---
 
