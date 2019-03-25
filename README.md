@@ -10,23 +10,21 @@ All other builds (including stable and old versions) can be downloaded from:
 
 ## Builds description
 
-Builds compiled on Ubuntu 16.04 and requires at least **GLIBC 2.23**.
+These builds requires at least **GLIBC 2.23** to work properly.
 
 Compiled with Vulkan support.
 
-All builds compiled using **build_wine.sh** script.
+Compiled using **build_wine.sh** script.
 
 ---
 
 ### Compilation parameters
 
-Build flags (amd64): -march=nocona -O2
+Build flags (amd64): -O2
 
-Build flags (x86): -march=pentium4 -O2
+Build flags (x86): -march=pentium3 -O2
 
-Configure options: --without-coreaudio --without-curses --without-gstreamer \
-					--without-oss --disable-winemenubuilder \
-					--disable-tests --disable-win16
+Configure options: --without-curses --without-gstreamer --without-oss --disable-winemenubuilder
 
 ---
 
@@ -48,8 +46,8 @@ patches. It's a clean unmodified Wine.
 
 ### Staging
 
-**Staging** builds compiled with Staging patchset. Staging contain many
-patches that are not present in regular (vanilla) Wine. It adds new
+**Staging** builds compiled with Staging patchset. Staging contains many
+patches that are not present in regular (vanilla) Wine, it adds new
 functions to Wine, fixes many bugs and sometimes improves performance.
 
 ---
@@ -62,7 +60,7 @@ also compiled with **PBA** patches.
 **ESYNC** improves performance in games by reducing CPU load. **PBA** improves
 performance in many Direct3D games.
 
-Other patches that are used in **ESYNC** builds:
+Other patches that are present in **ESYNC** builds:
 
 * Use Clock Monotonic		(use CLOCK_MONOTONIC; for better performance)
 * CSMT toggle fix		(fix for CSMT toggle logic in winecfg)
