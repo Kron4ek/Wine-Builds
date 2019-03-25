@@ -113,6 +113,8 @@ Wine (only Vanilla, Staging doesn't use FAudio yet) versions newer than **4.2** 
 
 If there is no **FAudio** in package repository of your distribution then you can [manually compile](https://github.com/FNA-XNA/FAudio) it.
 
+---
+
 ### Links to sources and patches:
 
 * https://dl.winehq.org/wine/source/
