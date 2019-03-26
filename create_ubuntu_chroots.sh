@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Script for fast deploying Ubuntu chroots for Wine compilation
+## Script for fast creating Ubuntu chroots for Wine compilation.
 ##
 ## debootstrap is required
 
@@ -71,3 +71,8 @@ debootstrap --arch i386 $CHROOT_DISTRO "$CHROOT_X32" $CHROOT_MIRROR
 create_build_scripts
 prepare_chroot 32
 prepare_chroot 64
+
+rm "$CHROOT_X64/opt/prepare_chroot.sh"
+rm "$CHROOT_X32/opt/prepare_chroot.sh"
+
+echo "Done"
