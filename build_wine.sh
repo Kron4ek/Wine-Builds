@@ -24,7 +24,7 @@ export C_COMPILER="gcc"
 export CXX_COMPILER="g++"
 
 export CFLAGS_X32="-march=pentium3 -O2"
-export CFLAGS_X64="-O2"
+export CFLAGS_X64="-march=nocona -O2"
 export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --disable-winemenubuilder"
 
 export WINE_VERSION_NUMBER="$1"
@@ -203,6 +203,8 @@ elif [ "$2" = "proton" ]; then
 		git clone https://github.com/ValveSoftware/wine.git -b proton_3.7
 	elif [ "$(echo $WINE_VERSION_NUMBER | head -c4)" = "3.16" ]; then
 		git clone https://github.com/ValveSoftware/wine.git -b proton_3.16
+	elif [ "$(echo $WINE_VERSION_NUMBER | head -c3)" = "4.2" ]; then
+		git clone https://github.com/ValveSoftware/wine.git -b proton_4.2
 	else
 		git clone https://github.com/ValveSoftware/wine.git
 	fi
