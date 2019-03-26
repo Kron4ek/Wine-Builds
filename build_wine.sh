@@ -1,18 +1,19 @@
 #!/bin/bash
 
 ## Script for building Wine (vanilla, staging, esync, pba, proton).
-## It use two chroots for compiling (x32 chroot and x64 chroot).
+## It uses two chroots (x32 and x64) for compilation.
 ##
-## This script require packages: git, wget, autoconf
+## This script requires: git, wget, autoconf
 ##
 ## You can change env variables to desired values.
 ##
 ## Examples of how to use it:
 ##
-## ./build_wine.sh latest				(download and build latest Wine version)
-## ./build_wine.sh latest staging			(download and build latest Wine-Staging version)
-## ./build_wine.sh latest esync				(download and build latest Wine-Staging version with ESYNC patches)
-## ./build_wine.sh 3.16-8 proton			(download and build Proton 3.16-8)
+## ./build_wine.sh latest				(build latest Wine version)
+## ./build_wine.sh latest staging			(build latest Wine-Staging version)
+## ./build_wine.sh latest esync				(build latest Wine-Staging version with ESYNC patches)
+## ./build_wine.sh 3.16-8 proton			(build Proton 3.16-8)
+## ./build_wine.sh 3.21					(build Wine 3.21)
 
 export MAINDIR="/home/builder"
 export SOURCES_DIR="$MAINDIR/sources_dir"
