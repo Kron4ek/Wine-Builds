@@ -30,7 +30,7 @@ The easiest way to install required libraries is to install Wine from package re
 
 ### Compilation parameters
 
-Build flags (amd64): -O2
+Build flags (amd64): -march=nocona -O2
 
 Build flags (x86): -march=pentium3 -O2
 
