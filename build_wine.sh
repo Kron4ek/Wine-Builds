@@ -168,13 +168,14 @@ if [ "$2" = "esync" ]; then
 	patch -Np1 < "$PATCHES_DIR"/esync-staging-fixes-r3.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/esync-compat-fixes-r3.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/esync-compat-fixes-r3.1.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/esync-compat-fixes-r3.2.patch || patching_error
 
 	# Apply esync patches
 	cd ../wine
 	for f in ../esync/*.patch; do
 		git apply -C1 --verbose < "${f}" || patching_error
 	done
-	patch -Np1 < "$PATCHES_DIR"/esync-no_alloc_handle.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/esync-no_kernel_obj_list.patch || patching_error
 
 	if [ "$3" = "pba" ] || [ "$4" = "pba" ] || [ "$5" = "pba" ]; then
 		WINE_VERSION="$WINE_VERSION-pba"
