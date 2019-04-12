@@ -11,7 +11,7 @@
 ##
 ## ./build_wine.sh latest				(build latest Wine version)
 ## ./build_wine.sh latest staging			(build latest Wine-Staging version)
-## ./build_wine.sh latest esync				(build latest Wine-Staging version with ESYNC patches)
+## ./build_wine.sh latest improved			(build latest Wine-Staging version with additional patches)
 ## ./build_wine.sh 3.16-8 proton			(build Proton 3.16-8)
 ## ./build_wine.sh 3.21					(build Wine 3.21)
 
@@ -28,7 +28,6 @@ export CFLAGS_X64="-march=nocona -O2"
 export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --disable-winemenubuilder"
 
 export WINE_VERSION_NUMBER="$1"
-export ESYNC_VERSION="ce79346"
 
 build_in_chroot () {
 	if [ "$1" = "32" ]; then
@@ -137,20 +136,18 @@ echo "Downloading sources and patches."
 echo "Preparing Wine for compiling."
 echo
 
-if [ "$2" = "esync" ]; then
-	WINE_VERSION="$WINE_VERSION_NUMBER-esync-staging"
-	WINE_VERSION_STRING="Staging Esync"
+if [ "$2" = "improved" ]; then
+	WINE_VERSION="$WINE_VERSION_NUMBER-staging-improved"
+	WINE_VERSION_STRING="Staging Improved"
 
 	PATCHES_DIR="$SOURCES_DIR/PKGBUILDS/wine-tkg-git/wine-tkg-patches"
 
 	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
 	wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
-	wget https://github.com/zfigura/wine/releases/download/esync$ESYNC_VERSION/esync.tgz
 	git clone https://github.com/Tk-Glitch/PKGBUILDS.git
 
 	tar xf wine-$WINE_VERSION_NUMBER.tar.xz
 	tar xf v$WINE_VERSION_NUMBER.tar.gz
-	tar xf esync.tgz
 
 	mv wine-$WINE_VERSION_NUMBER wine
 
@@ -162,32 +159,7 @@ if [ "$2" = "esync" ]; then
 
 	cd patches
 	./patchinstall.sh DESTDIR=../../wine --all || patching_error
-
-	# Apply fixes for esync patches
-	cd ../../esync
-	patch -Np1 < "$PATCHES_DIR"/esync-staging-fixes-r3.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/esync-compat-fixes-r3.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/esync-compat-fixes-r3.1.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/esync-compat-fixes-r3.2.patch || patching_error
-
-	# Apply esync patches
-	cd ../wine
-	for f in ../esync/*.patch; do
-		git apply -C1 --verbose < "${f}" || patching_error
-	done
-	patch -Np1 < "$PATCHES_DIR"/esync-no_kernel_obj_list.patch || patching_error
-
-	if [ "$3" = "pba" ] || [ "$4" = "pba" ] || [ "$5" = "pba" ]; then
-		WINE_VERSION="$WINE_VERSION-pba"
-		WINE_VERSION_STRING="$WINE_VERSION_STRING PBA"
-
-		git clone https://github.com/Firerat/wine-pba.git
-
-		# Apply pba patches
-		for f in $(ls ../wine-pba/patches); do
-			patch -Np1 < ../wine-pba/patches/"${f}" || patching_error
-		done
-	fi
+	cd ../../wine
 
 	patch -Np1 < "$PATCHES_DIR"/GLSL-toggle.patch || patching_error
 
@@ -195,7 +167,6 @@ if [ "$2" = "esync" ]; then
 	patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/LAA-staging.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/enable_stg_shared_mem_def.patch || patching_error
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
