@@ -20,7 +20,7 @@ Just unpack archive to any desired directory and run applications using path to 
 
 ### Requirements
 
-Some libraries (libfreetype6, libpng12-0, libopenal1, etc.) are required for these builds to work properly.
+Some libraries (libfreetype6, **libpng12-0**, libopenal1, etc.) are required for these builds to work properly.
 
 The easiest way to install required libraries is to install Wine from package repository of your distribution.
 
@@ -62,7 +62,9 @@ functions to Wine, fixes many bugs and sometimes improves performance.
 
 ---
 
-### ESYNC / PBA
+### ESYNC / PBA / Improved
+
+Since **4.6** version **ESYNC** has been included in **Staging**.
 
 **ESYNC** builds compiled with **Staging** and **ESYNC** patches, and some versions
 also compiled with **PBA** patches.
@@ -70,7 +72,9 @@ also compiled with **PBA** patches.
 **ESYNC** improves performance in games by reducing CPU load. **PBA** improves
 performance in many Direct3D games.
 
-Other patches that are present in **ESYNC** builds:
+**Improved** builds compiled with **Staging** and some additional patches listed below.
+
+Patches that are present in **ESYNC** and **Improved** builds:
 
 * Use Clock Monotonic		(use CLOCK_MONOTONIC; for better performance)
 * CSMT toggle fix		(fix for CSMT toggle logic in winecfg)
@@ -78,7 +82,6 @@ Other patches that are present in **ESYNC** builds:
 * LARGE_ADDRESS_AWARE		(solve hitting address space limitations in 32-bit games)
 * FS_bypass_compositor		(bypass compositor in fullscreen mode; for better performance)
 * Fullscreen_hack		(change resoltuion for fullscreen games without changing desktop resolution)
-* STG_shared_mem_def 		(enable STAGING_SHARED_MEMORY by default; for better performance)
 
 **LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
 for fullscreen games to work properly.
