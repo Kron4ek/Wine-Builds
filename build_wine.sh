@@ -158,7 +158,7 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/CSMT-toggle.patch || patching_error
 
 	cd patches
-	./patchinstall.sh DESTDIR=../../wine --all || patching_error
+	./patchinstall.sh DESTDIR=../../wine --all -W winex11.drv-mouse-coorrds || patching_error
 	cd ../../wine
 
 	patch -Np1 < "$PATCHES_DIR"/GLSL-toggle.patch || patching_error
