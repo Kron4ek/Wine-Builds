@@ -118,7 +118,7 @@ if [ "$WINE_VERSION_NUMBER" = "latest" ]; then
 
 		WINE_VERSION_NUMBER="$(cat VERSION | sed "s/Wine version //g")"
 	else
-		echo "Please, specify real version to build Proton"
+		echo "Please, specify version to build Proton"
 		exit
 	fi
 fi
@@ -132,8 +132,8 @@ else
 fi
 
 clear
-echo "Downloading sources and patches."
-echo "Preparing Wine for compiling."
+echo "Downloading sources and patches"
+echo "Preparing Wine for compilation"
 echo
 
 if [ "$2" = "improved" ]; then
@@ -190,7 +190,6 @@ else
 
 	if [ "$2" = "staging" ]; then
 		WINE_VERSION="$WINE_VERSION_NUMBER-staging"
-		WINE_VERSION_STRING="Staging"
 
 		wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
 
@@ -202,15 +201,15 @@ else
 fi
 
 # Replace version string in winecfg and "wine --version" output
-if [ ! -z "$2" ] && [ "$2" != "exit" ]; then
+if [ ! -z "$2" ] && [ "$2" != "staging" ] && [ "$2" != "exit" ]; then
 	sed -i "s/  (Staging)//g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
 	sed -i "s/\\\1/\\\1  (${WINE_VERSION_STRING})/g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
 	sed -i "s/ \" (Staging)\"//g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
 	sed -i "s/PACKAGE_VERSION/PACKAGE_VERSION \" (${WINE_VERSION_STRING})\"/g" "$SOURCES_DIR/wine/programs/winecfg/about.c"
 fi
 
-if [ "$2" = "exit" ] || [ "$3" = "exit" ] || [ "$4" = "exit" ] || [ "$5" = "exit" ] || [ "$6" = "exit" ]; then
-	echo "Force exiting"
+if [ "$2" = "exit" ] || [ "$3" = "exit" ] || [ "$4" = "exit" ]; then
+	echo "Force exit"
 	exit
 fi
 
@@ -229,7 +228,8 @@ clear; echo "Compiling 32-bit Wine"
 mv "$CHROOT_X64/opt/wine" "$CHROOT_X32/opt"
 build_in_chroot 32
 
-clear; echo "Compiling is done. Packing Wine."
+clear; echo "Compilation complete"
+echo "Compressing Wine..."
 
 mv "$CHROOT_X32/opt/wine-build" "$MAINDIR/wine-$WINE_VERSION-amd64"
 mv "$CHROOT_X32/opt/wine32-build" "$MAINDIR/wine-$WINE_VERSION-x86"
@@ -255,4 +255,4 @@ rm -r wine-$WINE_VERSION-amd64
 rm -r wine-$WINE_VERSION-amd64-nomultilib
 rm -r wine-$WINE_VERSION-x86
 
-clear; echo "Done."
+clear; echo "Done"
