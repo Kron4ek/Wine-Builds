@@ -23,9 +23,9 @@ export CHROOT_X32="$MAINDIR/xenial32_chroot"
 export C_COMPILER="gcc"
 export CXX_COMPILER="g++"
 
-export CFLAGS_X32="-march=pentium3 -O2"
+export CFLAGS_X32="-march=pentium4 -O2"
 export CFLAGS_X64="-march=nocona -O2"
-export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --disable-winemenubuilder"
+export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-win16 --disable-tests"
 
 export WINE_VERSION_NUMBER="$1"
 
@@ -153,6 +153,7 @@ if [ "$2" = "improved" ]; then
 
 	cd wine
 	patch -Np1 < "$PATCHES_DIR"/use_clock_monotonic.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/steam.patch || patching_error
 
 	cd ../wine-staging-$WINE_VERSION_NUMBER
 	patch -Np1 < "$PATCHES_DIR"/CSMT-toggle.patch || patching_error
@@ -160,8 +161,6 @@ if [ "$2" = "improved" ]; then
 	cd patches
 	./patchinstall.sh DESTDIR=../../wine --all -W winex11.drv-mouse-coorrds || patching_error
 	cd ../../wine
-
-	patch -Np1 < "$PATCHES_DIR"/GLSL-toggle.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
