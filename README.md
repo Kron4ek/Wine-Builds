@@ -32,9 +32,9 @@ The easiest way to install required libraries is to install Wine from package re
 
 Build flags (amd64): -march=nocona -O2
 
-Build flags (x86): -march=pentium3 -O2
+Build flags (x86): -march=pentium4 -O2
 
-Configure options: --without-curses --without-gstreamer --without-oss --disable-winemenubuilder
+Configure options: --without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-win16 --disable-tests
 
 ---
 
@@ -78,7 +78,7 @@ Patches that are present in **ESYNC** and **Improved** builds:
 
 * Use Clock Monotonic		(use CLOCK_MONOTONIC; for better performance)
 * CSMT toggle fix		(fix for CSMT toggle logic in winecfg)
-* GLSL toggle			(add GLSL toggle into winecfg)
+* Steam fix			    (hack for Steam Browser)
 * LARGE_ADDRESS_AWARE		(solve hitting address space limitations in 32-bit games)
 * FS_bypass_compositor		(bypass compositor in fullscreen mode; for better performance)
 * Fullscreen_hack		(change resoltuion for fullscreen games without changing desktop resolution)
