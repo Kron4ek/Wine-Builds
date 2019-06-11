@@ -82,6 +82,8 @@ Patches that are present in **ESYNC** and **Improved** builds:
 * LARGE_ADDRESS_AWARE		(solve hitting address space limitations in 32-bit games)
 * FS_bypass_compositor		(bypass compositor in fullscreen mode; for better performance)
 * Fullscreen_hack		(change resoltuion for fullscreen games without changing desktop resolution)
+* enable_stg_shared_mem_def (enable STAGING_SHARED_MEMORY by default; for better performance)
+* nvidia-hate.patch (disable Nvidia stuff: nvapi, nvapi64, nvcuda, nvcuvid, nvencodeapi, nvencodeapi64)
 
 **LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
 for fullscreen games to work properly.
