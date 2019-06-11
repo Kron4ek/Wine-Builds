@@ -166,6 +166,9 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/LAA-staging.patch || patching_error
+
+	patch -Np1 < "$PATCHES_DIR"/enable_stg_shared_mem_def.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/nvidia-hate.patch || patching_error
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
