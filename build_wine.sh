@@ -152,24 +152,24 @@ if [ "$2" = "improved" ]; then
 	mv wine-$WINE_VERSION_NUMBER wine
 
 	cd wine
-	patch -Np1 < "$PATCHES_DIR"/use_clock_monotonic.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/use_clock_monotonic-2.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/steam.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic-2.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/misc/steam.patch || patching_error
 
 	cd ../wine-staging-$WINE_VERSION_NUMBER
-	patch -Np1 < "$PATCHES_DIR"/CSMT-toggle.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/misc/CSMT-toggle.patch || patching_error
 
 	cd patches
 	./patchinstall.sh DESTDIR=../../wine --all -W winex11.drv-mouse-coorrds || patching_error
 	cd ../../wine
 
-	patch -Np1 < "$PATCHES_DIR"/FS_bypass_compositor.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/valve_proton_fullscreen_hack-staging.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
 
-	patch -Np1 < "$PATCHES_DIR"/LAA-staging.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 
-	patch -Np1 < "$PATCHES_DIR"/enable_stg_shared_mem_def.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/nvidia-hate.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/misc/nvidia-hate.patch || patching_error
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
