@@ -153,6 +153,7 @@ if [ "$2" = "improved" ]; then
 
 	cd wine
 	patch -Np1 < "$PATCHES_DIR"/use_clock_monotonic.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/use_clock_monotonic-2.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/steam.patch || patching_error
 
 	cd ../wine-staging-$WINE_VERSION_NUMBER
