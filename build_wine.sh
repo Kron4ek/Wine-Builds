@@ -17,14 +17,22 @@
 
 export MAINDIR="/home/builder"
 export SOURCES_DIR="$MAINDIR/sources_dir"
-export CHROOT_X64="$MAINDIR/xenial64_chroot"
-export CHROOT_X32="$MAINDIR/xenial32_chroot"
+export CHROOT_X64="$MAINDIR/chroots/bionic64_chroot"
+export CHROOT_X32="$MAINDIR/chroots/bionic32_chroot"
 
-export C_COMPILER="gcc"
-export CXX_COMPILER="g++"
+export C_COMPILER="gcc-8"
+export CXX_COMPILER="g++-8"
 
 export CFLAGS_X32="-march=pentium4 -O2"
 export CFLAGS_X64="-march=nocona -O2"
+export LDFLAGS_X32="${CFLAGS_X32}"
+export LDFLAGS_X64="${CFLAGS_X64}"
+
+export CROSSCFLAGS_X32="-march=pentium4 -O2"
+export CROSSCFLAGS_X64="-march=nocona -O2"
+export CROSSLDFLAGS_X32="${CROSSCFLAGS_X32}"
+export CROSSLDFLAGS_X64="${CROSSCFLAGS_X64}"
+
 export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-win16 --disable-tests"
 
 export WINE_VERSION_NUMBER="$1"
@@ -61,12 +69,18 @@ create_build_scripts () {
 	echo 'export CXX="'${CXX_COMPILER}'"' >> $MAINDIR/build32.sh
 	echo 'export CFLAGS="'${CFLAGS_X32}'"' >> $MAINDIR/build32.sh
 	echo 'export CXXFLAGS="'${CFLAGS_X32}'"' >> $MAINDIR/build32.sh
+	echo 'export LDFLAGS="'${LDFLAGS_X32}'"' >> $MAINDIR/build32.sh
+	echo 'export CROSSCFLAGS="'${CROSSCFLAGS_X32}'"' >> $MAINDIR/build32.sh
+	echo 'export CROSSLDFLAGS="'${CROSSLDFLAGS_X32}'"' >> $MAINDIR/build32.sh
 	echo 'mkdir build-tools && cd build-tools' >> $MAINDIR/build32.sh
 	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --prefix /opt/wine32-build' >> $MAINDIR/build32.sh
 	echo 'make -j2' >> $MAINDIR/build32.sh
 	echo 'make install' >> $MAINDIR/build32.sh
 	echo 'export CFLAGS="'${CFLAGS_X64}'"' >> $MAINDIR/build32.sh
 	echo 'export CXXFLAGS="'${CFLAGS_X64}'"' >> $MAINDIR/build32.sh
+	echo 'export LDFLAGS="'${LDFLAGS_X64}'"' >> $MAINDIR/build32.sh
+	echo 'export CROSSCFLAGS="'${CROSSCFLAGS_X64}'"' >> $MAINDIR/build32.sh
+	echo 'export CROSSLDFLAGS="'${CROSSLDFLAGS_X64}'"' >> $MAINDIR/build32.sh
 	echo 'cd ..' >> $MAINDIR/build32.sh
 	echo 'mkdir build-combo && cd build-combo' >> $MAINDIR/build32.sh
 	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --with-wine64=../build64 --with-wine-tools=../build-tools --prefix /opt/wine-build' >> $MAINDIR/build32.sh
@@ -79,6 +93,9 @@ create_build_scripts () {
 	echo 'export CXX="'${CXX_COMPILER}'"' >> $MAINDIR/build64.sh
 	echo 'export CFLAGS="'${CFLAGS_X64}'"' >> $MAINDIR/build64.sh
 	echo 'export CXXFLAGS="'${CFLAGS_X64}'"' >> $MAINDIR/build64.sh
+	echo 'export LDFLAGS="'${LDFLAGS_X64}'"' >> $MAINDIR/build64.sh
+	echo 'export CROSSCFLAGS="'${CROSSCFLAGS_X64}'"' >> $MAINDIR/build64.sh
+	echo 'export CROSSLDFLAGS="'${CROSSLDFLAGS_X64}'"' >> $MAINDIR/build64.sh
 	echo 'mkdir build64 && cd build64' >> $MAINDIR/build64.sh
 	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --enable-win64 --prefix /opt/wine-build' >> $MAINDIR/build64.sh
 	echo 'make -j2' >> $MAINDIR/build64.sh
@@ -92,7 +109,6 @@ create_build_scripts () {
 }
 
 patching_error () {
-	clear
 	echo "Some patches were not applied correctly. Exiting."
 	exit
 }
@@ -150,18 +166,12 @@ if [ "$2" = "improved" ]; then
 	tar xf v$WINE_VERSION_NUMBER.tar.gz
 
 	mv wine-$WINE_VERSION_NUMBER wine
-
 	cd wine
+
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic-2.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/misc/steam.patch || patching_error
 
-	cd ../wine-staging-$WINE_VERSION_NUMBER
-	patch -Np1 < "$PATCHES_DIR"/misc/CSMT-toggle.patch || patching_error
-
-	cd patches
-	./patchinstall.sh DESTDIR=../../wine --all -W winex11.drv-mouse-coorrds || patching_error
-	cd ../../wine
+	../wine-staging-$WINE_VERSION_NUMBER/patches/patchinstall.sh DESTDIR=../wine --all -W winex11.drv-mouse-coorrds || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
