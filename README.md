@@ -30,7 +30,7 @@ Older (4.11 and older) builds requires **GLIBC 2.23** or newer.
 
 ## Builds description
 
-## Compilation parameters
+### Compilation parameters
 
 Build flags (amd64): -march=nocona -O2
 
@@ -40,7 +40,7 @@ Configure options: --without-curses --without-gstreamer --without-oss --disable-
 
 ---
 
-## Architectures
+### Architectures
 
 * **amd64** - for 64-bit systems, it can run both 32-bit and 64-bit applications.
 * **amd64-nomultilib** - for 64-bit systems, it can run only 64-bit
@@ -61,7 +61,7 @@ functions, fixes some bugs and improves performance in some cases.
 
 ---
 
-### Useful notes
+## Useful notes
 
 **ESYNC / FSYNC** improves performance in games by removing wineserver overhead for synchronization objects.
 
