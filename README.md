@@ -2,7 +2,7 @@
 
 Check **releases** page to download some of recent Wine builds.
 
-All other builds (including stable and old versions) can be downloaded from: 
+All other builds (including nomultilib, stable and old versions) can be downloaded from: 
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
 * **[Yandex Disk](https://yadi.sk/d/IrofgqFSqHsPu/wine_builds)**
 
@@ -15,10 +15,8 @@ Just unpack archive to any desired directory and run applications using path to 
     /home/user/wine-4.4-amd64/bin/wine application.exe
     
 ---
-
-## Builds description
-
-### Requirements
+    
+## Requirements
 
 Some libraries (libfreetype6, **libpng16-16**, libopenal1, etc.) are required for these builds to work properly.
 
@@ -26,11 +24,13 @@ The easiest way to install required libraries is to install Wine from package re
 
 **GLIBC** **2.27** or newer is required.
 
-Older builds (4.11 and older) requires **GLIBC 2.23** or newer.
+Older (4.11 and older) builds requires **GLIBC 2.23** or newer.
 
 ---
 
-### Compilation parameters
+## Builds description
+
+## Compilation parameters
 
 Build flags (amd64): -march=nocona -O2
 
@@ -40,82 +40,59 @@ Configure options: --without-curses --without-gstreamer --without-oss --disable-
 
 ---
 
-### Architectures
+## Architectures
 
-* **amd64** - for 64-bit systems. It can run both 32-bit and 64-bit applications.
-* **amd64-nomultilib** - for 64-bit systems. It can run only pure 64-bit
-applications. It doesn't require 32-bit dependencies.
-* **x86** - for 32-bit systems. It can run only 32-bit applications.
-
----
-
-### Vanilla
-
-**Vanilla** builds compiled from official WineHQ sources without additional
-patches. It's a clean unmodified Wine.
+* **amd64** - for 64-bit systems, it can run both 32-bit and 64-bit applications.
+* **amd64-nomultilib** - for 64-bit systems, it can run only 64-bit
+applications and doesn't require 32-bit dependencies.
+* **x86** - for 32-bit systems, it can run only 32-bit applications.
 
 ---
 
-### Staging
+**Vanilla** is a regular Wine compiled from official WineHQ sources without any modifications.
 
-**Staging** builds compiled with Staging patchset. Staging contains many
-patches that are not present in regular (vanilla) Wine, it adds new
-functions to Wine, fixes many bugs and sometimes improves performance.
+**Staging** is a Wine with Staging patchset, it contains many useful patches 
+that are not present in regular (vanilla) Wine, it adds new
+functions, fixes some bugs and improves performance in some cases.
+
+**Proton** is a Wine modified by Valve, it contains many useful patches (primarily for better gaming experience). This Proton is pretty much the same as Steam's Proton, but it doesn't require Steam Runtime to work and it's intended to be used outside of Steam.
+
+**Improved** is a Wine with Staging patchset and with some additional useful patches. Full list of used patches available in [IMPROVED_BUILD_INFO](https://github.com/Kron4ek/Wine-Builds/blob/master/IMPROVED_BUILD_INFO) file.
 
 ---
 
-### ESYNC / PBA / Improved
+### Some notes
 
-Since **4.6** version **ESYNC** has been included in **Staging**.
+**ESYNC/FSYNC** improves performance in games by removing wineserver overhead for synchronization objects.
 
-**ESYNC** builds compiled with **Staging** and **ESYNC** patches, and some versions
-also compiled with **PBA** patches.
+**PBA** improves performance in many Direct3D games.
 
-**ESYNC** improves performance in games by reducing CPU load. **PBA** improves
-performance in many Direct3D games.
+**LARGE_ADDRESS_AWARE** is useful for 32-bit games hitting address space limitations.
 
-**Improved** builds compiled with **Staging** and some additional patches listed below.
-
-Patches that are present in **ESYNC** and **Improved** builds:
-
-* Use Clock Monotonic		(use CLOCK_MONOTONIC; for better performance)
-* LARGE_ADDRESS_AWARE		(solve hitting address space limitations in 32-bit games)
-* FS_bypass_compositor		(bypass compositor in fullscreen mode; for better performance)
-* Fullscreen_hack		(change resoltuion for fullscreen games without changing desktop resolution)
-* enable_stg_shared_mem_def (enable STAGING_SHARED_MEMORY by default; for better performance)
-* nvidia-hate.patch (disable Nvidia stuff: nvapi, nvapi64, nvcuda, nvcuvid, nvencodeapi, nvencodeapi64)
-
-**LibXinerama** (32-bit or 64-bit - depends on game architecture) is required
-for fullscreen games to work properly.
+---
 
 **ESYNC** can be enabled using WINEESYNC=1 environment variable, and it's also necessary to [increase](https://github.com/zfigura/wine/blob/esync/README.esync)
-file descriptors limit (soft and hard). If file descriptors limit is not high enough then games will
+file descriptors limits (soft and hard). If file descriptors limit is not high enough then games will
 crash often.
+
+**FSYNC** can be enabled using WINEFSYNC=1 environment variable. At the moment FSYNC requires [custom kernel](https://steamcommunity.com/app/221410/discussions/0/3158631000006906163/).
 
 **PBA** can be enabled using PBA_ENABLE=1 environment variable.
 
 **LARGE_ADDRESS_AWARE** can be enabled using WINE_LARGE_ADDRESS_AWARE=1
 environment variable.
 
----
+There are also some useful Wine-Staging environment variables such as STAGING_SHARED_MEMORY and STAGING_WRITECOPY, you can read about them [here](https://wiki.winehq.org/Wine-Staging_Environment_Variables).
 
-### Proton
+### Important
 
-**Proton** builds compiled from sources from Valve github repository. This Proton 
-is virtually the same as Proton in Steam, but opposed to Steam's Proton these 
-builds doesn't requires Steam Runtime.
+**PBA** is present only in PBA builds.
 
-**Proton** contains many useful patches, primarily for better gaming experience.
+**ESYNC** is present in Proton, Improved and Staging builds since 4.6 version, it's also present in old ESYNC builds (4.5 and older).
 
----
+**FSYNC** is present in Proton (4.11 and newer) and Improved (4.14 and newer) builds.
 
-### FAudio
-
-Wine (only Vanilla, Staging doesn't use FAudio yet) versions newer than **4.2** uses **FAudio** (XAudio reimplementation), so it's necessary to install **libFAudio.so** to use these versions. If **libFAudio.so** is not installed then many games will not work or there will be no sound.
-
-**Proton** builds (**3.16-5** and newer) uses **FAudio** as well.
-
-If there is no **FAudio** in package repository of your distribution then you can [manually compile](https://github.com/FNA-XNA/FAudio) it.
+**LARGE_ADDRESS_AWARE** is present in Proton and Improved builds.
 
 ---
 
@@ -125,5 +102,6 @@ If there is no **FAudio** in package repository of your distribution then you ca
 * https://github.com/wine-staging/wine-staging
 * https://github.com/Tk-Glitch/PKGBUILDS/tree/master/wine-tkg-git
 * https://github.com/zfigura/wine/tree/esync
-* https://github.com/Firerat/wine-pba
+* https://github.com/acomminos/wine-pba
+* https://github.com/Firerat/wine-pba (doesn't exist anymore)
 * https://github.com/ValveSoftware/wine
