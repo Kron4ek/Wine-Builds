@@ -179,7 +179,7 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack_realmodes.patch || patching_error
-	
+
 	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/winevulkan-1.1.113-proton.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
@@ -266,6 +266,13 @@ cd "$MAINDIR/wine-$WINE_VERSION-amd64" && rm -r include && rm -r share/applicati
 cd "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib" && rm -r include && rm -r share/applications && rm -r share/man && cd bin && ln -sr wine64 wine
 
 cd "$MAINDIR"
+
+if [ "$2" = "improved" ] && [ -f improved_build_info.txt ]; then
+	cp improved_build_info.txt wine-$WINE_VERSION-x86
+	cp improved_build_info.txt wine-$WINE_VERSION-amd64
+	cp improved_build_info.txt wine-$WINE_VERSION-amd64-nomultilib
+fi
+
 tar -cf wine-$WINE_VERSION-amd64.tar wine-$WINE_VERSION-amd64
 tar -cf wine-$WINE_VERSION-amd64-nomultilib.tar wine-$WINE_VERSION-amd64-nomultilib
 tar -cf wine-$WINE_VERSION-x86.tar wine-$WINE_VERSION-x86
