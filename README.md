@@ -101,5 +101,5 @@ environment variable.
 * https://github.com/Tk-Glitch/PKGBUILDS/tree/master/wine-tkg-git
 * https://github.com/zfigura/wine/tree/esync
 * https://github.com/acomminos/wine-pba
-* https://github.com/Firerat/wine-pba (doesn't exist anymore)
+* https://gitlab.com/Firer4t/wine-pba
 * https://github.com/ValveSoftware/wine
