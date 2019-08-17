@@ -10,7 +10,7 @@ All other builds (including nomultilib, stable and old versions) can be download
 
 ## How to use
 
-Just unpack archive to any desired directory and run applications using path to Wine binary. For example:
+Just unpack desired build to any directory and then you can run applications using path to Wine binary. For example:
 
     /home/user/wine-4.4-amd64/bin/wine application.exe
     
@@ -57,13 +57,13 @@ functions, fixes some bugs and improves performance in some cases.
 
 **Proton** is a Wine modified by Valve, it contains many useful patches (primarily for better gaming experience). This Proton is pretty much the same as Steam's Proton, but it doesn't require Steam Runtime to work and it's intended to be used outside of Steam.
 
-**Improved** is a Wine with Staging patchset and with some additional useful patches. Full list of used patches available in [IMPROVED_BUILD_INFO](https://github.com/Kron4ek/Wine-Builds/blob/master/IMPROVED_BUILD_INFO) file.
+**Improved** is a Wine with Staging patchset and with some additional useful patches. Full list of used patches is in the [IMPROVED_BUILD_INFO](https://github.com/Kron4ek/Wine-Builds/blob/master/IMPROVED_BUILD_INFO) file.
 
 ---
 
-### Some notes
+### Useful notes
 
-**ESYNC/FSYNC** improves performance in games by removing wineserver overhead for synchronization objects.
+**ESYNC / FSYNC** improves performance in games by removing wineserver overhead for synchronization objects.
 
 **PBA** improves performance in many Direct3D games.
 
@@ -82,9 +82,7 @@ crash often.
 **LARGE_ADDRESS_AWARE** can be enabled using WINE_LARGE_ADDRESS_AWARE=1
 environment variable.
 
-There are also some useful Wine-Staging environment variables such as STAGING_SHARED_MEMORY and STAGING_WRITECOPY, you can read about them [here](https://wiki.winehq.org/Wine-Staging_Environment_Variables).
-
-### Important
+---
 
 **PBA** is present only in PBA builds.
 
