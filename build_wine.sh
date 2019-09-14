@@ -179,13 +179,13 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack_realmodes.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/raw-input-proton.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/winevulkan-1.1.113-proton.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/misc/nvidia-hate.patch || patching_error
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
