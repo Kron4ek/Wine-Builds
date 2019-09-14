@@ -186,6 +186,8 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
+	
+	tools/make_requests
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
