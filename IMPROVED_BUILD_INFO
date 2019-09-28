@@ -7,7 +7,6 @@ Latest Improved build contains these patches (in addition to Staging patchset):
 * FS_bypass_compositor.patch
 * valve_proton_fullscreen_hack-staging.patch
 * valve_proton_fullscreen_hack_realmodes.patch
-* raw-input-proton.patch
 * winevulkan-1.1.113-proton.patch
 * LAA-staging.patch
 * proton_mf_hacks.patch
@@ -20,7 +19,6 @@ Brief patches description:
 * Bypass compositor in fullscreen mode
 * Fullscreen hack from Proton
 * Use real display modes in fullscreen hack
-* Raw input fix
 * Update winevulkan to 1.1.113 version
 * IMAGE_FILE_LARGE_ADDRESS_AWARE override
 * Media Foundation workarounds from Proton
