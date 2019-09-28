@@ -125,7 +125,7 @@ fi
 
 rm -rf "$SOURCES_DIR"
 mkdir "$SOURCES_DIR"
-cd "$SOURCES_DIR" || exit
+cd "$SOURCES_DIR" || exit 1
 
 # Replace latest argument with actual latest Wine version
 if [ "$WINE_VERSION_NUMBER" = "latest" ]; then
@@ -161,6 +161,7 @@ if [ "$2" = "improved" ]; then
 	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
 	wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
 	git clone https://github.com/Tk-Glitch/PKGBUILDS.git
+	wget https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/revert_xrandr_change_notifications.patch
 
 	tar xf wine-$WINE_VERSION_NUMBER.tar.xz
 	tar xf v$WINE_VERSION_NUMBER.tar.gz
@@ -168,6 +169,7 @@ if [ "$2" = "improved" ]; then
 	mv wine-$WINE_VERSION_NUMBER wine
 	cd wine
 
+	patch -Np1 < "$SOURCES_DIR"/revert_xrandr_change_notifications.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic-2.patch || patching_error
 
@@ -179,15 +181,12 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack_realmodes.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/raw-input-proton.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/winevulkan-1.1.113-proton.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
-	
-	tools/make_requests
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
