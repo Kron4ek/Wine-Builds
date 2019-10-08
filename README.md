@@ -4,7 +4,6 @@ Check **releases** page to download some of recent Wine builds.
 
 All other builds (including nomultilib, stable and old versions) can be downloaded from: 
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
-* **[Yandex Disk](https://yadi.sk/d/IrofgqFSqHsPu/wine_builds)**
 
 ---
 
@@ -86,7 +85,7 @@ environment variable.
 
 **PBA** is present only in PBA builds.
 
-**ESYNC** is present in Proton, Improved and Staging builds since 4.6 version, it's also present in old ESYNC builds (4.5 and older).
+**ESYNC** is present in Proton and also in Improved and Staging builds since 4.6 version.
 
 **FSYNC** is present in Proton (4.11 and newer) and Improved (4.14 and newer) builds.
 
