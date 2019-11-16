@@ -1,6 +1,6 @@
 ## Download
 
-Check **releases** page to download some of recent Wine builds.
+Check the [**releases**](https://github.com/Kron4ek/Wine-Builds/releases) page to download some of the recent Wine builds.
 
 All other builds (including nomultilib, stable and old versions) can be downloaded from: 
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
@@ -9,21 +9,21 @@ All other builds (including nomultilib, stable and old versions) can be download
 
 ## How to use
 
-Just unpack desired build to any directory and then you can run applications using path to Wine binary. For example:
+Extract the desired build to any directory, and then you can run applications using the path to the Wine binary. For example:
 
-    /home/user/wine-4.4-amd64/bin/wine application.exe
+    /home/username/wine-4.4-amd64/bin/wine application.exe
     
 ---
     
 ## Requirements
 
-Some libraries (libfreetype6, **libpng16-16**, libopenal1, etc.) are required for these builds to work properly.
+Some libraries (libfreetype6, libpng16-16, libopenal1, etc.) are required for these builds to work properly.
 
-The easiest way to install required libraries is to install Wine from package repository of your distribution.
+The easiest way to install almost all required libraries is to install Wine from your distribution's package repository.
 
 **GLIBC** **2.27** or newer is required.
 
-Older (4.11 and older) builds requires **GLIBC 2.23** or newer.
+Older (4.11 and older) builds require **GLIBC 2.23** or newer.
 
 ---
 
@@ -43,20 +43,19 @@ Configure options: --without-curses --without-gstreamer --without-oss --disable-
 
 * **amd64** - for 64-bit systems, it can run both 32-bit and 64-bit applications.
 * **amd64-nomultilib** - for 64-bit systems, it can run only 64-bit
-applications and doesn't require 32-bit dependencies.
+applications and it doesn't require 32-bit dependencies.
 * **x86** - for 32-bit systems, it can run only 32-bit applications.
 
 ---
 
-**Vanilla** is a regular Wine compiled from official WineHQ sources without any modifications.
+**Vanilla** is unmodified Wine compiled from the official WineHQ sources.
 
-**Staging** is a Wine with Staging patchset, it contains many useful patches 
-that are not present in regular (vanilla) Wine, it adds new
-functions, fixes some bugs and improves performance in some cases.
+**Staging** is Wine with Staging patchset, it contains many useful patches 
+that are not present in a regular (vanilla) Wine, it adds new functions, fixes some bugs and improves performance in some cases.
 
-**Proton** is a Wine modified by Valve, it contains many useful patches (primarily for better gaming experience). This Proton is pretty much the same as Steam's Proton, but it doesn't require Steam Runtime to work and it's intended to be used outside of Steam.
+**Proton** is Wine modified by Valve, it contains many useful patches (primarily for better gaming experience). This Proton is pretty much the same as the Steam's Proton, but it doesn't require Steam Runtime to work and it's intended to be used outside of Steam.
 
-**Improved** is a Wine with Staging patchset and with some additional useful patches. Full list of used patches is in the [IMPROVED_BUILD_INFO](https://github.com/Kron4ek/Wine-Builds/blob/master/IMPROVED_BUILD_INFO) file.
+**Improved** is Wine with Staging patchset and with some additional useful patches. The full list of used patches is in the [IMPROVED_BUILD_INFO](https://github.com/Kron4ek/Wine-Builds/blob/master/IMPROVED_BUILD_INFO) file.
 
 ---
 
@@ -71,10 +70,10 @@ functions, fixes some bugs and improves performance in some cases.
 ---
 
 **ESYNC** can be enabled using WINEESYNC=1 environment variable, and it's also necessary to [increase](https://github.com/zfigura/wine/blob/esync/README.esync)
-file descriptors limits (soft and hard). If file descriptors limit is not high enough then games will
+file descriptors limits (soft and hard). If file descriptors limit is not high enough, then games will
 crash often.
 
-**FSYNC** can be enabled using WINEFSYNC=1 environment variable. At the moment FSYNC requires [custom kernel](https://steamcommunity.com/app/221410/discussions/0/3158631000006906163/).
+**FSYNC** can be enabled using WINEFSYNC=1 environment variable. At the moment FSYNC requires [patched kernel](https://steamcommunity.com/app/221410/discussions/0/3158631000006906163/).
 
 **PBA** can be enabled using PBA_ENABLE=1 environment variable.
 
