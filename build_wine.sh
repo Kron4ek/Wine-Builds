@@ -161,7 +161,7 @@ if [ "$2" = "improved" ]; then
 	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
 	wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
 	git clone https://github.com/Tk-Glitch/PKGBUILDS.git
-	wget -O vdesktop_windecor_fix.patch "https://bugs.winehq.org/attachment.cgi?id=65345&action=diff&context=patch&collapsed=&headers=1&format=raw"
+	wget -O fshack-unbreak.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/fshack-unbreak.patch
 
 	tar xf wine-$WINE_VERSION_NUMBER.tar.xz
 	tar xf v$WINE_VERSION_NUMBER.tar.gz
@@ -169,18 +169,17 @@ if [ "$2" = "improved" ]; then
 	mv wine-$WINE_VERSION_NUMBER wine
 	cd wine
 
-	patch -Np1 < "$SOURCES_DIR"/vdesktop_windecor_fix.patch || patching_error
+	patch -Np1 < "$SOURCES_DIR"/fshack-unbreak.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic-2.patch || patching_error
 
-	../wine-staging-$WINE_VERSION_NUMBER/patches/patchinstall.sh DESTDIR=../wine --all || patching_error
+	../wine-staging-$WINE_VERSION_NUMBER/patches/patchinstall.sh DESTDIR=../wine --all -W winex11.drv-mouse-coorrds -W winex11-MWM_Decorations || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging-no_alloc_handle.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
-
-	patch -Np1 < "$PATCHES_DIR"/misc/winevulkan-1.1.113.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
