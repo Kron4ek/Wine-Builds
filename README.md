@@ -53,7 +53,7 @@ applications and it doesn't require 32-bit dependencies.
 **Staging** is Wine with Staging patchset, it contains many useful patches 
 that are not present in a regular (vanilla) Wine, it adds new functions, fixes some bugs and improves performance in some cases.
 
-**Proton** is Wine modified by Valve, it contains many useful patches (primarily for better gaming experience). This Proton is pretty much the same as the Steam's Proton, but it doesn't require Steam Runtime to work and it's intended to be used outside of Steam.
+**Proton** is Wine modified by Valve, it contains many useful patches (primarily for a better gaming experience). This repo's Proton is almost the same as the Steam's Proton, but it doesn't require the Steam Runtime to work and it's intended to be used outside of Steam.
 
 **Improved** is Wine with Staging patchset and with some additional useful patches. The full list of used patches is in the [IMPROVED_BUILD_INFO](https://github.com/Kron4ek/Wine-Builds/blob/master/IMPROVED_BUILD_INFO) file.
 
