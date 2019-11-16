@@ -1,0 +1,920 @@
+diff --git a/dlls/winex11.drv/desktop.c b/dlls/winex11.drv/desktop.c
+index d70b38b2b3..fed8dd32e9 100644
+--- a/dlls/winex11.drv/desktop.c
++++ b/dlls/winex11.drv/desktop.c
+@@ -27,7 +27,6 @@
+ /* avoid conflict with field names in included win32 headers */
+ #undef Status
+ #include "wine/debug.h"
+-#include "wine/heap.h"
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(x11drv);
+ 
+@@ -37,8 +36,6 @@ static unsigned int dd_mode_count;
+ 
+ static unsigned int max_width;
+ static unsigned int max_height;
+-static unsigned int desktop_width;
+-static unsigned int desktop_height;
+ 
+ static struct screen_size {
+     unsigned int width;
+@@ -80,12 +77,6 @@ static struct screen_size {
+ #define _NET_WM_STATE_REMOVE 0
+ #define _NET_WM_STATE_ADD 1
+ 
+-/* Return TRUE if Wine is currently in virtual desktop mode */
+-BOOL is_virtual_desktop(void)
+-{
+-    return root_window != DefaultRootWindow( gdi_display );
+-}
+-
+ /* create the mode structures */
+ static void make_modes(void)
+ {
+@@ -149,88 +140,6 @@ static LONG X11DRV_desktop_SetCurrentMode(int mode)
+     return DISP_CHANGE_SUCCESSFUL;
+ }
+ 
+-static void query_desktop_work_area( RECT *rc_work )
+-{
+-    static const WCHAR trayW[] = {'S','h','e','l','l','_','T','r','a','y','W','n','d',0};
+-    RECT rect;
+-    HWND hwnd = FindWindowW( trayW, NULL );
+-
+-    if (!hwnd || !IsWindowVisible( hwnd )) return;
+-    if (!GetWindowRect( hwnd, &rect )) return;
+-    if (rect.top) rc_work->bottom = rect.top;
+-    else rc_work->top = rect.bottom;
+-    TRACE( "found tray %p %s work area %s\n", hwnd, wine_dbgstr_rect( &rect ), wine_dbgstr_rect( rc_work ) );
+-}
+-
+-static BOOL X11DRV_desktop_get_gpus( struct x11drv_gpu **new_gpus, int *count )
+-{
+-    static const WCHAR wine_adapterW[] = {'W','i','n','e',' ','A','d','a','p','t','e','r',0};
+-    struct x11drv_gpu *gpu;
+-
+-    gpu = heap_calloc( 1, sizeof(*gpu) );
+-    if (!gpu) return FALSE;
+-
+-    lstrcpyW( gpu->name, wine_adapterW );
+-    *new_gpus = gpu;
+-    *count = 1;
+-    return TRUE;
+-}
+-
+-static void X11DRV_desktop_free_gpus( struct x11drv_gpu *gpus )
+-{
+-    heap_free( gpus );
+-}
+-
+-/* TODO: Support multi-head virtual desktop */
+-static BOOL X11DRV_desktop_get_adapters( ULONG_PTR gpu_id, struct x11drv_adapter **new_adapters, int *count )
+-{
+-    struct x11drv_adapter *adapter;
+-
+-    adapter = heap_calloc( 1, sizeof(*adapter) );
+-    if (!adapter) return FALSE;
+-
+-    adapter->state_flags = DISPLAY_DEVICE_PRIMARY_DEVICE;
+-    if (desktop_width && desktop_height)
+-        adapter->state_flags |= DISPLAY_DEVICE_ATTACHED_TO_DESKTOP;
+-
+-    *new_adapters = adapter;
+-    *count = 1;
+-    return TRUE;
+-}
+-
+-static void X11DRV_desktop_free_adapters( struct x11drv_adapter *adapters )
+-{
+-    heap_free( adapters );
+-}
+-
+-static BOOL X11DRV_desktop_get_monitors( ULONG_PTR adapter_id, struct x11drv_monitor **new_monitors, int *count )
+-{
+-    static const WCHAR generic_nonpnp_monitorW[] = {
+-        'G','e','n','e','r','i','c',' ',
+-        'N','o','n','-','P','n','P',' ','M','o','n','i','t','o','r',0};
+-    struct x11drv_monitor *monitor;
+-
+-    monitor = heap_calloc( 1, sizeof(*monitor) );
+-    if (!monitor) return FALSE;
+-
+-    lstrcpyW( monitor->name, generic_nonpnp_monitorW );
+-    SetRect( &monitor->rc_monitor, 0, 0, desktop_width, desktop_height );
+-    SetRect( &monitor->rc_work, 0, 0, desktop_width, desktop_height );
+-    query_desktop_work_area( &monitor->rc_work );
+-    monitor->state_flags = DISPLAY_DEVICE_ATTACHED;
+-    if (desktop_width && desktop_height)
+-        monitor->state_flags |= DISPLAY_DEVICE_ACTIVE;
+-
+-    *new_monitors = monitor;
+-    *count = 1;
+-    return TRUE;
+-}
+-
+-static void X11DRV_desktop_free_monitors( struct x11drv_monitor *monitors )
+-{
+-    heap_free( monitors );
+-}
+-
+ /***********************************************************************
+  *		X11DRV_init_desktop
+  *
+@@ -238,27 +147,18 @@ static void X11DRV_desktop_free_monitors( struct x11drv_monitor *monitors )
+  */
+ void X11DRV_init_desktop( Window win, unsigned int width, unsigned int height )
+ {
+-    RECT primary_rect = get_host_primary_monitor_rect();
++    RECT primary_rect;
+ 
+     root_window = win;
+     managed_mode = FALSE;  /* no managed windows in desktop mode */
+-    desktop_width = width;
+-    desktop_height = height;
+-    max_width = primary_rect.right;
+-    max_height = primary_rect.bottom;
+-
+-    /* Initialize virtual desktop mode display device handler */
+-    desktop_handler.name = "Virtual Desktop";
+-    desktop_handler.get_gpus = X11DRV_desktop_get_gpus;
+-    desktop_handler.get_adapters = X11DRV_desktop_get_adapters;
+-    desktop_handler.get_monitors = X11DRV_desktop_get_monitors;
+-    desktop_handler.free_gpus = X11DRV_desktop_free_gpus;
+-    desktop_handler.free_adapters = X11DRV_desktop_free_adapters;
+-    desktop_handler.free_monitors = X11DRV_desktop_free_monitors;
+-    desktop_handler.register_event_handlers = NULL;
+-    TRACE("Display device functions are now handled by: Virtual Desktop\n");
++
++    xinerama_init( width, height );
+     X11DRV_DisplayDevices_Init( TRUE );
+ 
++    primary_rect = get_primary_monitor_rect();
++    max_width = primary_rect.right - primary_rect.left;
++    max_height = primary_rect.bottom - primary_rect.top;
++
+     /* initialize the available resolutions */
+     dd_modes = X11DRV_Settings_SetHandlers("desktop", 
+                                            X11DRV_desktop_GetCurrentMode, 
+@@ -281,6 +181,7 @@ BOOL CDECL X11DRV_create_desktop( UINT width, UINT height )
+     XSetWindowAttributes win_attr;
+     Window win;
+     Display *display = thread_init_display();
++    RECT rect;
+     WCHAR name[MAX_PATH];
+ 
+     if (!GetUserObjectInformationW( GetThreadDesktop( GetCurrentThreadId() ),
+@@ -307,17 +208,18 @@ BOOL CDECL X11DRV_create_desktop( UINT width, UINT height )
+                          0, 0, width, height, 0, default_visual.depth, InputOutput, default_visual.visual,
+                          CWEventMask | CWCursor | CWColormap, &win_attr );
+     if (!win) return FALSE;
+-    if (!create_desktop_win_data( win )) return FALSE;
+ 
+-    X11DRV_init_desktop( win, width, height );
+-    if (is_desktop_fullscreen())
++    SetRect( &rect, 0, 0, width, height );
++    if (is_window_rect_fullscreen( &rect ))
+     {
+         TRACE("setting desktop to fullscreen\n");
+         XChangeProperty( display, win, x11drv_atom(_NET_WM_STATE), XA_ATOM, 32,
+             PropModeReplace, (unsigned char*)&x11drv_atom(_NET_WM_STATE_FULLSCREEN),
+             1);
+     }
++    if (!create_desktop_win_data( win )) return FALSE;
+     XFlush( display );
++    X11DRV_init_desktop( win, width, height );
+     return TRUE;
+ }
+ 
+@@ -366,7 +268,7 @@ static void update_desktop_fullscreen( unsigned int width, unsigned int height)
+     Display *display = thread_display();
+     XEvent xev;
+ 
+-    if (!display || !is_virtual_desktop()) return;
++    if (!display || root_window == DefaultRootWindow( display )) return;
+ 
+     xev.xclient.type = ClientMessage;
+     xev.xclient.window = root_window;
+@@ -403,8 +305,8 @@ void X11DRV_resize_desktop( unsigned int width, unsigned int height )
+     struct desktop_resize_data resize_data;
+ 
+     resize_data.old_virtual_rect = get_virtual_screen_rect();
+-    desktop_width = width;
+-    desktop_height = height;
++
++    xinerama_init( width, height );
+     X11DRV_DisplayDevices_Init( TRUE );
+     resize_data.new_virtual_rect = get_virtual_screen_rect();
+ 
+diff --git a/dlls/winex11.drv/display.c b/dlls/winex11.drv/display.c
+index 7ad74c9b4e..107719a26f 100644
+--- a/dlls/winex11.drv/display.c
++++ b/dlls/winex11.drv/display.c
+@@ -103,174 +103,45 @@ static const WCHAR monitor_hardware_idW[] = {
+     'M','O','N','I','T','O','R','\\',
+     'D','e','f','a','u','l','t','_','M','o','n','i','t','o','r',0,0};
+ 
+-static struct x11drv_display_device_handler host_handler;
+-struct x11drv_display_device_handler desktop_handler;
+-
+-/* Cached screen information, protected by screen_section */
+-static HKEY video_key;
++static struct x11drv_display_device_handler handler;
+ static RECT virtual_screen_rect;
+ static RECT primary_monitor_rect;
+-static FILETIME last_query_screen_time;
+-static CRITICAL_SECTION screen_section;
+-static CRITICAL_SECTION_DEBUG screen_critsect_debug =
+-{
+-    0, 0, &screen_section,
+-    {&screen_critsect_debug.ProcessLocksList, &screen_critsect_debug.ProcessLocksList},
+-     0, 0, {(DWORD_PTR)(__FILE__ ": screen_section")}
+-};
+-static CRITICAL_SECTION screen_section = {&screen_critsect_debug, -1, 0, 0, 0, 0};
+-
+-static HANDLE get_display_device_init_mutex(void)
+-{
+-    static const WCHAR init_mutexW[] = {'d','i','s','p','l','a','y','_','d','e','v','i','c','e','_','i','n','i','t',0};
+-    HANDLE mutex = CreateMutexW(NULL, FALSE, init_mutexW);
+-
+-    WaitForSingleObject(mutex, INFINITE);
+-    return mutex;
+-}
+-
+-static void release_display_device_init_mutex(HANDLE mutex)
+-{
+-    ReleaseMutex(mutex);
+-    CloseHandle(mutex);
+-}
+-
+-/* Update screen rectangle cache from SetupAPI if it's outdated, return FALSE on failure and TRUE on success */
+-static BOOL update_screen_cache(void)
+-{
+-    RECT virtual_rect = {0}, primary_rect = {0}, monitor_rect;
+-    SP_DEVINFO_DATA device_data = {sizeof(device_data)};
+-    HDEVINFO devinfo = INVALID_HANDLE_VALUE;
+-    FILETIME filetime = {0};
+-    HANDLE mutex = NULL;
+-    DWORD i = 0;
+-    INT result;
+-    DWORD type;
+-    BOOL ret = FALSE;
+-
+-    EnterCriticalSection(&screen_section);
+-    if ((!video_key && RegOpenKeyW(HKEY_LOCAL_MACHINE, video_keyW, &video_key))
+-        || RegQueryInfoKeyW(video_key, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, &filetime))
+-    {
+-        LeaveCriticalSection(&screen_section);
+-        return FALSE;
+-    }
+-    result = CompareFileTime(&filetime, &last_query_screen_time);
+-    LeaveCriticalSection(&screen_section);
+-    if (result < 1)
+-        return TRUE;
+-
+-    mutex = get_display_device_init_mutex();
+-
+-    devinfo = SetupDiGetClassDevsW(&GUID_DEVCLASS_MONITOR, displayW, NULL, DIGCF_PRESENT);
+-    if (devinfo == INVALID_HANDLE_VALUE)
+-        goto fail;
+-
+-    while (SetupDiEnumDeviceInfo(devinfo, i++, &device_data))
+-    {
+-        if (!SetupDiGetDevicePropertyW(devinfo, &device_data, &WINE_DEVPROPKEY_MONITOR_RCMONITOR, &type,
+-                                       (BYTE *)&monitor_rect, sizeof(monitor_rect), NULL, 0))
+-            goto fail;
+-
+-        UnionRect(&virtual_rect, &virtual_rect, &monitor_rect);
+-        if (i == 1)
+-            primary_rect = monitor_rect;
+-    }
+-
+-    EnterCriticalSection(&screen_section);
+-    virtual_screen_rect = virtual_rect;
+-    primary_monitor_rect = primary_rect;
+-    last_query_screen_time = filetime;
+-    LeaveCriticalSection(&screen_section);
+-    ret = TRUE;
+-fail:
+-    SetupDiDestroyDeviceInfoList(devinfo);
+-    release_display_device_init_mutex(mutex);
+-    if (!ret)
+-        WARN("Update screen cache failed!\n");
+-    return ret;
+-}
+ 
+ POINT virtual_screen_to_root(INT x, INT y)
+ {
+-    RECT virtual = get_virtual_screen_rect();
+     POINT pt;
+-
+-    pt.x = x - virtual.left;
+-    pt.y = y - virtual.top;
++    pt.x = x - virtual_screen_rect.left;
++    pt.y = y - virtual_screen_rect.top;
+     return pt;
+ }
+ 
+ POINT root_to_virtual_screen(INT x, INT y)
+ {
+-    RECT virtual = get_virtual_screen_rect();
+     POINT pt;
+-
+-    pt.x = x + virtual.left;
+-    pt.y = y + virtual.top;
++    pt.x = x + virtual_screen_rect.left;
++    pt.y = y + virtual_screen_rect.top;
+     return pt;
+ }
+ 
+ RECT get_virtual_screen_rect(void)
+ {
+-    RECT virtual;
+-
+-    update_screen_cache();
+-    EnterCriticalSection(&screen_section);
+-    virtual = virtual_screen_rect;
+-    LeaveCriticalSection(&screen_section);
+-    return virtual;
++    return virtual_screen_rect;
+ }
+ 
+ RECT get_primary_monitor_rect(void)
+ {
+-    RECT primary;
+-
+-    update_screen_cache();
+-    EnterCriticalSection(&screen_section);
+-    primary = primary_monitor_rect;
+-    LeaveCriticalSection(&screen_section);
+-    return primary;
+-}
+-
+-/* Get the primary monitor rect from the host system */
+-RECT get_host_primary_monitor_rect(void)
+-{
+-    INT gpu_count, adapter_count, monitor_count;
+-    struct x11drv_gpu *gpus = NULL;
+-    struct x11drv_adapter *adapters = NULL;
+-    struct x11drv_monitor *monitors = NULL;
+-    RECT rect = {0};
+-
+-    /* The first monitor is always primary */
+-    if (host_handler.get_gpus(&gpus, &gpu_count) && gpu_count &&
+-        host_handler.get_adapters(gpus[0].id, &adapters, &adapter_count) && adapter_count &&
+-        host_handler.get_monitors(adapters[0].id, &monitors, &monitor_count) && monitor_count)
+-        rect = monitors[0].rc_monitor;
+-
+-    if (gpus) host_handler.free_gpus(gpus);
+-    if (adapters) host_handler.free_adapters(adapters);
+-    if (monitors) host_handler.free_monitors(monitors);
+-    return rect;
++    return primary_monitor_rect;
+ }
+ 
+ void X11DRV_DisplayDevices_SetHandler(const struct x11drv_display_device_handler *new_handler)
+ {
+-    if (new_handler->priority > host_handler.priority)
++    if (new_handler->priority > handler.priority)
+     {
+-        host_handler = *new_handler;
+-        TRACE("Display device functions are now handled by: %s\n", host_handler.name);
++        handler = *new_handler;
++        TRACE("Display device functions are now handled by: %s\n", handler.name);
+     }
+ }
+ 
+-void X11DRV_DisplayDevices_RegisterEventHandlers(void)
+-{
+-    struct x11drv_display_device_handler *handler = is_virtual_desktop() ? &desktop_handler : &host_handler;
+-
+-    if (handler->register_event_handlers)
+-        handler->register_event_handlers();
+-}
+-
+ /* Initialize a GPU instance and return its GUID string in guid_string and driver value in driver parameter */
+ static BOOL X11DRV_InitGpu(HDEVINFO devinfo, const struct x11drv_gpu *gpu, INT gpu_index, WCHAR *guid_string,
+                            WCHAR *driver)
+@@ -450,6 +321,9 @@ static BOOL X11DRV_InitMonitor(HDEVINFO devinfo, const struct x11drv_monitor *mo
+     if (!SetupDiSetDevicePropertyW(devinfo, &device_data, &WINE_DEVPROPKEY_MONITOR_RCMONITOR, DEVPROP_TYPE_BINARY,
+                                    (const BYTE *)&monitor->rc_monitor, sizeof(monitor->rc_monitor), 0))
+         goto done;
++    UnionRect(&virtual_screen_rect, &virtual_screen_rect, &monitor->rc_monitor);
++    if (video_index == 0)
++        primary_monitor_rect = monitor->rc_monitor;
+     /* RcWork */
+     if (!SetupDiSetDevicePropertyW(devinfo, &device_data, &WINE_DEVPROPKEY_MONITOR_RCWORK, DEVPROP_TYPE_BINARY,
+                                    (const BYTE *)&monitor->rc_work, sizeof(monitor->rc_work), 0))
+@@ -474,6 +348,9 @@ static void prepare_devices(HKEY video_hkey)
+     HDEVINFO devinfo;
+     DWORD i = 0;
+ 
++    SetRectEmpty(&virtual_screen_rect);
++    SetRectEmpty(&primary_monitor_rect);
++
+     /* Remove all monitors */
+     devinfo = SetupDiGetClassDevsW(&GUID_DEVCLASS_MONITOR, displayW, NULL, 0);
+     while (SetupDiEnumDeviceInfo(devinfo, i++, &device_data))
+@@ -522,10 +399,40 @@ static void cleanup_devices(void)
+     SetupDiDestroyDeviceInfoList(devinfo);
+ }
+ 
++/* Initialize virtual screen rect and primary monitor rect for current process */
++static void init_screen_rects(void)
++{
++    SP_DEVINFO_DATA device_data = {sizeof(device_data)};
++    HDEVINFO devinfo;
++    DWORD type;
++    DWORD i = 0;
++    RECT rect;
++
++    /* Already initialized */
++    if (!IsRectEmpty(&virtual_screen_rect))
++        return;
++
++    devinfo = SetupDiGetClassDevsW(&GUID_DEVCLASS_MONITOR, displayW, NULL, 0);
++    while (SetupDiEnumDeviceInfo(devinfo, i++, &device_data))
++    {
++        if (!SetupDiGetDevicePropertyW(devinfo, &device_data, &WINE_DEVPROPKEY_MONITOR_RCMONITOR, &type, (BYTE *)&rect,
++                                       sizeof(rect), NULL, 0))
++            ERR("Failed to get monitor size property\n");
++
++        UnionRect(&virtual_screen_rect, &virtual_screen_rect, &rect);
++        if (i == 1)
++            primary_monitor_rect = rect;
++    }
++    SetupDiDestroyDeviceInfoList(devinfo);
++
++    TRACE("virtual screen rect:%s primary monitor rect:%s\n", wine_dbgstr_rect(&virtual_screen_rect),
++          wine_dbgstr_rect(&primary_monitor_rect));
++}
++
+ void X11DRV_DisplayDevices_Init(BOOL force)
+ {
++    static const WCHAR init_mutexW[] = {'d','i','s','p','l','a','y','_','d','e','v','i','c','e','_','i','n','i','t',0};
+     HANDLE mutex;
+-    struct x11drv_display_device_handler *handler = is_virtual_desktop() ? &desktop_handler : &host_handler;
+     struct x11drv_gpu *gpus = NULL;
+     struct x11drv_adapter *adapters = NULL;
+     struct x11drv_monitor *monitors = NULL;
+@@ -538,7 +445,8 @@ void X11DRV_DisplayDevices_Init(BOOL force)
+     WCHAR guidW[40];
+     WCHAR driverW[1024];
+ 
+-    mutex = get_display_device_init_mutex();
++    mutex = CreateMutexW(NULL, FALSE, init_mutexW);
++    WaitForSingleObject(mutex, INFINITE);
+ 
+     if (RegCreateKeyExW(HKEY_LOCAL_MACHINE, video_keyW, 0, NULL, REG_OPTION_VOLATILE, KEY_ALL_ACCESS, NULL, &video_hkey,
+                         &disposition))
+@@ -549,9 +457,12 @@ void X11DRV_DisplayDevices_Init(BOOL force)
+ 
+     /* Avoid unnecessary reinit */
+     if (!force && disposition != REG_CREATED_NEW_KEY)
++    {
++        init_screen_rects();
+         goto done;
++    }
+ 
+-    TRACE("via %s\n", wine_dbgstr_a(handler->name));
++    TRACE("via %s\n", wine_dbgstr_a(handler.name));
+ 
+     prepare_devices(video_hkey);
+ 
+@@ -559,7 +470,7 @@ void X11DRV_DisplayDevices_Init(BOOL force)
+     monitor_devinfo = SetupDiCreateDeviceInfoList(&GUID_DEVCLASS_MONITOR, NULL);
+ 
+     /* Initialize GPUs */
+-    if (!handler->get_gpus(&gpus, &gpu_count))
++    if (!handler.pGetGpus(&gpus, &gpu_count))
+         goto done;
+     TRACE("GPU count: %d\n", gpu_count);
+ 
+@@ -569,13 +480,13 @@ void X11DRV_DisplayDevices_Init(BOOL force)
+             goto done;
+ 
+         /* Initialize adapters */
+-        if (!handler->get_adapters(gpus[gpu].id, &adapters, &adapter_count))
++        if (!handler.pGetAdapters(gpus[gpu].id, &adapters, &adapter_count))
+             goto done;
+         TRACE("GPU: %#lx %s, adapter count: %d\n", gpus[gpu].id, wine_dbgstr_w(gpus[gpu].name), adapter_count);
+ 
+         for (adapter = 0; adapter < adapter_count; adapter++)
+         {
+-            if (!handler->get_monitors(adapters[adapter].id, &monitors, &monitor_count))
++            if (!handler.pGetMonitors(adapters[adapter].id, &monitors, &monitor_count))
+                 goto done;
+             TRACE("adapter: %#lx, monitor count: %d\n", adapters[adapter].id, monitor_count);
+ 
+@@ -591,25 +502,29 @@ void X11DRV_DisplayDevices_Init(BOOL force)
+                     goto done;
+             }
+ 
+-            handler->free_monitors(monitors);
++            handler.pFreeMonitors(monitors);
+             monitors = NULL;
+             video_index++;
+         }
+ 
+-        handler->free_adapters(adapters);
++        handler.pFreeAdapters(adapters);
+         adapters = NULL;
+     }
+ 
++    TRACE("virtual screen rect:%s primary monitor rect:%s\n", wine_dbgstr_rect(&virtual_screen_rect),
++          wine_dbgstr_rect(&primary_monitor_rect));
++
+ done:
+     cleanup_devices();
+     SetupDiDestroyDeviceInfoList(monitor_devinfo);
+     SetupDiDestroyDeviceInfoList(gpu_devinfo);
+     RegCloseKey(video_hkey);
+-    release_display_device_init_mutex(mutex);
++    ReleaseMutex(mutex);
++    CloseHandle(mutex);
+     if (gpus)
+-        handler->free_gpus(gpus);
++        handler.pFreeGpus(gpus);
+     if (adapters)
+-        handler->free_adapters(adapters);
++        handler.pFreeAdapters(adapters);
+     if (monitors)
+-        handler->free_monitors(monitors);
++        handler.pFreeMonitors(monitors);
+ }
+diff --git a/dlls/winex11.drv/event.c b/dlls/winex11.drv/event.c
+index dd8837c11d..25730192d3 100644
+--- a/dlls/winex11.drv/event.c
++++ b/dlls/winex11.drv/event.c
+@@ -827,7 +827,7 @@ static void focus_out( Display *display , HWND hwnd )
+     x11drv_thread_data()->last_focus = hwnd;
+     if ((xic = X11DRV_get_ic( hwnd ))) XUnsetICFocus( xic );
+ 
+-    if (is_virtual_desktop())
++    if (root_window != DefaultRootWindow(display))
+     {
+         if (hwnd == GetDesktopWindow()) reset_clipping_window();
+         return;
+diff --git a/dlls/winex11.drv/mouse.c b/dlls/winex11.drv/mouse.c
+index 290732fa93..15e5c04a41 100644
+--- a/dlls/winex11.drv/mouse.c
++++ b/dlls/winex11.drv/mouse.c
+@@ -572,7 +572,7 @@ BOOL clip_fullscreen_window( HWND hwnd, BOOL reset )
+     {
+         RECT virtual_rect = get_virtual_screen_rect();
+         if (!EqualRect( &rect, &virtual_rect )) return FALSE;
+-        if (is_virtual_desktop()) return FALSE;
++        if (root_window != DefaultRootWindow( gdi_display )) return FALSE;
+     }
+     TRACE( "win %p clipping fullscreen\n", hwnd );
+     return grab_clipping_window( &rect );
+diff --git a/dlls/winex11.drv/palette.c b/dlls/winex11.drv/palette.c
+index 25bdb5f2bf..bba2253264 100644
+--- a/dlls/winex11.drv/palette.c
++++ b/dlls/winex11.drv/palette.c
+@@ -217,7 +217,7 @@ int X11DRV_PALETTE_Init(void)
+ 	    {
+ 	        X11DRV_PALETTE_PaletteFlags |= X11DRV_PALETTE_PRIVATE;
+ 
+-	        if (is_virtual_desktop())
++	        if( root_window != DefaultRootWindow(gdi_display) )
+ 	        {
+ 		    win_attr.colormap = default_colormap;
+ 		    XChangeWindowAttributes( gdi_display, root_window, CWColormap, &win_attr );
+@@ -480,7 +480,6 @@ static BOOL X11DRV_PALETTE_BuildSharedMap( const PALETTEENTRY *sys_pal_template
+         palette_size = c_min + NB_RESERVED_COLORS;
+ 
+ 	XUngrabServer(gdi_display);
+-	XFlush(gdi_display);
+ 
+ 	TRACE("adjusted size %i colorcells\n", palette_size);
+      }
+diff --git a/dlls/winex11.drv/settings.c b/dlls/winex11.drv/settings.c
+index a4f172037c..800b65dbfd 100644
+--- a/dlls/winex11.drv/settings.c
++++ b/dlls/winex11.drv/settings.c
+@@ -146,7 +146,7 @@ static LONG X11DRV_nores_SetCurrentMode(int mode)
+ /* default handler only gets the current X desktop resolution */
+ void X11DRV_Settings_Init(void)
+ {
+-    RECT primary = get_host_primary_monitor_rect();
++    RECT primary = get_primary_monitor_rect();
+     X11DRV_Settings_SetHandlers("NoRes", 
+                                 X11DRV_nores_GetCurrentMode, 
+                                 X11DRV_nores_SetCurrentMode, 
+diff --git a/dlls/winex11.drv/systray.c b/dlls/winex11.drv/systray.c
+index 3be4bd6534..d4262c43cf 100644
+--- a/dlls/winex11.drv/systray.c
++++ b/dlls/winex11.drv/systray.c
+@@ -587,7 +587,7 @@ static BOOL init_systray(void)
+     WNDCLASSEXW class;
+     Display *display;
+ 
+-    if (is_virtual_desktop()) return FALSE;
++    if (root_window != DefaultRootWindow( gdi_display )) return FALSE;
+     if (init_done) return TRUE;
+ 
+     icon_cx = GetSystemMetrics( SM_CXSMICON ) + 2 * ICON_BORDER;
+diff --git a/dlls/winex11.drv/window.c b/dlls/winex11.drv/window.c
+index 99e4094ebd..4e01eb201c 100644
+--- a/dlls/winex11.drv/window.c
++++ b/dlls/winex11.drv/window.c
+@@ -1833,7 +1833,6 @@ BOOL CDECL X11DRV_CreateWindow( HWND hwnd )
+         XFlush( data->display );
+         SetPropA( hwnd, clip_window_prop, (HANDLE)data->clip_window );
+         X11DRV_InitClipboard();
+-        X11DRV_DisplayDevices_RegisterEventHandlers();
+     }
+     return TRUE;
+ }
+@@ -2474,7 +2473,7 @@ static BOOL hide_icon( struct x11drv_win_data *data )
+ 
+     if (data->managed) return TRUE;
+     /* hide icons in desktop mode when the taskbar is active */
+-    if (!is_virtual_desktop()) return FALSE;
++    if (root_window == DefaultRootWindow( gdi_display )) return FALSE;
+     return IsWindowVisible( FindWindowW( trayW, NULL ));
+ }
+ 
+@@ -2781,7 +2780,7 @@ static BOOL is_netwm_supported( Display *display, Atom atom )
+  */
+ static LRESULT start_screensaver(void)
+ {
+-    if (!is_virtual_desktop())
++    if (root_window == DefaultRootWindow(gdi_display))
+     {
+         const char *argv[3] = { "xdg-screensaver", "activate", NULL };
+         int pid = _spawnvp( _P_DETACH, argv[0], argv );
+diff --git a/dlls/winex11.drv/x11drv.h b/dlls/winex11.drv/x11drv.h
+index ef8a42d609..e5e9dfc9f7 100644
+--- a/dlls/winex11.drv/x11drv.h
++++ b/dlls/winex11.drv/x11drv.h
+@@ -643,7 +643,6 @@ extern POINT virtual_screen_to_root( INT x, INT y ) DECLSPEC_HIDDEN;
+ extern POINT root_to_virtual_screen( INT x, INT y ) DECLSPEC_HIDDEN;
+ extern RECT get_virtual_screen_rect(void) DECLSPEC_HIDDEN;
+ extern RECT get_primary_monitor_rect(void) DECLSPEC_HIDDEN;
+-extern RECT get_host_primary_monitor_rect(void) DECLSPEC_HIDDEN;
+ extern void query_work_area( RECT *rc_work ) DECLSPEC_HIDDEN;
+ extern void xinerama_init( unsigned int width, unsigned int height ) DECLSPEC_HIDDEN;
+ 
+@@ -657,7 +656,6 @@ struct x11drv_mode_info
+ 
+ extern void X11DRV_init_desktop( Window win, unsigned int width, unsigned int height ) DECLSPEC_HIDDEN;
+ extern void X11DRV_resize_desktop(unsigned int width, unsigned int height) DECLSPEC_HIDDEN;
+-extern BOOL is_virtual_desktop(void) DECLSPEC_HIDDEN;
+ extern BOOL is_desktop_fullscreen(void) DECLSPEC_HIDDEN;
+ extern BOOL create_desktop_win_data( Window win ) DECLSPEC_HIDDEN;
+ extern void X11DRV_Settings_AddDepthModes(void) DECLSPEC_HIDDEN;
+@@ -717,45 +715,38 @@ struct x11drv_display_device_handler
+     /* A name to tell what host driver is used */
+     const char *name;
+ 
+-    /* Higher priority can override handlers with lower priority */
++    /* Higher priority can override handlers with lower proprity */
+     INT priority;
+ 
+-    /* get_gpus will be called to get a list of GPUs. First GPU has to be where the primary adapter is.
++    /* pGetGpus will be called to get a list of GPUs. First GPU has to be where the primary adapter is.
+      *
+      * Return FALSE on failure with parameters unchanged */
+-    BOOL (*get_gpus)(struct x11drv_gpu **gpus, int *count);
++    BOOL (*pGetGpus)(struct x11drv_gpu **gpus, int *count);
+ 
+-    /* get_adapters will be called to get a list of adapters in EnumDisplayDevices context under a GPU.
++    /* pGetAdapters will be called to get a list of adapters in EnumDisplayDevices context under a GPU.
+      * The first adapter has to be primary if GPU is primary.
+      *
+      * Return FALSE on failure with parameters unchanged */
+-    BOOL (*get_adapters)(ULONG_PTR gpu_id, struct x11drv_adapter **adapters, int *count);
++    BOOL (*pGetAdapters)(ULONG_PTR gpu_id, struct x11drv_adapter **adapters, int *count);
+ 
+-    /* get_monitors will be called to get a list of monitors in EnumDisplayDevices context under an adapter.
++    /* pGetMonitors will be called to get a list of monitors in EnumDisplayDevices context under an adapter.
+      * The first monitor has to be primary if adapter is primary.
+      *
+      * Return FALSE on failure with parameters unchanged */
+-    BOOL (*get_monitors)(ULONG_PTR adapter_id, struct x11drv_monitor **monitors, int *count);
++    BOOL (*pGetMonitors)(ULONG_PTR adapter_id, struct x11drv_monitor **monitors, int *count);
+ 
+-    /* free_gpus will be called to free a GPU list from get_gpus */
+-    void (*free_gpus)(struct x11drv_gpu *gpus);
++    /* pFreeGpus will be called to free a GPU list from pGetGpus */
++    void (*pFreeGpus)(struct x11drv_gpu *gpus);
+ 
+-    /* free_adapters will be called to free an adapter list from get_adapters */
+-    void (*free_adapters)(struct x11drv_adapter *adapters);
++    /* pFreeAdapters will be called to free an adapter list from pGetAdapters */
++    void (*pFreeAdapters)(struct x11drv_adapter *adapters);
+ 
+-    /* free_monitors will be called to free a monitor list from get_monitors */
+-    void (*free_monitors)(struct x11drv_monitor *monitors);
+-
+-    /* register_event_handlers will be called to register event handlers.
+-     * This function pointer is optional and can be NULL when driver doesn't support it */
+-    void (*register_event_handlers)(void);
++    /* pFreeMonitors will be called to free a monitor list from pGetMonitors */
++    void (*pFreeMonitors)(struct x11drv_monitor *monitors);
+ };
+ 
+ extern void X11DRV_DisplayDevices_SetHandler(const struct x11drv_display_device_handler *handler) DECLSPEC_HIDDEN;
+ extern void X11DRV_DisplayDevices_Init(BOOL force) DECLSPEC_HIDDEN;
+-extern void X11DRV_DisplayDevices_RegisterEventHandlers(void) DECLSPEC_HIDDEN;
+-/* Display device handler used in virtual desktop mode */
+-extern struct x11drv_display_device_handler desktop_handler DECLSPEC_HIDDEN;
+ 
+ /* XIM support */
+ extern BOOL X11DRV_InitXIM( const char *input_style ) DECLSPEC_HIDDEN;
+diff --git a/dlls/winex11.drv/xinerama.c b/dlls/winex11.drv/xinerama.c
+index 4903f52b23..61c422e835 100644
+--- a/dlls/winex11.drv/xinerama.c
++++ b/dlls/winex11.drv/xinerama.c
+@@ -75,6 +75,20 @@ void query_work_area( RECT *rc_work )
+     }
+ }
+ 
++static void query_desktop_work_area( RECT *rc_work )
++{
++    static const WCHAR trayW[] = {'S','h','e','l','l','_','T','r','a','y','W','n','d',0};
++    RECT rect;
++    HWND hwnd = FindWindowW( trayW, NULL );
++
++    if (!hwnd || !IsWindowVisible( hwnd )) return;
++    if (!GetWindowRect( hwnd, &rect )) return;
++    if (rect.top) rc_work->bottom = rect.top;
++    else rc_work->top = rect.bottom;
++    TRACE( "found tray %p %s work area %s\n", hwnd,
++           wine_dbgstr_rect( &rect ), wine_dbgstr_rect( rc_work ));
++}
++
+ #ifdef SONAME_LIBXINERAMA
+ 
+ #define MAKE_FUNCPTR(f) static typeof(f) * p##f
+@@ -290,19 +304,22 @@ void xinerama_init( unsigned int width, unsigned int height )
+ {
+     struct x11drv_display_device_handler handler;
+     MONITORINFOEXW *primary;
++    BOOL desktop_mode = FALSE;
+     int i;
+     RECT rect;
+ 
+-    if (is_virtual_desktop())
+-        return;
+-
+     SetRect( &rect, 0, 0, width, height );
+-    if (!query_screens())
++
++    if (root_window != DefaultRootWindow( gdi_display ) || !query_screens())
+     {
+         default_monitor.rcWork = default_monitor.rcMonitor = rect;
+-        query_work_area( &default_monitor.rcWork );
++        if (root_window == DefaultRootWindow( gdi_display ))
++            query_work_area( &default_monitor.rcWork );
++        else
++            query_desktop_work_area( &default_monitor.rcWork );
+         nb_monitors = 1;
+         monitors = &default_monitor;
++        desktop_mode = TRUE;
+     }
+ 
+     primary = get_primary();
+@@ -319,14 +336,13 @@ void xinerama_init( unsigned int width, unsigned int height )
+                (monitors[i].dwFlags & MONITORINFOF_PRIMARY) ? " (primary)" : "" );
+     }
+ 
+-    handler.name = "Xinerama";
+-    handler.priority = 100;
+-    handler.get_gpus = xinerama_get_gpus;
+-    handler.get_adapters = xinerama_get_adapters;
+-    handler.get_monitors = xinerama_get_monitors;
+-    handler.free_gpus = xinerama_free_gpus;
+-    handler.free_adapters = xinerama_free_adapters;
+-    handler.free_monitors = xinerama_free_monitors;
+-    handler.register_event_handlers = NULL;
++    handler.name = desktop_mode ? "Desktop" : "Xinerama";
++    handler.priority = desktop_mode ? 1000 : 100;
++    handler.pGetGpus = xinerama_get_gpus;
++    handler.pGetAdapters = xinerama_get_adapters;
++    handler.pGetMonitors = xinerama_get_monitors;
++    handler.pFreeGpus = xinerama_free_gpus;
++    handler.pFreeAdapters = xinerama_free_adapters;
++    handler.pFreeMonitors = xinerama_free_monitors;
+     X11DRV_DisplayDevices_SetHandler( &handler );
+ }
+diff --git a/dlls/winex11.drv/xrandr.c b/dlls/winex11.drv/xrandr.c
+index 5616857347..6bb2b18ce7 100644
+--- a/dlls/winex11.drv/xrandr.c
++++ b/dlls/winex11.drv/xrandr.c
+@@ -419,7 +419,6 @@ static LONG xrandr12_set_current_mode( int mode )
+     if (status != RRSetConfigSuccess)
+     {
+         XUngrabServer( gdi_display );
+-        XFlush( gdi_display );
+         ERR("Failed to disable CRTC.\n");
+         pXRRFreeCrtcInfo( crtc_info );
+         pXRRFreeScreenResources( resources );
+@@ -441,7 +440,6 @@ static LONG xrandr12_set_current_mode( int mode )
+                                 crtc_info->rotation, crtc_info->outputs, crtc_info->noutput );
+ 
+     XUngrabServer( gdi_display );
+-    XFlush( gdi_display );
+ 
+     pXRRFreeCrtcInfo( crtc_info );
+     pXRRFreeScreenResources( resources );
+@@ -1063,29 +1061,10 @@ static void xrandr14_free_monitors( struct x11drv_monitor *monitors )
+     heap_free( monitors );
+ }
+ 
+-static BOOL xrandr14_device_change_handler( HWND hwnd, XEvent *event )
++static BOOL xrandr14_device_change_event( HWND hwnd, XEvent *event )
+ {
+-    if (hwnd == GetDesktopWindow() && GetWindowThreadProcessId( hwnd, NULL ) == GetCurrentThreadId())
+-        X11DRV_DisplayDevices_Init( TRUE );
+-    return FALSE;
+-}
+-
+-static void xrandr14_register_event_handlers(void)
+-{
+-    Display *display = thread_init_display();
+-    int event_base, error_base;
+-
+-    if (!pXRRQueryExtension( display, &event_base, &error_base ))
+-        return;
+-
+-    pXRRSelectInput( display, root_window,
+-                     RRCrtcChangeNotifyMask | RROutputChangeNotifyMask | RRProviderChangeNotifyMask );
+-    X11DRV_register_event_handler( event_base + RRNotify_CrtcChange, xrandr14_device_change_handler,
+-                                   "XRandR CrtcChange" );
+-    X11DRV_register_event_handler( event_base + RRNotify_OutputChange, xrandr14_device_change_handler,
+-                                   "XRandR OutputChange" );
+-    X11DRV_register_event_handler( event_base + RRNotify_ProviderChange, xrandr14_device_change_handler,
+-                                   "XRandR ProviderChange" );
++    X11DRV_DisplayDevices_Init( TRUE );
++    return TRUE;
+ }
+ 
+ #endif
+@@ -1099,7 +1078,7 @@ void X11DRV_XRandR_Init(void)
+ 
+     if (major) return; /* already initialized? */
+     if (!usexrandr) return; /* disabled in config */
+-    if (is_virtual_desktop()) return;
++    if (root_window != DefaultRootWindow( gdi_display )) return;
+     if (!(ret = load_xrandr())) return;  /* can't load the Xrandr library */
+ 
+     /* see if Xrandr is available */
+@@ -1128,14 +1107,22 @@ void X11DRV_XRandR_Init(void)
+     {
+         handler.name = "XRandR 1.4";
+         handler.priority = 200;
+-        handler.get_gpus = xrandr14_get_gpus;
+-        handler.get_adapters = xrandr14_get_adapters;
+-        handler.get_monitors = xrandr14_get_monitors;
+-        handler.free_gpus = xrandr14_free_gpus;
+-        handler.free_adapters = xrandr14_free_adapters;
+-        handler.free_monitors = xrandr14_free_monitors;
+-        handler.register_event_handlers = xrandr14_register_event_handlers;
++        handler.pGetGpus = xrandr14_get_gpus;
++        handler.pFreeGpus = xrandr14_free_gpus;
++        handler.pGetAdapters = xrandr14_get_adapters;
++        handler.pFreeAdapters = xrandr14_free_adapters;
++        handler.pGetMonitors = xrandr14_get_monitors;
++        handler.pFreeMonitors = xrandr14_free_monitors;
+         X11DRV_DisplayDevices_SetHandler( &handler );
++
++        pXRRSelectInput( thread_init_display(), root_window,
++                         RRCrtcChangeNotifyMask | RROutputChangeNotifyMask | RRProviderChangeNotifyMask);
++        X11DRV_register_event_handler( event_base + RRNotify_CrtcChange, xrandr14_device_change_event,
++                                       "XRandR CrtcChange" );
++        X11DRV_register_event_handler( event_base + RRNotify_OutputChange, xrandr14_device_change_event,
++                                       "XRandR OutputChange" );
++        X11DRV_register_event_handler( event_base + RRNotify_ProviderChange, xrandr14_device_change_event,
++                                       "XRandR ProviderChange" );
+     }
+ #endif
+ }
+diff --git a/dlls/winex11.drv/xvidmode.c b/dlls/winex11.drv/xvidmode.c
+index 5acc95bd2e..9c0c97f1eb 100644
+--- a/dlls/winex11.drv/xvidmode.c
++++ b/dlls/winex11.drv/xvidmode.c
+@@ -210,7 +210,7 @@ void X11DRV_XF86VM_Init(void)
+ #endif /* X_XF86VidModeSetGammaRamp */
+ 
+   /* retrieve modes */
+-  if (usexvidmode && !is_virtual_desktop())
++  if (usexvidmode && root_window == DefaultRootWindow( gdi_display ))
+   {
+       X11DRV_expect_error(gdi_display, XVidModeErrorHandler, NULL);
+       ok = pXF86VidModeGetAllModeLines(gdi_display, DefaultScreen(gdi_display), &nmodes, &real_xf86vm_modes);
+@@ -416,12 +416,8 @@ static BOOL xf86vm_set_gamma_ramp(struct x11drv_gamma_ramp *ramp)
+                                ramp->red, ramp->green, ramp->blue, GAMMA_RAMP_SIZE);
+     }
+ 
+-    X11DRV_expect_error(gdi_display, XVidModeErrorHandler, NULL);
+     ret = pXF86VidModeSetGammaRamp(gdi_display, DefaultScreen(gdi_display),
+                                    xf86vm_gammaramp_size, red, green, blue);
+-    if (ret) XSync( gdi_display, FALSE );
+-    if (X11DRV_check_error()) ret = FALSE;
+-
+     if (red != ramp->red)
+         heap_free(red);
+     return ret;
