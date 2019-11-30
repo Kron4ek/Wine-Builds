@@ -35,7 +35,7 @@ Build flags (amd64): -march=nocona -O2
 
 Build flags (x86): -march=pentium4 -O2
 
-Configure options: --without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-win16 --disable-tests
+Configure options: --without-curses --without-gstreamer --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests
 
 ---
 
