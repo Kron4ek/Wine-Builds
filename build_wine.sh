@@ -33,7 +33,7 @@ export CROSSCFLAGS_X64="-march=nocona -O2"
 export CROSSLDFLAGS_X32="${CROSSCFLAGS_X32}"
 export CROSSLDFLAGS_X64="${CROSSCFLAGS_X64}"
 
-export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --disable-winemenubuilder --disable-win16 --disable-tests"
+export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
 
 export WINE_VERSION_NUMBER="$1"
 
@@ -180,6 +180,8 @@ if [ "$2" = "improved" ]; then
 
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-vk-bits-4.5.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/proton_fs_hack_integer_scaling.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
