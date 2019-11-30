@@ -7,6 +7,8 @@ Latest Improved build contains these patches (in addition to Staging patchset):
 * fsync-staging-no_alloc_handle.patch
 * FS_bypass_compositor.patch
 * valve_proton_fullscreen_hack-staging.patch
+* proton-vk-bits-4.5.patch
+* proton_fs_hack_integer_scaling.patch
 * LAA-staging.patch
 * proton_mf_hacks.patch
 * enable_stg_shared_mem_def.patch
@@ -15,10 +17,30 @@ Brief patches description:
 
 * Revert some changes to apply fullscreen hack correctly
 * Use CLOCK_MONOTONIC instead of CLOCK_MONOTONIC_RAW in ntdll/server
-* Add FSYNC support
+   Improves performance in some cases
+* FSYNC support
+   New experimental replacement for ESYNC
+   ESYNC is still available to use
 * Bypass compositor in fullscreen mode
-* Fullscreen hack from Proton. It allows resolution changes for fullscreen
-  games without changing desktop resolution.
+   Reduces stuttering and improves performance
+* Fullscreen hack from Proton
+   Allows resolution changes for fullscreen games without changing
+   desktop resolution
+* Some winevulkan fixes from Proton
+* Integer scaling support for fullscreen hack
 * IMAGE_FILE_LARGE_ADDRESS_AWARE override
+   Useful for 32-bit games hitting address space limitations
 * Media Foundation workarounds from Proton
 * Enable STAGING_SHARED_MEMORY by default
+   Improves performance in some cases
+   Some apps (e.g. EA Origin) doesn't like it, so if you experience
+   some problems, then disable it
+
+Some notes:
+
+* FSYNC can be enabled using WINEFSYNC=1 env variable
+* ESYNC can be enabled using WINEESYNC=1 env variable
+* Large Address Aware can be enabled using WINE_LARGE_ADDRESS_AWARE=1 env variable
+* Staging Shared Memory can be disabled using STAGING_SHARED_MEMORY=0 env variable
+* Nearest neighbour upscaling can be enabled using PROTON_FSHACK_INTEGER_SCALING=1 env variable
+* Fullscreen hack requires libxinerama to work properly
