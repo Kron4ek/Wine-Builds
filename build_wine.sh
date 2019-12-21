@@ -157,11 +157,13 @@ if [ "$2" = "improved" ]; then
 	WINE_VERSION_STRING="Staging Improved"
 
 	PATCHES_DIR="$SOURCES_DIR/PKGBUILDS/wine-tkg-git/wine-tkg-patches"
+	PATCHES_DIR_COMMUNITY="$SOURCES_DIR/PKGBUILDS/community-patches/wine-tkg-git"
 
 	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
 	wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
 	git clone https://github.com/Tk-Glitch/PKGBUILDS.git
 	wget -O fshack-unbreak.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/fshack-unbreak.patch
+	wget -O LAA-staging.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/LAA-staging.patch
 
 	tar xf wine-$WINE_VERSION_NUMBER.tar.xz
 	tar xf v$WINE_VERSION_NUMBER.tar.gz
@@ -173,17 +175,20 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic-2.patch || patching_error
 
-	../wine-staging-$WINE_VERSION_NUMBER/patches/patchinstall.sh DESTDIR=../wine --all -W winex11.drv-mouse-coorrds -W winex11-MWM_Decorations || patching_error
+	../wine-staging-$WINE_VERSION_NUMBER/patches/patchinstall.sh DESTDIR=../wine --all -W winex11.drv-mouse-coorrds -W winex11-MWM_Decorations -W winex11-WM_WINDOWPOSCHANGING -W winex11-_NET_ACTIVE_WINDOW || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging-no_alloc_handle.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/proton-rawinput.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/proton_rawinput_addon.mypatch || patching_error
+
 	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-vk-bits-4.5.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_fs_hack_integer_scaling.patch || patching_error
 
-	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
+	patch -Np1 < "$SOURCES_DIR"/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
 elif [ "$2" = "proton" ]; then
