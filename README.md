@@ -55,7 +55,7 @@ that are not present in a regular (vanilla) Wine, it adds new functions, fixes s
 
 **Proton** is Wine modified by Valve, it contains many useful patches (primarily for a better gaming experience). This repo's Proton is almost the same as the Steam's Proton, but it doesn't require the Steam Runtime to work and it's intended to be used outside of Steam.
 
-**Improved** is Wine with Staging patchset and with some additional useful patches. The full list of used patches is in the [IMPROVED_BUILD_INFO](https://github.com/Kron4ek/Wine-Builds/blob/master/IMPROVED_BUILD_INFO) file.
+**Improved** is Wine with Staging patchset and with some additional useful patches. The full list of patches is in the improved_build_info.txt inside the build directory.
 
 ---
 
