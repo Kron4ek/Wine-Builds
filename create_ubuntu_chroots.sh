@@ -5,13 +5,6 @@
 ## This script downloads everything from the official sources, you can check
 ## every URL below to be sure.
 ##
-## This script creates chroots that are fully identical (libraries might
-## be newer though as they are regularly updated in Ubuntu repos) to my
-## build environment that i use to compile my Wine builds.
-##
-## You can use this script in conjunction with another my script
-## build_wine.sh to compile the same Wine builds that i compile.
-##
 ## debootstrap is required
 ## root rights are required
 
