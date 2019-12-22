@@ -10,11 +10,11 @@
 ##
 ## Examples of usage:
 ##
-## ./build_wine.sh latest				(build latest Wine version)
+## ./build_wine.sh latest			(build latest Wine version)
 ## ./build_wine.sh latest staging		(build latest Wine-Staging version)
 ## ./build_wine.sh latest improved		(build latest Wine-Staging version with additional patches)
 ## ./build_wine.sh 3.16-8 proton		(build Proton 3.16-8)
-## ./build_wine.sh 3.21					(build Wine 3.21)
+## ./build_wine.sh 3.21				(build Wine 3.21)
 
 export MAINDIR="/home/builder"
 export SOURCES_DIR="$MAINDIR/sources_dir"
