@@ -103,7 +103,7 @@ Both scripts use the official sources, you can check every URL in the scripts to
 
 Does this mean that Wine builds compiled this way will have the same checksums as my Wine builds? Sometimes yes, but unfortunately not always. When you use my script to create chroots, you get chroots with the latest versions of the libraries, as they are regularly updated in the official Ubuntu repos. And my own chroots may have newer or older versions of the libraries, it depends on when you created your chroots and when i updated my own chroots. Reproducibility is the problem because of that. However, if you'll create chroots and compile Wine build(s) within a few hours after i uploaded them, then, most likely, you'll get the same checksums as my Wine builds.
 
-Anyway, these scripts are a pretty convenient way to compile your own Wine builds if you don't trust my binaries.
+Anyway, if you don't trust my binaries, these scripts are a pretty convenient way to compile your own Wine builds.
 
 ---
 
