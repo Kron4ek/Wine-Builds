@@ -97,11 +97,11 @@ environment variable.
 You can use **create_ubuntu_chroots.sh** to create chroots that are fully identical to my
 chroots that i use to compile my Wine builds. 
 
-Therefore, you can compile the same Wine builds that i compile by using **create_ubuntu_chroots.sh** and **build_wine.sh**.
+I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine builds, so you can use these scripts too to compile the same Wine builds.
 
 Both scripts use the official sources, you can check every URL in the scripts to be sure. And both scripts are pretty small, you can check the whole scripts to be sure they don't do anything harmfull.
 
-Does this mean that Wine builds compiled this way will have the same checksums as my Wine builds? Sometimes yes, but unfortunately not always. When you use my script to create chroots, you get chroots with the latest versions of the libraries, as they are regularly updated in the official Ubuntu repos. And my own chroots may have newer or older versions of the libraries, it depends on when you created your chroots and when i updated my own chroots. Reproducibility is the problem because of that. However, if you'll create chroots and compile Wine build(s) within a few hours after i uploaded them, then, most likely, you'll get the same checksums as my Wine builds.
+Does this mean that Wine builds compiled this way will have the same checksums as my Wine builds? Sometimes yes, but unfortunately not always. When you use my script to create chroots, you get chroots with the latest versions of the libraries, as they are regularly updated in the official Ubuntu repos. And my own chroots may have newer or older versions of the libraries, it depends on when you created (or updated) your chroots and when i created/updated my own chroots. Reproducibility is the problem because of that. However, if you'll create (or update) chroots and compile Wine build(s) within a few hours after i uploaded them, then most likely you'll get the same checksums as my Wine builds.
 
 Anyway, if you don't trust my binaries, these scripts are a pretty convenient way to compile your own Wine builds.
 
