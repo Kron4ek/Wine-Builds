@@ -1,13 +1,30 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-## Script for fast creating Ubuntu chroots for Wine compilation.
+## Script for creating Ubuntu chroots for Wine compilation.
+##
+## This script downloads everything from the official sources, you can check
+## every URL below to be sure.
+##
+## This script creates chroots that are fully identical (libraries might
+## be newer though as they are regularly updated in Ubuntu repos) to my
+## build environment that i use to compile my Wine builds.
+##
+## You can use this script in conjunction with another my script
+## build_wine.sh to compile the same Wine builds that i compile.
 ##
 ## debootstrap is required
+## root rights are required
+
+if [ "$EUID" != 0 ]; then
+   echo "This script requires root rights!"
+
+   exit 1
+fi
 
 export CHROOT_DISTRO="bionic"
 export CHROOT_MIRROR="http://archive.ubuntu.com/ubuntu/"
 
-export MAINDIR="/home/builder"
+export MAINDIR="/home/builder/chroots"
 export CHROOT_X64="${MAINDIR}"/${CHROOT_DISTRO}64_chroot
 export CHROOT_X32="${MAINDIR}"/${CHROOT_DISTRO}32_chroot
 
@@ -95,6 +112,8 @@ create_build_scripts () {
 	cp "$MAINDIR/prepare_chroot.sh" "$CHROOT_X32/opt"
 	mv "$MAINDIR/prepare_chroot.sh" "$CHROOT_X64/opt"
 }
+
+mkdir -p "${MAINDIR}"
 
 debootstrap --arch amd64 $CHROOT_DISTRO "$CHROOT_X64" $CHROOT_MIRROR
 debootstrap --arch i386 $CHROOT_DISTRO "$CHROOT_X32" $CHROOT_MIRROR
