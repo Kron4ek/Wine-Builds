@@ -215,15 +215,23 @@ else
 
 	mv wine-$WINE_VERSION_NUMBER wine
 
-	if [ "$2" = "staging" ]; then
-		WINE_VERSION="$WINE_VERSION_NUMBER-staging"
-
+	if [ -n "$2" ] ; then
 		wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
 
 		tar xf v$WINE_VERSION_NUMBER.tar.gz
 
 		cd wine-staging-$WINE_VERSION_NUMBER/patches
+
+		if [ "$2" = "staging" ]; then
+		WINE_VERSION="$WINE_VERSION_NUMBER-staging"
 		./patchinstall.sh DESTDIR=../../wine --all || patching_error
+
+		elif [ "$2" = "esync" ]; then
+		WINE_VERSION="$WINE_VERSION_NUMBER-esync"
+		WINE_VERSION_STRING="esync"
+		./patchinstall.sh DESTDIR=../../wine eventfd_synchronization || patching_error
+
+		fi
 	fi
 fi
 
