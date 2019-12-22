@@ -92,18 +92,15 @@ environment variable.
 
 ---
 
-## Build environment / Reproducible builds / Security
+## Compilation / Build environment / Security
 
-You can use **create_ubuntu_chroots.sh** to create chroots that are fully identical to my
-chroots that i use to compile my Wine builds. 
-
-I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine builds, so you can use these scripts too to compile the same Wine builds.
+I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine builds, so you can use these scripts to compile the same Wine builds. The first script will create two Ubuntu chroots (32-bit and 64-bit) that are identical (but versions of libraries may differ) to my chroots that i use to compile my Wine builds, and the second script will compile Wine using the created chroots.
 
 Both scripts use the official sources, you can check every URL in the scripts to be sure. And both scripts are pretty small, you can check the whole scripts to be sure that they don't do anything harmfull.
 
-Does this mean that Wine binaries compiled this way will have the same checksums as my Wine binaries? Sometimes yes, but unfortunately not always. When you use my script to create chroots, you get chroots with the latest versions of the libraries, as they are regularly updated in the official Ubuntu repos. And my own chroots may have newer or older versions of the libraries, it depends on when you created (or updated) your chroots and when i created/updated my own chroots. Compiled Wine binaries may have different checksums because of that. However, if you'll create (or update) chroots and compile Wine build(s) within a few hours after i uploaded them, then most likely you'll get the same checksums as my Wine binaries.
+Keep in mind that **create_ubuntu_chroots.sh** creates chroots with the latest versions of libraries as they are regularly updated in the Ubuntu repos, so your chroots and my chroots may or may not be identical regarding libraries versions. The checksums of your Wine binaries may differ from the checksums of my Wine binaries because of that. However, if you'll create (or update) your chroots and compile your Wine build(s) within a few hours after i uploaded my Wine builds, then their checksums may be the same.
 
-Anyway, if you don't trust my binaries, these scripts are a pretty convenient way to compile your own Wine builds.
+These scripts are a pretty convenient way to compile your own Wine builds if you don't trust my binaries or if you want to apply different patches.
 
 ---
 
