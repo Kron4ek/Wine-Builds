@@ -105,8 +105,9 @@ Does this mean that Wine builds compiled this way will have the same checksums a
 
 Anyway, these scripts are a pretty convenient way to compile your own Wine builds if you don't trust my binaries.
 
-### Links to sources and patches:
+---
 
+### Links to sources and patches:
 
 * https://dl.winehq.org/wine/source/
 * https://github.com/wine-staging/wine-staging
