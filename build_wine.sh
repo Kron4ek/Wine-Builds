@@ -74,7 +74,7 @@ create_build_scripts () {
 	echo 'export CROSSLDFLAGS="'${CROSSLDFLAGS_X32}'"' >> $MAINDIR/build32.sh
 	echo 'mkdir build-tools && cd build-tools' >> $MAINDIR/build32.sh
 	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --prefix /opt/wine32-build' >> $MAINDIR/build32.sh
-	echo 'make -j2' >> $MAINDIR/build32.sh
+	echo 'make -j$(nproc)' >> $MAINDIR/build32.sh
 	echo 'make install' >> $MAINDIR/build32.sh
 	echo 'export CFLAGS="'${CFLAGS_X64}'"' >> $MAINDIR/build32.sh
 	echo 'export CXXFLAGS="'${CFLAGS_X64}'"' >> $MAINDIR/build32.sh
@@ -84,7 +84,7 @@ create_build_scripts () {
 	echo 'cd ..' >> $MAINDIR/build32.sh
 	echo 'mkdir build-combo && cd build-combo' >> $MAINDIR/build32.sh
 	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --with-wine64=../build64 --with-wine-tools=../build-tools --prefix /opt/wine-build' >> $MAINDIR/build32.sh
-	echo 'make -j2' >> $MAINDIR/build32.sh
+	echo 'make -j$(nproc)' >> $MAINDIR/build32.sh
 	echo 'make install' >> $MAINDIR/build32.sh
 
 	echo '#!/bin/sh' > $MAINDIR/build64.sh
@@ -98,7 +98,7 @@ create_build_scripts () {
 	echo 'export CROSSLDFLAGS="'${CROSSLDFLAGS_X64}'"' >> $MAINDIR/build64.sh
 	echo 'mkdir build64 && cd build64' >> $MAINDIR/build64.sh
 	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --enable-win64 --prefix /opt/wine-build' >> $MAINDIR/build64.sh
-	echo 'make -j2' >> $MAINDIR/build64.sh
+	echo 'make -j$(nproc)' >> $MAINDIR/build64.sh
 	echo 'make install' >> $MAINDIR/build64.sh
 
 	chmod +x "$MAINDIR/build64.sh"
@@ -281,9 +281,9 @@ fi
 tar -cf wine-$WINE_VERSION-amd64.tar wine-$WINE_VERSION-amd64
 tar -cf wine-$WINE_VERSION-amd64-nomultilib.tar wine-$WINE_VERSION-amd64-nomultilib
 tar -cf wine-$WINE_VERSION-x86.tar wine-$WINE_VERSION-x86
-xz -9 wine-$WINE_VERSION-amd64.tar
-xz -9 wine-$WINE_VERSION-amd64-nomultilib.tar
-xz -9 wine-$WINE_VERSION-x86.tar
+xz -T0 -9 wine-$WINE_VERSION-amd64.tar
+xz -T0 -9 wine-$WINE_VERSION-amd64-nomultilib.tar
+xz -T0 -9 wine-$WINE_VERSION-x86.tar
 
 rm -r wine-$WINE_VERSION-amd64
 rm -r wine-$WINE_VERSION-amd64-nomultilib
