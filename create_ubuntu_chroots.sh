@@ -6,9 +6,8 @@
 ## root rights are required
 
 if [ "$EUID" != 0 ]; then
-   echo "This script requires root rights!"
-
-   exit 1
+	echo "This script requires root rights!"
+	exit 1
 fi
 
 export CHROOT_DISTRO="bionic"
