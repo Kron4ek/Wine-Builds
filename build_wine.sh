@@ -223,13 +223,13 @@ else
 		cd wine-staging-$WINE_VERSION_NUMBER/patches
 
 		if [ "$2" = "staging" ]; then
-		WINE_VERSION="$WINE_VERSION_NUMBER-staging"
-		./patchinstall.sh DESTDIR=../../wine --all || patching_error
+			WINE_VERSION="$WINE_VERSION_NUMBER-staging"
+			./patchinstall.sh DESTDIR=../../wine --all || patching_error
 
 		elif [ "$2" = "esync" ]; then
-		WINE_VERSION="$WINE_VERSION_NUMBER-esync"
-		WINE_VERSION_STRING="esync"
-		./patchinstall.sh DESTDIR=../../wine eventfd_synchronization || patching_error
+			WINE_VERSION="$WINE_VERSION_NUMBER-esync"
+			WINE_VERSION_STRING="esync"
+			./patchinstall.sh DESTDIR=../../wine eventfd_synchronization || patching_error
 
 		fi
 	fi
