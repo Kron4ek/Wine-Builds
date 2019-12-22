@@ -248,9 +248,13 @@ if [ "$2" = "exit" ] || [ "$3" = "exit" ] || [ "$4" = "exit" ]; then
 fi
 
 if [ "$EUID" != 0 ]; then
-   echo "Root rights are required for compilation!"
+	echo "Root rights are required for compilation!"
+	exit 1
+fi
 
-   exit 1
+if [ ! -d "${CHROOT_X64}" ] || [ ! -d "${CHROOT_X32}" ]; then
+	echo "Chroots are required for compilation!"
+	exit 1
 fi
 
 clear; echo "Creating build scripts"
