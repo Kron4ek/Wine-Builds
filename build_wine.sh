@@ -1,18 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-## Script for building Wine (vanilla, staging, esync, pba, proton).
-## It uses two chroots (x32 and x64) for compilation.
+## Script for Wine compilation.
+## It uses two Ubuntu chroots (x32 and x64).
+##
+## You can change some environment variables (for example, CFLAGS) to
+## the desired values.
 ##
 ## This script requires: git, wget, autoconf
 ##
-## You can change env variables to desired values.
-##
-## Examples of how to use it:
+## Examples of usage:
 ##
 ## ./build_wine.sh latest				(build latest Wine version)
-## ./build_wine.sh latest staging			(build latest Wine-Staging version)
-## ./build_wine.sh latest improved			(build latest Wine-Staging version with additional patches)
-## ./build_wine.sh 3.16-8 proton			(build Proton 3.16-8)
+## ./build_wine.sh latest staging		(build latest Wine-Staging version)
+## ./build_wine.sh latest improved		(build latest Wine-Staging version with additional patches)
+## ./build_wine.sh 3.16-8 proton		(build Proton 3.16-8)
 ## ./build_wine.sh 3.21					(build Wine 3.21)
 
 export MAINDIR="/home/builder"
@@ -242,8 +243,14 @@ if [ ! -z "$2" ] && [ "$2" != "staging" ] && [ "$2" != "exit" ]; then
 fi
 
 if [ "$2" = "exit" ] || [ "$3" = "exit" ] || [ "$4" = "exit" ]; then
-	echo "Force exit"
+	clear; echo "Force exit"
 	exit
+fi
+
+if [ "$EUID" != 0 ]; then
+   echo "Root rights are required for compilation!"
+
+   exit 1
 fi
 
 clear; echo "Creating build scripts"
