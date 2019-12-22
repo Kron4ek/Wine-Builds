@@ -2,9 +2,6 @@
 
 ## Script for creating Ubuntu chroots for Wine compilation.
 ##
-## This script downloads everything from the official sources, you can check
-## every URL below to be sure.
-##
 ## debootstrap is required
 ## root rights are required
 
