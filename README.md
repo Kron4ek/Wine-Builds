@@ -98,7 +98,7 @@ I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine buil
 
 Both scripts use the official sources, you can check every URL in the scripts to be sure. And both scripts are pretty small, you can check the whole scripts to be sure that they don't do anything harmful.
 
-Keep in mind that **create_ubuntu_chroots.sh** creates chroots that contain updated versions of the libraries as they are regularly updated in the Ubuntu repos, so your chroots and my chroots may not be identical in regard to the libraries versions. Because of this, the checksums of your Wine binaries may differ from the checksums of my Wine binaries. However, if you'll create (or update) your chroots and compile your Wine build(s) within a few hours after i have uploaded my Wine builds, then the checksums of their binaries may be the same.
+Keep in mind that **create_ubuntu_chroots.sh** creates chroots that contain updated versions of the libraries as they are regularly updated in the Ubuntu repos, so your chroots and my chroots may or may not be identical in regard to the libraries versions. Because of this, the checksums of your Wine binaries may differ from the checksums of my Wine binaries. However, if you'll create (or update) your chroots and compile your Wine build(s) within a few hours after i have uploaded my Wine builds, then the checksums of their binaries may be the same.
 
 These scripts are a pretty convenient way to compile your own Wine builds if you don't trust my binaries or if you want to apply different patches.
 
