@@ -45,10 +45,10 @@ build_in_chroot () {
 		CHROOT_PATH="$CHROOT_X64"
 	fi
 
-	echo "Unmount chroot directories. Just in case."
+	echo "Unmounting chroot directories"
 	umount -Rl "$CHROOT_PATH"
 
-	echo "Mount directories for chroot"
+	echo "Mounting directories for chroots"
 	mount --bind "$CHROOT_PATH" "$CHROOT_PATH"
 	mount --bind /dev "$CHROOT_PATH/dev"
 	mount --bind /dev/shm "$CHROOT_PATH/dev/shm"
@@ -59,7 +59,7 @@ build_in_chroot () {
 	echo "Chrooting into $CHROOT_PATH"
 	chroot "$CHROOT_PATH" /usr/bin/env LANG=en_US.UTF-8 TERM=xterm PATH="/bin:/sbin:/usr/bin:/usr/sbin" /opt/build.sh
 
-	echo "Unmount chroot directories"
+	echo "Unmounting chroot directories"
 	umount -Rl "$CHROOT_PATH"
 }
 
@@ -110,17 +110,17 @@ create_build_scripts () {
 }
 
 patching_error () {
-	echo "Some patches were not applied correctly. Exiting."
-	exit
+	echo "Some patches were not applied correctly"
+	exit 1
 }
 
-if [ ! "$WINE_VERSION_NUMBER" ]; then
+if [ -z "$WINE_VERSION_NUMBER" ]; then
 	echo "No version specified"
 	exit
 fi
 
 if [ "$MAINDIR" = "$SOURCES_DIR" ]; then
-	echo "Don't use the same directory for MAINDIR and SOURCES_DIR"
+	echo "Do not use the same directory for MAINDIR and SOURCES_DIR"
 	exit
 fi
 
@@ -128,20 +128,20 @@ rm -rf "$SOURCES_DIR"
 mkdir "$SOURCES_DIR"
 cd "$SOURCES_DIR" || exit 1
 
-# Replace latest argument with actual latest Wine version
+# Replace latest parameter with the actual latest Wine version
 if [ "$WINE_VERSION_NUMBER" = "latest" ]; then
 	if [ "$2" != "proton" ]; then
 		wget https://raw.githubusercontent.com/wine-mirror/wine/master/VERSION
 
 		WINE_VERSION_NUMBER="$(cat VERSION | sed "s/Wine version //g")"
 	else
-		echo "Please, specify version to build Proton"
+		echo "Please specify version number to build Proton"
 		exit
 	fi
 fi
 
-# Stable and Development version has different sources location
-# Determine if we trying to build stable or development version
+# Stable and Development versions have different sources location
+# Determine if the chosen version is stable or development
 if [ "$(echo "$WINE_VERSION_NUMBER" | cut -c3)" = "0" ]; then
 	WINE_SOURCES_VERSION=$(echo "$WINE_VERSION_NUMBER" | cut -c1).0
 else
@@ -228,13 +228,13 @@ else
 			./patchinstall.sh DESTDIR=../../wine --all || patching_error
 		elif [ "$2" = "esync" ]; then
 			WINE_VERSION="$WINE_VERSION_NUMBER-esync"
-			WINE_VERSION_STRING="esync"
+			WINE_VERSION_STRING="Esync"
 			./patchinstall.sh DESTDIR=../../wine eventfd_synchronization || patching_error
 		fi
 	fi
 fi
 
-# Replace version string in winecfg and "wine --version" output
+# Replace version string in the winecfg and in the "wine --version" output
 if [ ! -z "$2" ] && [ "$2" != "staging" ] && [ "$2" != "exit" ]; then
 	sed -i "s/  (Staging)//g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
 	sed -i "s/\\\1/\\\1  (${WINE_VERSION_STRING})/g" "$SOURCES_DIR/wine/libs/wine/Makefile.in"
