@@ -183,8 +183,7 @@ if [ "$2" = "improved" ]; then
 
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton/proton-rawinput.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/proton_rawinput_addon.mypatch || patching_error
+#	patch -Np1 < "$PATCHES_DIR"/proton/proton-rawinput.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-vk-bits-4.5.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_fs_hack_integer_scaling.patch || patching_error
