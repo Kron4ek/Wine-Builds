@@ -92,21 +92,17 @@ environment variable.
 
 ---
 
-## Compilation / Build environment / Security
+## Compilation / Build environment
 
 I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine builds, so you can use these scripts to compile the same Wine builds. The first script creates two Ubuntu chroots (32-bit and 64-bit) that are identical (but versions of the libraries may differ) to my chroots that i use to compile my Wine builds, and the second script compiles Wine builds using the created chroots.
-
-Both scripts use the official sources, you can check every URL in the scripts to be sure. And both scripts are pretty small, you can check the whole scripts to be sure that they don't do anything harmful.
-
-However, there is no guarantee that your Wine binaries and my Wine binaries will have the same checksums, as this depends on several factors.
 
 These scripts are a pretty convenient way to compile your own Wine builds if you don't trust my binaries or if you want to apply different patches.
 
 ---
 
-### Links to sources and patches:
+### Links to the sources:
 
-* https://dl.winehq.org/wine/source/
+* https://dl.winehq.org/wine/source
 * https://github.com/wine-staging/wine-staging
 * https://github.com/Tk-Glitch/PKGBUILDS/tree/master/wine-tkg-git
 * https://github.com/zfigura/wine/tree/esync
