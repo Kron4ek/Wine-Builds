@@ -175,18 +175,34 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$SOURCES_DIR"/fshack-unbreak.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic-2.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/misc/childwindow.patch || patching_error
 
-	../wine-staging-$WINE_VERSION_NUMBER/patches/patchinstall.sh DESTDIR=../wine --all -W winex11.drv-mouse-coorrds -W winex11-MWM_Decorations -W winex11-WM_WINDOWPOSCHANGING -W winex11-_NET_ACTIVE_WINDOW || patching_error
+	../wine-staging-$WINE_VERSION_NUMBER/patches/patchinstall.sh DESTDIR=../wine --all \
+	-W winex11.drv-mouse-coorrds -W winex11-MWM_Decorations \
+	-W winex11-WM_WINDOWPOSCHANGING -W winex11-_NET_ACTIVE_WINDOW \
+	-W dinput-SetActionMap-genre -W dinput-axis-recalc -W dinput-joy-mappings \
+	-W dinput-reconnect-joystick -W dinput-remap-joystick \
+	-W user32-rawinput-mouse -W user32-rawinput-nolegacy \
+	-W user32-rawinput-mouse-experimental -W user32-rawinput-hid \
+	-W user32-rawinput-keyboard -W winex11-key_translation || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging-no_alloc_handle.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
-#	patch -Np1 < "$PATCHES_DIR"/proton/proton-rawinput.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton/proton-rawinput.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-vk-bits-4.5.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_fs_hack_integer_scaling.patch || patching_error
+
+	patch -Np1 < ../wine-staging-$WINE_VERSION_NUMBER/patches/winex11-key_translation/0001-winex11-Match-keyboard-in-Unicode.patch || patching_error
+	patch -Np1 < ../wine-staging-$WINE_VERSION_NUMBER/patches/winex11-key_translation/0002-winex11-Fix-more-key-translation.patch || patching_error
+	patch -Np1 < ../wine-staging-$WINE_VERSION_NUMBER/patches/winex11-key_translation/0003-winex11.drv-Fix-main-Russian-keyboard-layout.patch || patching_error
+
+	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-sdl-joy.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-sdl-joy-2.patch || patching_error
+	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-gamepad-additions.patch || patching_error
 
 	patch -Np1 < "$SOURCES_DIR"/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
