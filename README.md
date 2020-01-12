@@ -31,9 +31,9 @@ Older (4.11 and older) builds require **GLIBC 2.23** or newer.
 
 ### Compilation parameters
 
-Build flags (amd64): -march=nocona -O2
+Build flags (amd64): -march=x86-64 -msse3 -mfpmath=sse -O2
 
-Build flags (x86): -march=pentium4 -O2
+Build flags (x86): -march=i686 -mmmx -msse -msse2 -mfpmath=sse -O2
 
 Configure options: --without-curses --without-gstreamer --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests
 
