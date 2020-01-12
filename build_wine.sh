@@ -24,15 +24,15 @@ export CHROOT_X32="$MAINDIR/chroots/bionic32_chroot"
 export C_COMPILER="gcc-8"
 export CXX_COMPILER="g++-8"
 
-export CFLAGS_X32="-march=pentium4 -O2"
-export CFLAGS_X64="-march=nocona -O2"
-export LDFLAGS_X32="${CFLAGS_X32}"
-export LDFLAGS_X64="${CFLAGS_X64}"
+export CFLAGS_X32="-march=i686 -mmmx -msse -msse2 -mfpmath=sse -O2"
+export CFLAGS_X64="-march=x86-64 -msse3 -mfpmath=sse -O2"
+export LDFLAGS_X32="-Wl,-O1,--sort-common,--as-needed"
+export LDFLAGS_X64="${LDFLAGS_X32}"
 
-export CROSSCFLAGS_X32="-march=pentium4 -O2"
-export CROSSCFLAGS_X64="-march=nocona -O2"
-export CROSSLDFLAGS_X32="${CROSSCFLAGS_X32}"
-export CROSSLDFLAGS_X64="${CROSSCFLAGS_X64}"
+export CROSSCFLAGS_X32="${CFLAGS_X32}"
+export CROSSCFLAGS_X64="${CFLAGS_X64}"
+export CROSSLDFLAGS_X32="${LDFLAGS_X32}"
+export CROSSLDFLAGS_X64="${LDFLAGS_X64}"
 
 export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
 
