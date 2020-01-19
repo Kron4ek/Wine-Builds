@@ -184,7 +184,7 @@ if [ "$2" = "improved" ]; then
 	-W dinput-reconnect-joystick -W dinput-remap-joystick \
 	-W user32-rawinput-mouse -W user32-rawinput-nolegacy \
 	-W user32-rawinput-mouse-experimental -W user32-rawinput-hid \
-	-W user32-rawinput-keyboard -W winex11-key_translation || patching_error
+	-W winex11-key_translation || patching_error
 
 	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging-no_alloc_handle.patch || patching_error
