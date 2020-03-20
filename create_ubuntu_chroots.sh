@@ -67,10 +67,10 @@ create_build_scripts () {
 	echo 'apt-get -y autoclean' >> $MAINDIR/prepare_chroot.sh
 	echo 'mkdir /opt/build_libs' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd /opt/build_libs' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O sdl.tar.gz https://www.libsdl.org/release/SDL2-2.0.10.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O faudio.tar.gz https://github.com/FNA-XNA/FAudio/archive/20.02.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O vulkan-loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/v1.2.132.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O vulkan-headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/v1.2.132.tar.gz' >> $MAINDIR/prepare_chroot.sh
+	echo 'wget -O sdl.tar.gz https://www.libsdl.org/release/SDL2-2.0.12.tar.gz' >> $MAINDIR/prepare_chroot.sh
+	echo 'wget -O faudio.tar.gz https://github.com/FNA-XNA/FAudio/archive/20.03.tar.gz' >> $MAINDIR/prepare_chroot.sh
+	echo 'wget -O vulkan-loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/v1.2.135.tar.gz' >> $MAINDIR/prepare_chroot.sh
+	echo 'wget -O vulkan-headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/v1.2.135.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'wget -O spirv-headers.tar.gz https://github.com/KhronosGroup/SPIRV-Headers/archive/1.5.1.corrected.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi' >> $MAINDIR/prepare_chroot.sh
 	echo 'if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi' >> $MAINDIR/prepare_chroot.sh
@@ -81,13 +81,13 @@ create_build_scripts () {
 	echo 'tar xf vulkan-headers.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'tar xf spirv-headers.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../SDL2-2.0.10 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
+	echo 'cmake ../SDL2-2.0.12 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../FAudio-20.02 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
+	echo 'cmake ../FAudio-20.03 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../Vulkan-Headers-1.2.132 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
+	echo 'cmake ../Vulkan-Headers-1.2.135 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../Vulkan-Loader-1.2.132 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
+	echo 'cmake ../Vulkan-Loader-1.2.135 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
 	echo 'cmake ../SPIRV-Headers-1.5.1.corrected && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && dpkg -x wine.deb .' >> $MAINDIR/prepare_chroot.sh
