@@ -1,0 +1,49 @@
+From: "Myah Caron" <qsniyg@mail.com>
+Subject: [PATCH] libwine: Add WINEUSER environment variable
+Message-Id: <trinity-5b5449b3-5fd8-48a6-bfe1-3eba6a585ed0-1581188634409@3c-app-mailcom-lxa12>
+Date: Sat, 8 Feb 2020 20:03:54 +0100
+
+This environment variable is useful in a few cases:
+
+ * If a user would rather not use their own username in the prefix.
+ * If a user wants multiple users in a wine prefix (e.g. as separate
+profiles for programs).
+ * If the prefix was created with proton, which replaces the username
+with steamuser, this allows the data under the home directory to be
+usable under vanilla wine without needing symlinks or renaming the
+directory.
+ * Similarly, this allows prefixes created under a different username
+(e.g. transferred from a different system) to be used.
+
+Signed-off-by: Myah Caron <qsniyg@mail.com>
+---
+ libs/wine/config.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libs/wine/config.c b/libs/wine/config.c
+index 2a3314cbfd..d05f021267 100644
+--- a/libs/wine/config.c
++++ b/libs/wine/config.c
+@@ -263,14 +263,14 @@ static void init_paths(void)
+     struct stat st;
+
+     const char *home = getenv( "HOME" );
+-    const char *user = NULL;
++    const char *user = getenv( "WINEUSER" );
+     const char *prefix = getenv( "WINEPREFIX" );
+     char uid_str[32];
+     struct passwd *pwd = getpwuid( getuid() );
+
+     if (pwd)
+     {
+-        user = pwd->pw_name;
++        if (!user) user = pwd->pw_name;
+         if (!home) home = pwd->pw_dir;
+     }
+     if (!user)
+--
+2.25.0
+
+
+
+
