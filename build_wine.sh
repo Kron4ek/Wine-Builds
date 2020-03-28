@@ -197,6 +197,8 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-vk-bits-4.5.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_fs_hack_integer_scaling.patch || patching_error
 
+	patch -Np1 < "$PATCHES_DIR"/proton/proton-winevulkan.patch || patching_error
+
 	patch -Np1 < "$STAGING_PATCHES_DIR"/winex11-key_translation/0001-winex11-Match-keyboard-in-Unicode.patch || patching_error
 	patch -Np1 < "$STAGING_PATCHES_DIR"/winex11-key_translation/0002-winex11-Fix-more-key-translation.patch || patching_error
 	patch -Np1 < "$STAGING_PATCHES_DIR"/winex11-key_translation/0003-winex11.drv-Fix-main-Russian-keyboard-layout.patch || patching_error
@@ -207,7 +209,11 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
 
-	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/winevulkan_fshack_opts.mypatch || patching_error
+	chmod +x dlls/winevulkan/make_vulkan
+	chmod +x tools/make_requests
+	dlls/winevulkan/make_vulkan
+	tools/make_requests
+	autoreconf -f
 elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
