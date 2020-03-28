@@ -157,18 +157,25 @@ if [ "$2" = "improved" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-staging-improved"
 	WINE_VERSION_STRING="Staging Improved"
 
-	PATCHES_DIR="$SOURCES_DIR/PKGBUILDS/wine-tkg-git/wine-tkg-git/wine-tkg-patches"
-	PATCHES_DIR_COMMUNITY="$SOURCES_DIR/PKGBUILDS/community-patches/wine-tkg-git"
+	PATCHES_DIR="$SOURCES_DIR/wine-tkg-git/wine-tkg-git/wine-tkg-patches"
+	PATCHES_DIR_COMMUNITY="$SOURCES_DIR/community-patches/wine-tkg-git"
 	STAGING_PATCHES_DIR="$SOURCES_DIR/wine-staging-$WINE_VERSION_NUMBER/patches"
 
 	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
 	wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
-	git clone --recurse-submodules -j3 https://github.com/Tk-Glitch/PKGBUILDS.git
+	git clone https://github.com/Frogging-Family/wine-tkg-git.git
+	git clone https://github.com/Frogging-Family/community-patches.git
 	wget -O fshack-unbreak.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/fshack-unbreak.patch
 	wget -O wineuser_env.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/wineuser_env.patch
 
+	if [ ! -f v$WINE_VERSION_NUMBER.tar.gz ]; then
+		git clone https://github.com/wine-staging/wine-staging.git
+		mv wine-staging wine-staging-$WINE_VERSION_NUMBER
+	else
+		tar xf v$WINE_VERSION_NUMBER.tar.gz
+	fi
+
 	tar xf wine-$WINE_VERSION_NUMBER.tar.xz
-	tar xf v$WINE_VERSION_NUMBER.tar.gz
 
 	mv wine-$WINE_VERSION_NUMBER wine
 	cd wine
@@ -245,7 +252,12 @@ else
 	if [ -n "$2" ] ; then
 		wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
 
-		tar xf v$WINE_VERSION_NUMBER.tar.gz
+		if [ ! -f v$WINE_VERSION_NUMBER.tar.gz ]; then
+			git clone https://github.com/wine-staging/wine-staging.git
+			mv wine-staging wine-staging-$WINE_VERSION_NUMBER
+		else
+			tar xf v$WINE_VERSION_NUMBER.tar.gz
+		fi
 
 		cd wine-staging-$WINE_VERSION_NUMBER/patches
 
