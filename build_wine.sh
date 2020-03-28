@@ -157,13 +157,13 @@ if [ "$2" = "improved" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-staging-improved"
 	WINE_VERSION_STRING="Staging Improved"
 
-	PATCHES_DIR="$SOURCES_DIR/PKGBUILDS/wine-tkg-git/wine-tkg-patches"
+	PATCHES_DIR="$SOURCES_DIR/PKGBUILDS/wine-tkg-git/wine-tkg-git/wine-tkg-patches"
 	PATCHES_DIR_COMMUNITY="$SOURCES_DIR/PKGBUILDS/community-patches/wine-tkg-git"
 	STAGING_PATCHES_DIR="$SOURCES_DIR/wine-staging-$WINE_VERSION_NUMBER/patches"
 
 	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
 	wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
-	git clone https://github.com/Tk-Glitch/PKGBUILDS.git
+	git clone --recurse-submodules -j3 https://github.com/Tk-Glitch/PKGBUILDS.git
 	wget -O fshack-unbreak.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/fshack-unbreak.patch
 	wget -O wineuser_env.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/wineuser_env.patch
 
@@ -208,6 +208,8 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
+	
+	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/Do_not_fail_if_LDR_MODULE.Flags_is_modified.mypatch || patching_error
 
 	chmod +x dlls/winevulkan/make_vulkan
 	chmod +x tools/make_requests
