@@ -216,7 +216,7 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
 	
-	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/Do_not_fail_if_LDR_MODULE.Flags_is_modified.mypatch || patching_error
+	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/Use_a_cached_version_of_LDR_MODULE_flags_for_InitDLL.mypatch || patching_error
 
 	chmod +x dlls/winevulkan/make_vulkan
 	chmod +x tools/make_requests
