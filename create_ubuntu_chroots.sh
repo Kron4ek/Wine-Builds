@@ -61,7 +61,7 @@ create_build_scripts () {
 	echo 'apt-get -y dist-upgrade' >> $MAINDIR/prepare_chroot.sh
 	echo 'apt-get -y build-dep wine-development libsdl2 libvulkan1' >> $MAINDIR/prepare_chroot.sh
 	echo 'apt-get -y install gcc-8 g++-8 wget git' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y install libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev' >> $MAINDIR/prepare_chroot.sh
+	echo 'apt-get -y install libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev' >> $MAINDIR/prepare_chroot.sh
 	echo 'apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove' >> $MAINDIR/prepare_chroot.sh
 	echo 'apt-get -y clean' >> $MAINDIR/prepare_chroot.sh
 	echo 'apt-get -y autoclean' >> $MAINDIR/prepare_chroot.sh
