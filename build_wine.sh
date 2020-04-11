@@ -186,6 +186,10 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic-2.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/childwindow.patch || patching_error
 
+	cd "$SOURCES_DIR"/wine-staging-$WINE_VERSION_NUMBER
+	patch -Np1 < "$PATCHES_DIR"/misc/staging-44d1a45-localreverts.patch || patching_error
+	cd "$SOURCES_DIR"/wine
+
 	"$STAGING_PATCHES_DIR"/patchinstall.sh DESTDIR=../wine --all \
 	-W winex11.drv-mouse-coorrds -W winex11-MWM_Decorations \
 	-W winex11-WM_WINDOWPOSCHANGING -W winex11-_NET_ACTIVE_WINDOW \
@@ -215,8 +219,6 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
-	
-	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/Use_a_cached_version_of_LDR_MODULE_flags_for_InitDLL.mypatch || patching_error
 
 	chmod +x dlls/winevulkan/make_vulkan
 	chmod +x tools/make_requests
