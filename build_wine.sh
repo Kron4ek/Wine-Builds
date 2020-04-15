@@ -34,7 +34,7 @@ export CROSSCFLAGS_X64="${CFLAGS_X64}"
 export CROSSLDFLAGS_X32="${LDFLAGS_X32}"
 export CROSSLDFLAGS_X64="${LDFLAGS_X64}"
 
-export WINE_BUILD_OPTIONS="--without-curses --without-gstreamer --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
+export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
 
 export WINE_VERSION_NUMBER="$1"
 
