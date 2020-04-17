@@ -24,7 +24,7 @@ export CHROOT_X32="$MAINDIR/chroots/bionic32_chroot"
 export C_COMPILER="gcc-8"
 export CXX_COMPILER="g++-8"
 
-export CFLAGS_X32="-march=i686 -mmmx -msse -msse2 -mfpmath=sse -O2"
+export CFLAGS_X32="-march=i686 -msse2 -mfpmath=sse -O2"
 export CFLAGS_X64="-march=x86-64 -msse3 -mfpmath=sse -O2"
 export LDFLAGS_X32="-Wl,-O1,--sort-common,--as-needed"
 export LDFLAGS_X64="${LDFLAGS_X32}"
