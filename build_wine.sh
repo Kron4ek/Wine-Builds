@@ -187,6 +187,7 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$PATCHES_DIR"/misc/childwindow.patch || patching_error
 
 	cd "$SOURCES_DIR"/wine-staging-$WINE_VERSION_NUMBER
+	sed -i 's/-@@ -3383,3 +3393,14 @@ DECL_HANDLER(get_rawinput_devices)/-@@ -3432,3 +3442,14 @@ DECL_HANDLER(get_rawinput_devices)/g' "$PATCHES_DIR"/misc/staging-44d1a45-localreverts.patch
 	patch -Np1 < "$PATCHES_DIR"/misc/staging-44d1a45-localreverts.patch || patching_error
 	cd "$SOURCES_DIR"/wine
 
@@ -222,6 +223,8 @@ if [ "$2" = "improved" ]; then
 
 	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_install_fix.mypatch || patching_error
 	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_downloads.mypatch || patching_error
+	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/origin_downloads_e4ca5dbe_revert.mypatch || patching_error
+	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/GNUTLShack.mypatch || patching_error
 
 	chmod +x dlls/winevulkan/make_vulkan
 	chmod +x tools/make_requests
