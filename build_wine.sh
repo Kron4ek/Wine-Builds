@@ -218,7 +218,7 @@ if [ "$2" = "improved" ]; then
 
 	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
 #	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
+#	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
 
 	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_install_fix.mypatch || patching_error
 	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_downloads.mypatch || patching_error
