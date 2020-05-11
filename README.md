@@ -104,7 +104,8 @@ These scripts are a pretty convenient way to compile your own Wine builds if you
 
 * https://dl.winehq.org/wine/source
 * https://github.com/wine-staging/wine-staging
-* https://github.com/Tk-Glitch/PKGBUILDS/tree/master/wine-tkg-git
+* https://github.com/Frogging-Family/wine-tkg-git
+* https://github.com/Frogging-Family/community-patches
 * https://github.com/zfigura/wine/tree/esync
 * https://github.com/acomminos/wine-pba
 * https://gitlab.com/Firer4t/wine-pba
