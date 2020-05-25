@@ -183,7 +183,6 @@ if [ "$2" = "improved" ]; then
 	patch -Np1 < "$SOURCES_DIR"/wineuser_env.patch || patching_error
 	patch -Np1 < "$SOURCES_DIR"/fshack-unbreak.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic-2.patch || patching_error
 	patch -Np1 < "$PATCHES_DIR"/misc/childwindow.patch || patching_error
 
 	cd "$SOURCES_DIR"/wine-staging-$WINE_VERSION_NUMBER
@@ -221,7 +220,6 @@ if [ "$2" = "improved" ]; then
 #	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
 #	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
 
-	sed -i 's/interlocked_xchg/InterlockedExchange/g' "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_downloads.mypatch
 	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_install_fix.mypatch || patching_error
 	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_downloads.mypatch || patching_error
 	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/origin_downloads_e4ca5dbe_revert.mypatch || patching_error
