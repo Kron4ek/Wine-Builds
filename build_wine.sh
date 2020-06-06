@@ -10,11 +10,10 @@
 ##
 ## Examples of usage:
 ##
-## ./build_wine.sh latest			(build latest Wine version)
-## ./build_wine.sh latest staging		(build latest Wine-Staging version)
-## ./build_wine.sh latest improved		(build latest Wine-Staging version with additional patches)
-## ./build_wine.sh 3.16-8 proton		(build Proton 3.16-8)
-## ./build_wine.sh 3.21				(build Wine 3.21)
+## ./build_wine.sh 5.5               (build Wine 5.5)
+## ./build_wine.sh latest            (build latest Wine version)
+## ./build_wine.sh latest staging    (build latest Wine-Staging version)
+## ./build_wine.sh 5.0-8 proton      (build Proton 5.0-8)
 
 export MAINDIR="/home/builder"
 export SOURCES_DIR="$MAINDIR/sources_dir"
@@ -153,84 +152,7 @@ echo "Downloading sources and patches"
 echo "Preparing Wine for compilation"
 echo
 
-if [ "$2" = "improved" ]; then
-	WINE_VERSION="$WINE_VERSION_NUMBER-staging-improved"
-	WINE_VERSION_STRING="Staging Improved"
-
-	PATCHES_DIR="$SOURCES_DIR/wine-tkg-git/wine-tkg-git/wine-tkg-patches"
-	PATCHES_DIR_COMMUNITY="$SOURCES_DIR/community-patches/wine-tkg-git"
-	STAGING_PATCHES_DIR="$SOURCES_DIR/wine-staging-$WINE_VERSION_NUMBER/patches"
-
-	wget https://dl.winehq.org/wine/source/$WINE_SOURCES_VERSION/wine-$WINE_VERSION_NUMBER.tar.xz
-	wget https://github.com/wine-staging/wine-staging/archive/v$WINE_VERSION_NUMBER.tar.gz
-	git clone https://github.com/Frogging-Family/wine-tkg-git.git
-	git clone https://github.com/Frogging-Family/community-patches.git
-	wget -O fshack-unbreak.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/fshack-unbreak.patch
-	wget -O wineuser_env.patch https://raw.githubusercontent.com/Kron4ek/Wine-Builds/master/wineuser_env.patch
-
-	if [ ! -f v$WINE_VERSION_NUMBER.tar.gz ]; then
-		git clone https://github.com/wine-staging/wine-staging.git
-		mv wine-staging wine-staging-$WINE_VERSION_NUMBER
-	else
-		tar xf v$WINE_VERSION_NUMBER.tar.gz
-	fi
-
-	tar xf wine-$WINE_VERSION_NUMBER.tar.xz
-
-	mv wine-$WINE_VERSION_NUMBER wine
-	cd wine
-
-	patch -Np1 < "$SOURCES_DIR"/wineuser_env.patch || patching_error
-	patch -Np1 < "$SOURCES_DIR"/fshack-unbreak.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton/use_clock_monotonic.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/misc/childwindow.patch || patching_error
-
-	cd "$SOURCES_DIR"/wine-staging-$WINE_VERSION_NUMBER
-	sed -i 's/-@@ -3383,3 +3393,14 @@ DECL_HANDLER(get_rawinput_devices)/-@@ -3432,3 +3442,14 @@ DECL_HANDLER(get_rawinput_devices)/g' "$PATCHES_DIR"/misc/staging-44d1a45-localreverts.patch
-	patch -Np1 < "$PATCHES_DIR"/misc/staging-44d1a45-localreverts.patch || patching_error
-	cd "$SOURCES_DIR"/wine
-
-	"$STAGING_PATCHES_DIR"/patchinstall.sh DESTDIR=../wine --all \
-	-W winex11.drv-mouse-coorrds -W winex11-MWM_Decorations \
-	-W winex11-WM_WINDOWPOSCHANGING -W winex11-_NET_ACTIVE_WINDOW \
-	-W user32-rawinput-mouse -W user32-rawinput-nolegacy \
-	-W user32-rawinput-mouse-experimental -W user32-rawinput-hid \
-	-W winex11-key_translation || patching_error
-
-	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton/fsync-staging-no_alloc_handle.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton/fsync-spincounts.patch || patching_error
-
-	patch -Np1 < "$PATCHES_DIR"/proton/FS_bypass_compositor.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton/valve_proton_fullscreen_hack-staging.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton/proton-rawinput.patch || patching_error
-
-	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-vk-bits-4.5.patch || patching_error
-	patch -Np1 < "$PATCHES_DIR"/proton/proton_fs_hack_integer_scaling.patch || patching_error
-
-	patch -Np1 < "$PATCHES_DIR"/proton/proton-winevulkan.patch || patching_error
-
-	patch -Np1 < "$STAGING_PATCHES_DIR"/winex11-key_translation/0001-winex11-Match-keyboard-in-Unicode.patch || patching_error
-	patch -Np1 < "$STAGING_PATCHES_DIR"/winex11-key_translation/0002-winex11-Fix-more-key-translation.patch || patching_error
-	patch -Np1 < "$STAGING_PATCHES_DIR"/winex11-key_translation/0003-winex11.drv-Fix-main-Russian-keyboard-layout.patch || patching_error
-
-	patch -Np1 < "$PATCHES_DIR"/proton-tkg-specific/proton-staging_winex11-MWM_Decorations.patch || patching_error
-
-	patch -Np1 < "$PATCHES_DIR"/proton/LAA-staging.patch || patching_error
-#	patch -Np1 < "$PATCHES_DIR"/proton/proton_mf_hacks.patch || patching_error
-#	patch -Np1 < "$PATCHES_DIR"/misc/enable_stg_shared_mem_def.patch || patching_error
-
-	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_install_fix.mypatch || patching_error
-	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/rockstarlauncher_downloads.mypatch || patching_error
-	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/origin_downloads_e4ca5dbe_revert.mypatch || patching_error
-	patch -Np1 < "$PATCHES_DIR_COMMUNITY"/GNUTLShack.mypatch || patching_error
-
-	chmod +x dlls/winevulkan/make_vulkan
-	chmod +x tools/make_requests
-	dlls/winevulkan/make_vulkan
-	tools/make_requests
-	autoreconf -f
-elif [ "$2" = "proton" ]; then
+if [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
 
@@ -333,12 +255,6 @@ cd "$MAINDIR/wine-$WINE_VERSION-amd64" && rm -r include && rm -r share/applicati
 cd "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib" && rm -r include && rm -r share/applications && rm -r share/man && cd bin && ln -sr wine64 wine
 
 cd "$MAINDIR"
-
-if [ "$2" = "improved" ] && [ -f improved_build_info.txt ]; then
-	cp improved_build_info.txt wine-$WINE_VERSION-x86
-	cp improved_build_info.txt wine-$WINE_VERSION-amd64
-	cp improved_build_info.txt wine-$WINE_VERSION-amd64-nomultilib
-fi
 
 tar -cf wine-$WINE_VERSION-amd64.tar wine-$WINE_VERSION-amd64
 tar -cf wine-$WINE_VERSION-amd64-nomultilib.tar wine-$WINE_VERSION-amd64-nomultilib
