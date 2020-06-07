@@ -55,7 +55,7 @@ that are not present in a regular (vanilla) Wine, it adds new functions, fixes s
 
 **Proton** is Wine modified by Valve, it contains many useful patches (primarily for a better gaming experience). This repo's Proton is almost the same as the Steam's Proton, but it doesn't require the Steam Runtime to work and it's intended to be used outside of Steam.
 
-**Improved** is Wine with Staging patchset and with some additional useful patches. The full list of patches is in the improved_build_info.txt inside the build directory.
+**TkG** is Wine with Staging patchset and with many additional useful patches. Full list of patches is in the wine-tkg-config.txt inside the build directory. Compiled from [this sources](https://github.com/Tk-Glitch/wine-tkg). Main Wine-TkG repo is [here](https://github.com/Frogging-Family/wine-tkg-git).
 
 ---
 
@@ -105,6 +105,7 @@ These scripts are a pretty convenient way to compile your own Wine builds if you
 * https://dl.winehq.org/wine/source
 * https://github.com/wine-staging/wine-staging
 * https://github.com/Frogging-Family/wine-tkg-git
+* https://github.com/Tk-Glitch/wine-tkg
 * https://github.com/Frogging-Family/community-patches
 * https://github.com/zfigura/wine/tree/esync
 * https://github.com/acomminos/wine-pba
