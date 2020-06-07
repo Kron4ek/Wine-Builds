@@ -11,7 +11,7 @@ All other builds (including nomultilib, stable and old versions) can be download
 
 Extract the desired build to any directory, and then you can run applications using the path to the Wine binary. For example:
 
-    /home/username/wine-4.4-amd64/bin/wine application.exe
+    /home/username/wine-5.0-amd64/bin/wine application.exe
     
 ---
     
@@ -53,42 +53,9 @@ applications and it doesn't require 32-bit dependencies.
 **Staging** is Wine with Staging patchset, it contains many useful patches 
 that are not present in a regular (vanilla) Wine, it adds new functions, fixes some bugs and improves performance in some cases.
 
-**Proton** is Wine modified by Valve, it contains many useful patches (primarily for a better gaming experience). This repo's Proton is almost the same as the Steam's Proton, but it doesn't require the Steam Runtime to work and it's intended to be used outside of Steam.
+**Proton** is Wine modified by Valve, it contains many useful patches (primarily for a better gaming experience). The differences from Steam's Proton are the lack of the Proton's python script and the lack of some builtin dlls (like DXVK), as well as the build environment.
 
-**TkG** is Wine with Staging patchset and with many additional useful patches. Full list of patches is in the wine-tkg-config.txt inside the build directory. Compiled from [this sources](https://github.com/Tk-Glitch/wine-tkg). Main Wine-TkG repo is [here](https://github.com/Frogging-Family/wine-tkg-git).
-
----
-
-## Useful notes
-
-**ESYNC / FSYNC** improves performance in games by removing wineserver overhead for synchronization objects.
-
-**PBA** improves performance in many Direct3D games.
-
-**LARGE_ADDRESS_AWARE** is useful for 32-bit games hitting address space limitations.
-
----
-
-**ESYNC** can be enabled using WINEESYNC=1 environment variable, and it's also necessary to [increase](https://github.com/zfigura/wine/blob/esync/README.esync)
-file descriptors limits (soft and hard). If file descriptors limit is not high enough, then games will
-crash often.
-
-**FSYNC** can be enabled using WINEFSYNC=1 environment variable. At the moment FSYNC requires [patched kernel](https://steamcommunity.com/app/221410/discussions/0/3158631000006906163/).
-
-**PBA** can be enabled using PBA_ENABLE=1 environment variable.
-
-**LARGE_ADDRESS_AWARE** can be enabled using WINE_LARGE_ADDRESS_AWARE=1
-environment variable.
-
----
-
-**PBA** is present only in PBA builds.
-
-**ESYNC** is present in Proton and also in Improved and Staging builds since 4.6 version.
-
-**FSYNC** is present in Proton (4.11 and newer) and Improved (4.14 and newer) builds.
-
-**LARGE_ADDRESS_AWARE** is present in Proton and Improved builds.
+**TkG** is Wine with Staging patchset and with many additional useful patches. Full list of patches is in wine-tkg-config.txt inside the build directory. Compiled from [this sources](https://github.com/Tk-Glitch/wine-tkg). Main Wine-TkG repo is [here](https://github.com/Frogging-Family/wine-tkg-git).
 
 ---
 
