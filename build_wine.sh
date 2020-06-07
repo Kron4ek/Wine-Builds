@@ -152,7 +152,14 @@ echo "Downloading sources and patches"
 echo "Preparing Wine for compilation"
 echo
 
-if [ "$2" = "proton" ]; then
+if [ "$2" = "tkg" ]; then
+	git clone https://github.com/Tk-Glitch/wine-tkg.git
+	mv wine-tkg wine
+
+	WINE_VERSION_NUMBER="$(cat wine/VERSION | sed "s/Wine version //g")"
+	WINE_VERSION="$WINE_VERSION_NUMBER-staging-tkg"
+	WINE_VERSION_STRING="Staging TkG"
+elif [ "$2" = "proton" ]; then
 	WINE_VERSION="$WINE_VERSION_NUMBER-proton"
 	WINE_VERSION_STRING="Proton"
 
@@ -258,6 +265,12 @@ cd "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib" && rm -r include && rm -r shar
 find "$MAINDIR/wine-$WINE_VERSION-x86" -type f -exec strip --strip-unneeded {} \;
 find "$MAINDIR/wine-$WINE_VERSION-amd64" -type f -exec strip --strip-unneeded {} \;
 find "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib" -type f -exec strip --strip-unneeded {} \;
+
+if [ "$2" = "tkg" ]; then
+	cp "$SOURCES_DIR"/wine/wine-tkg-config.txt "$MAINDIR/wine-$WINE_VERSION-x86"
+	cp "$SOURCES_DIR"/wine/wine-tkg-config.txt "$MAINDIR/wine-$WINE_VERSION-amd64"
+	cp "$SOURCES_DIR"/wine/wine-tkg-config.txt "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib"
+fi
 
 cd "$MAINDIR"
 
