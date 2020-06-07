@@ -254,6 +254,11 @@ cd "$MAINDIR/wine-$WINE_VERSION-x86" && rm -r include && rm -r share/application
 cd "$MAINDIR/wine-$WINE_VERSION-amd64" && rm -r include && rm -r share/applications && rm -r share/man
 cd "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib" && rm -r include && rm -r share/applications && rm -r share/man && cd bin && ln -sr wine64 wine
 
+# Strip all binaries and libraries
+find "$MAINDIR/wine-$WINE_VERSION-x86" -type f -exec strip --strip-unneeded {} \;
+find "$MAINDIR/wine-$WINE_VERSION-amd64" -type f -exec strip --strip-unneeded {} \;
+find "$MAINDIR/wine-$WINE_VERSION-amd64-nomultilib" -type f -exec strip --strip-unneeded {} \;
+
 cd "$MAINDIR"
 
 tar -cf wine-$WINE_VERSION-amd64.tar wine-$WINE_VERSION-amd64
