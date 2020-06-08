@@ -246,9 +246,6 @@ clear; echo "Compiling 32-bit Wine"
 mv "$CHROOT_X64/opt/wine" "$CHROOT_X32/opt"
 build_in_chroot 32
 
-clear; echo "Compilation complete"
-echo "Compressing Wine..."
-
 mv "$CHROOT_X32/opt/wine-build" "$MAINDIR/wine-$WINE_VERSION-amd64"
 mv "$CHROOT_X32/opt/wine32-build" "$MAINDIR/wine-$WINE_VERSION-x86"
 
@@ -273,6 +270,10 @@ if [ "$2" = "tkg" ]; then
 fi
 
 cd "$MAINDIR"
+
+clear
+echo "Compilation complete"
+echo "Creating archives..."
 
 tar -cf wine-$WINE_VERSION-amd64.tar wine-$WINE_VERSION-amd64
 tar -cf wine-$WINE_VERSION-amd64-nomultilib.tar wine-$WINE_VERSION-amd64-nomultilib
