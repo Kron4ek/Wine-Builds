@@ -74,7 +74,7 @@ create_build_scripts () {
 	echo 'wget -O spirv-headers.tar.gz https://github.com/KhronosGroup/SPIRV-Headers/archive/1.5.3.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi' >> $MAINDIR/prepare_chroot.sh
 	echo 'if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi' >> $MAINDIR/prepare_chroot.sh
-	echo 'git clone https://github.com/HansKristian-Work/vkd3d.git' >> $MAINDIR/prepare_chroot.sh
+	echo 'git clone https://github.com/HansKristian-Work/vkd3d-proton.git' >> $MAINDIR/prepare_chroot.sh
 	echo 'tar xf sdl.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'tar xf faudio.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'tar xf vulkan-loader.tar.gz' >> $MAINDIR/prepare_chroot.sh
@@ -94,9 +94,9 @@ create_build_scripts () {
 	echo 'cmake ../SPIRV-Headers-1.5.3 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && dpkg -x wine.deb .' >> $MAINDIR/prepare_chroot.sh
 	echo 'cp opt/wine-stable/bin/widl /usr/bin' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd vkd3d && ./autogen.sh' >> $MAINDIR/prepare_chroot.sh
+	echo 'cd vkd3d-proton && ./autogen.sh' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo '../vkd3d/configure && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
+	echo '../vkd3d-proton/configure && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd /opt && rm -r /opt/build_libs' >> $MAINDIR/prepare_chroot.sh
 
 	chmod +x "$MAINDIR/prepare_chroot.sh"
