@@ -68,9 +68,9 @@ create_build_scripts () {
 	echo 'mkdir /opt/build_libs' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd /opt/build_libs' >> $MAINDIR/prepare_chroot.sh
 	echo 'wget -O sdl.tar.gz https://www.libsdl.org/release/SDL2-2.0.12.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O faudio.tar.gz https://github.com/FNA-XNA/FAudio/archive/20.06.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O vulkan-loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/v1.2.145.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O vulkan-headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/v1.2.145.tar.gz' >> $MAINDIR/prepare_chroot.sh
+	echo 'wget -O faudio.tar.gz https://github.com/FNA-XNA/FAudio/archive/20.08.tar.gz' >> $MAINDIR/prepare_chroot.sh
+	echo 'wget -O vulkan-loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/v1.2.148.tar.gz' >> $MAINDIR/prepare_chroot.sh
+	echo 'wget -O vulkan-headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/v1.2.149.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'wget -O spirv-headers.tar.gz https://github.com/KhronosGroup/SPIRV-Headers/archive/1.5.3.tar.gz' >> $MAINDIR/prepare_chroot.sh
 	echo 'if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi' >> $MAINDIR/prepare_chroot.sh
 	echo 'if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi' >> $MAINDIR/prepare_chroot.sh
@@ -85,11 +85,11 @@ create_build_scripts () {
 	echo 'mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
 	echo 'cmake ../SDL2-2.0.12 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../FAudio-20.06 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
+	echo 'cmake ../FAudio-20.08 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../Vulkan-Headers-1.2.145 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
+	echo 'cmake ../Vulkan-Headers-1.2.149 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../Vulkan-Loader-1.2.145 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
+	echo 'cmake ../Vulkan-Loader-1.2.148 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
 	echo 'cmake ../SPIRV-Headers-1.5.3 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
 	echo 'cd ../ && dpkg -x wine.deb .' >> $MAINDIR/prepare_chroot.sh
