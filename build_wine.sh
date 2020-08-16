@@ -153,7 +153,7 @@ echo "Preparing Wine for compilation"
 echo
 
 if [ "$2" = "tkg" ]; then
-	git clone https://github.com/Tk-Glitch/wine-tkg.git
+	git clone https://github.com/Kron4ek/wine-tkg.git
 	mv wine-tkg wine
 
 	WINE_VERSION_NUMBER="$(cat wine/VERSION | sed "s/Wine version //g")"
