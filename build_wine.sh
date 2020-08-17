@@ -265,7 +265,9 @@ cd "${MAINDIR}"/wine-${BUILD_NAME}-amd64 && rm -r include && rm -r share/applica
 cd "${MAINDIR}"/wine-${BUILD_NAME}-amd64-nomultilib && rm -r include && rm -r share/applications && rm -r share/man && cd bin && ln -sr wine64 wine
 
 # Strip all Wine binaries and libraries
-find "${MAINDIR}" -type f -exec strip --strip-unneeded {} \; 2>/dev/null
+find "${MAINDIR}"/wine-${BUILD_NAME}-x86 -type f -exec strip --strip-unneeded {} \; 2>/dev/null
+find "${MAINDIR}"/wine-${BUILD_NAME}-amd64 -type f -exec strip --strip-unneeded {} \; 2>/dev/null
+find "${MAINDIR}"/wine-${BUILD_NAME}-amd64-nomultilib -type f -exec strip --strip-unneeded {} \; 2>/dev/null
 
 if [ "${WINE_BRANCH}" = "tkg" ]; then
 	cp "${SOURCES_DIR}"/wine/wine-tkg-config.txt "${MAINDIR}"/wine-${BUILD_NAME}-x86
