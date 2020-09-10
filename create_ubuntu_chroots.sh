@@ -43,77 +43,78 @@ prepare_chroot () {
 }
 
 create_build_scripts () {
-	echo '#!/bin/bash' > $MAINDIR/prepare_chroot.sh
-	echo 'apt-get update' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y install nano' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y install locales' >> $MAINDIR/prepare_chroot.sh
-	echo 'echo ru_RU.UTF_8 UTF-8 >> /etc/locale.gen' >> $MAINDIR/prepare_chroot.sh
-	echo 'echo en_US.UTF_8 UTF-8 >> /etc/locale.gen' >> $MAINDIR/prepare_chroot.sh
-	echo 'locale-gen' >> $MAINDIR/prepare_chroot.sh
-	echo 'echo deb '${CHROOT_MIRROR}' '${CHROOT_DISTRO}' main universe > /etc/apt/sources.list' >> $MAINDIR/prepare_chroot.sh
-	echo 'echo deb '${CHROOT_MIRROR}' '${CHROOT_DISTRO}'-updates main universe >> /etc/apt/sources.list' >> $MAINDIR/prepare_chroot.sh
-	echo 'echo deb '${CHROOT_MIRROR}' '${CHROOT_DISTRO}'-security main universe >> /etc/apt/sources.list' >> $MAINDIR/prepare_chroot.sh
-	echo 'echo deb-src '${CHROOT_MIRROR}' '${CHROOT_DISTRO}' main universe >> /etc/apt/sources.list' >> $MAINDIR/prepare_chroot.sh
-	echo 'echo deb-src '${CHROOT_MIRROR}' '${CHROOT_DISTRO}'-updates main universe >> /etc/apt/sources.list' >> $MAINDIR/prepare_chroot.sh
-	echo 'echo deb-src '${CHROOT_MIRROR}' '${CHROOT_DISTRO}'-security main universe >> /etc/apt/sources.list' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get update' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y upgrade' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y dist-upgrade' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y build-dep wine-development libsdl2 libvulkan1' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y install gcc-8 g++-8 wget git' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y clean' >> $MAINDIR/prepare_chroot.sh
-	echo 'apt-get -y autoclean' >> $MAINDIR/prepare_chroot.sh
-	echo 'mkdir /opt/build_libs' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd /opt/build_libs' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O sdl.tar.gz https://www.libsdl.org/release/SDL2-2.0.12.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O faudio.tar.gz https://github.com/FNA-XNA/FAudio/archive/20.08.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O vulkan-loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/v1.2.148.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O vulkan-headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/v1.2.149.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'wget -O spirv-headers.tar.gz https://github.com/KhronosGroup/SPIRV-Headers/archive/1.5.3.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi' >> $MAINDIR/prepare_chroot.sh
-	echo 'if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi' >> $MAINDIR/prepare_chroot.sh
-	echo 'git clone https://github.com/HansKristian-Work/vkd3d-proton.git' >> $MAINDIR/prepare_chroot.sh
-	echo 'tar xf sdl.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'tar xf faudio.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'tar xf vulkan-loader.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'tar xf vulkan-headers.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'tar xf spirv-headers.tar.gz' >> $MAINDIR/prepare_chroot.sh
-	echo 'export CFLAGS="-O2"' >> $MAINDIR/prepare_chroot.sh
-	echo 'export CXXFLAGS="-O2"' >> $MAINDIR/prepare_chroot.sh
-	echo 'mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../SDL2-2.0.12 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../FAudio-20.08 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../Vulkan-Headers-1.2.149 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../Vulkan-Loader-1.2.148 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo 'cmake ../SPIRV-Headers-1.5.3 && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd ../ && dpkg -x wine.deb .' >> $MAINDIR/prepare_chroot.sh
-	echo 'cp opt/wine-stable/bin/widl /usr/bin' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd vkd3d-proton && ./autogen.sh' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd ../ && rm -r build && mkdir build && cd build' >> $MAINDIR/prepare_chroot.sh
-	echo '../vkd3d-proton/configure && make -j$(nproc) && make install' >> $MAINDIR/prepare_chroot.sh
-	echo 'cd /opt && rm -r /opt/build_libs' >> $MAINDIR/prepare_chroot.sh
+	echo '#!/bin/bash' > "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get update' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y install nano' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y install locales' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'echo ru_RU.UTF_8 UTF-8 >> /etc/locale.gen' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'echo en_US.UTF_8 UTF-8 >> /etc/locale.gen' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'locale-gen' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'echo deb '${CHROOT_MIRROR}' '${CHROOT_DISTRO}' main universe > /etc/apt/sources.list' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'echo deb '${CHROOT_MIRROR}' '${CHROOT_DISTRO}'-updates main universe >> /etc/apt/sources.list' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'echo deb '${CHROOT_MIRROR}' '${CHROOT_DISTRO}'-security main universe >> /etc/apt/sources.list' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'echo deb-src '${CHROOT_MIRROR}' '${CHROOT_DISTRO}' main universe >> /etc/apt/sources.list' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'echo deb-src '${CHROOT_MIRROR}' '${CHROOT_DISTRO}'-updates main universe >> /etc/apt/sources.list' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'echo deb-src '${CHROOT_MIRROR}' '${CHROOT_DISTRO}'-security main universe >> /etc/apt/sources.list' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get update' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y upgrade' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y dist-upgrade' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y build-dep wine-development libsdl2 libvulkan1' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y install gcc-8 g++-8 wget git' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y clean' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'apt-get -y autoclean' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'mkdir /opt/build_libs' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd /opt/build_libs' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'wget -O sdl.tar.gz https://www.libsdl.org/release/SDL2-2.0.12.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'wget -O faudio.tar.gz https://github.com/FNA-XNA/FAudio/archive/20.09.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'wget -O vulkan-loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/v1.2.153.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'wget -O vulkan-headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/v1.2.153.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'wget -O spirv-headers.tar.gz https://github.com/KhronosGroup/SPIRV-Headers/archive/1.5.3.reservations1.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'git clone https://github.com/HansKristian-Work/vkd3d-proton.git' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'tar xf sdl.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'tar xf faudio.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'tar xf vulkan-loader.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'tar xf vulkan-headers.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'tar xf spirv-headers.tar.gz' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'export CFLAGS="-O2"' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'export CXXFLAGS="-O2"' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'mkdir build && cd build' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cmake ../SDL2-2.0.12 && make -j$(nproc) && make install' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd ../ && rm -r build && mkdir build && cd build' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cmake ../FAudio-20.09 && make -j$(nproc) && make install' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd ../ && rm -r build && mkdir build && cd build' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cmake ../Vulkan-Headers-1.2.153 && make -j$(nproc) && make install' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd ../ && rm -r build && mkdir build && cd build' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cmake ../Vulkan-Loader-1.2.153 && make -j$(nproc) && make install' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd ../ && rm -r build && mkdir build && cd build' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cmake ../SPIRV-Headers-1.5.3.reservations1 && make -j$(nproc) && make install' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd ../ && dpkg -x wine.deb .' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cp opt/wine-stable/bin/widl /usr/bin' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd vkd3d-proton && ./autogen.sh' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd ../ && rm -r build && mkdir build && cd build' >> "${MAINDIR}"/prepare_chroot.sh
+	echo '../vkd3d-proton/configure && make -j$(nproc) && make install' >> "${MAINDIR}"/prepare_chroot.sh
+	echo 'cd /opt && rm -r /opt/build_libs' >> "${MAINDIR}"/prepare_chroot.sh
 
-	chmod +x "$MAINDIR/prepare_chroot.sh"
-	cp "$MAINDIR/prepare_chroot.sh" "$CHROOT_X32/opt"
-	mv "$MAINDIR/prepare_chroot.sh" "$CHROOT_X64/opt"
+	chmod +x "${MAINDIR}"/prepare_chroot.sh
+	cp "${MAINDIR}"/prepare_chroot.sh "${CHROOT_X32}"/opt
+	mv "${MAINDIR}"/prepare_chroot.sh "${CHROOT_X64}"/opt
 }
 
 mkdir -p "${MAINDIR}"
 
-debootstrap --arch amd64 $CHROOT_DISTRO "$CHROOT_X64" $CHROOT_MIRROR
-debootstrap --arch i386 $CHROOT_DISTRO "$CHROOT_X32" $CHROOT_MIRROR
+debootstrap --arch amd64 $CHROOT_DISTRO "${CHROOT_X64}" $CHROOT_MIRROR
+debootstrap --arch i386 $CHROOT_DISTRO "${CHROOT_X32}" $CHROOT_MIRROR
 
 create_build_scripts
 prepare_chroot 32
 prepare_chroot 64
 
-rm "$CHROOT_X64/opt/prepare_chroot.sh"
-rm "$CHROOT_X32/opt/prepare_chroot.sh"
+rm "${CHROOT_X64}"/opt/prepare_chroot.sh
+rm "${CHROOT_X32}"/opt/prepare_chroot.sh
 
-clear; echo "Done"
+clear
+echo "Done"
