@@ -25,6 +25,16 @@ export STAGING_VERSION=""
 # Available branches: vanilla, staging, proton, tkg.
 export WINE_BRANCH="staging"
 
+# Set this to a path to your Wine sources (for example, /home/username/wine-custom-src).
+# This is useful if you already have Wine sources somewhere on your storage
+# and you want to compile them.
+#
+# You can also set this to a GitHub clone url instead of a local path.
+#
+# If you don't want to compile custom Wine sources, then just leave this
+# variable empty.
+export CUSTOM_SRC_PATH=""
+
 # Set to true to download and prepare sources, but do not compile them.
 # If this variable is set to true, root rights are not required.
 export DO_NOT_COMPILE="false"
@@ -33,6 +43,10 @@ export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disa
 
 # Keep in mind that the root's HOME directory is /root.
 export MAINDIR="${HOME}"
+
+# Temporary directory where Wine sources will be stored.
+# Do not set this variable to an existing non-empty directory!
+# This directory is removed and recreated on each script run.
 export SOURCES_DIR="${MAINDIR}"/src
 
 export CHROOT_X64="${MAINDIR}"/chroots/bionic64_chroot
@@ -122,7 +136,7 @@ create_build_scripts () {
 	mv "${MAINDIR}"/build32.sh "${CHROOT_X32}"/opt/build.sh
 }
 
-if [ -z "$WINE_VERSION" ]; then
+if [ -z "${WINE_VERSION}" ] && [ -z "${CUSTOM_SRC_PATH}" ] && [ "${WINE_BRANCH}" != "tkg" ]; then
 	echo "No Wine version specified!"
 	exit 1
 fi
@@ -139,7 +153,7 @@ cd "${SOURCES_DIR}" || exit 1
 
 # Replace latest parameter with the actual latest Wine version
 if [ "$WINE_VERSION" = "latest" ]; then
-	wget https://raw.githubusercontent.com/wine-mirror/wine/master/VERSION
+	wget -q --show-progress https://raw.githubusercontent.com/wine-mirror/wine/master/VERSION
 
 	WINE_VERSION="$(cat VERSION | sed "s/Wine version //g")"
 fi
@@ -153,13 +167,36 @@ else
 fi
 
 clear
-echo "Wine ${WINE_VERSION} ${WINE_BRANCH}"
+if [ ! -z "${CUSTOM_SRC_PATH}" ]; then
+	echo "Wine custom ${CUSTOM_SRC_PATH}"
+elif [ "${WINE_BRANCH}" = "tkg" ]; then
+	echo "Wine-TkG"
+else
+	echo "Wine ${WINE_VERSION} ${WINE_BRANCH}"
+fi
 echo
 echo "Downloading sources and patches"
 echo "Preparing Wine for compilation"
 echo
 
-if [ "$WINE_BRANCH" = "tkg" ]; then
+if [ ! -z "${CUSTOM_SRC_PATH}" ]; then
+	is_url="$(echo "${CUSTOM_SRC_PATH}" | head -c 6)"
+
+	if [ "${is_url}" = "git://" ] || [ "${is_url}" = "https:" ]; then
+		git clone "${CUSTOM_SRC_PATH}" wine
+	else
+		if [ ! -d "${CUSTOM_SRC_PATH}" ]; then
+			echo "CUSTOM_SRC_PATH is set to a non-existing directory!"
+			echo "Please make sure to use a correct path."
+			exit 1
+		fi
+
+		cp -r "${CUSTOM_SRC_PATH}" wine
+	fi
+
+	WINE_VERSION="$(cat wine/VERSION | sed "s/Wine version //g")"
+	BUILD_NAME="${WINE_VERSION}"-custom
+elif [ "$WINE_BRANCH" = "tkg" ]; then
 	git clone https://github.com/Kron4ek/wine-tkg wine
 
 	WINE_VERSION="$(cat wine/VERSION | sed "s/Wine version //g")"
@@ -185,7 +222,7 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 else
 	BUILD_NAME="${WINE_VERSION}"
 
-	wget https://dl.winehq.org/wine/source/${WINE_SOURCES_VERSION}/wine-${WINE_VERSION}.tar.xz
+	wget -q --show-progress https://dl.winehq.org/wine/source/${WINE_SOURCES_VERSION}/wine-${WINE_VERSION}.tar.xz
 
 	tar xf wine-${WINE_VERSION}.tar.xz
 	mv wine-${WINE_VERSION} wine
@@ -197,7 +234,7 @@ else
 
 		BUILD_NAME="${WINE_VERSION}"-staging
 
-		wget https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz
+		wget -q --show-progress https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz
 		tar xf v${WINE_VERSION}.tar.gz
 
 		if [ ! -f v${WINE_VERSION}.tar.gz ]; then
@@ -205,6 +242,12 @@ else
 		fi
 
 		wine-staging-${WINE_VERSION}/patches/patchinstall.sh DESTDIR="${SOURCES_DIR}"/wine --all
+
+		if [ $? -ne 0 ]; then
+			echo
+			echo "Wine-Staging patches were not applied correctly!"
+			exit 1
+		fi
 	fi
 fi
 
