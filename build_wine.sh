@@ -39,7 +39,7 @@ export CUSTOM_SRC_PATH=""
 # If this variable is set to true, root rights are not required.
 export DO_NOT_COMPILE="false"
 
-export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
+export WINE_BUILD_OPTIONS="--without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests"
 
 # Keep in mind that the root's HOME directory is /root.
 export MAINDIR="${HOME}"
