@@ -36,11 +36,11 @@ Older (4.11 and older) builds require **GLIBC 2.23** or newer.
 
 ### Compilation parameters
 
-Build flags (amd64): -march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize
+Build flags (amd64): `-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize`
 
-Build flags (x86): -march=i686 -msse2 -mfpmath=sse -O2 -ftree-vectorize
+Build flags (x86): `-march=i686 -msse2 -mfpmath=sse -O2 -ftree-vectorize`
 
-Configure options: --without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests
+Configure options: `--without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests`
 
 ---
 
