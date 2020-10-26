@@ -3,13 +3,16 @@
 ########################################################################
 ##
 ## Script for Wine compilation.
-## It uses two chroots (x32 and x64).
-##
-## You can change the environment variables below to the desired values.
+## By default it uses two chroots (x32 and x64).
 ##
 ## This script requires: git, wget, autoconf
 ##
-## Roots rights are required because of chroot.
+## Root rights are required because of chroot.
+##
+## Root rights are not required if you explicitly disable chroots
+## usage below (DISABLE_CHROOTS variable).
+##
+## You can change the environment variables below to your desired values.
 ##
 ########################################################################
 
@@ -38,6 +41,16 @@ export CUSTOM_SRC_PATH=""
 # Set to true to download and prepare sources, but do not compile them.
 # If this variable is set to true, root rights are not required.
 export DO_NOT_COMPILE="false"
+
+# Set to true to disable chroots usage for compilation and compile
+# Wine on your host system instead.
+#
+# You need to manually install all Wine build dependencies on your
+# system before compiling in this mode.
+#
+# Also make sure to set correct C and CXX compiler in the environment
+# variables below.
+export DISABLE_CHROOTS="false"
 
 export WINE_BUILD_OPTIONS="--without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests"
 
@@ -265,43 +278,83 @@ if [ ! -d wine ]; then
 	exit 1
 fi
 
-if [ "$EUID" != 0 ]; then
+if [ "$EUID" != 0 ] && [ "$DISABLE_CHROOTS" != "true" ]; then
 	clear
 	echo "Root rights are required for compilation!"
 	exit 1
 fi
 
-if [ ! -d "${CHROOT_X64}" ] || [ ! -d "${CHROOT_X32}" ]; then
-	clear
-	echo "Chroots are required for compilation!"
-	exit 1
+if [ "$DISABLE_CHROOTS" != "true" ]; then
+	if [ ! -d "${CHROOT_X64}" ] || [ ! -d "${CHROOT_X32}" ]; then
+		clear
+		echo "Chroots are required for compilation!"
+		exit 1
+	fi
 fi
 
-clear
-echo "Creating build scripts"
-create_build_scripts
+if [ "$DISABLE_CHROOTS" != "true" ]; then
+	clear
+	echo "Creating build scripts"
+	create_build_scripts
 
-clear
-echo "Compiling 64-bit Wine"
-cp -r "${SOURCES_DIR}"/wine "${CHROOT_X64}"/opt
-build_in_chroot 64
+	clear
+	echo "Compiling 64-bit Wine"
+	cp -r "${SOURCES_DIR}"/wine "${CHROOT_X64}"/opt
+	build_in_chroot 64
 
-mv "${CHROOT_X64}"/opt/wine-build "${CHROOT_X32}"/opt
-cp -r "${CHROOT_X32}"/opt/wine-build "${MAINDIR}"/wine-${BUILD_NAME}-amd64-nomultilib
-mv "${CHROOT_X64}"/opt/build64 "${CHROOT_X32}"/opt
+	mv "${CHROOT_X64}"/opt/wine-build "${CHROOT_X32}"/opt
+	cp -r "${CHROOT_X32}"/opt/wine-build "${MAINDIR}"/wine-${BUILD_NAME}-amd64-nomultilib
+	mv "${CHROOT_X64}"/opt/build64 "${CHROOT_X32}"/opt
 
-clear
-echo "Compiling 32-bit Wine"
-mv "${CHROOT_X64}"/opt/wine "${CHROOT_X32}"/opt
-build_in_chroot 32
+	clear
+	echo "Compiling 32-bit Wine"
+	mv "${CHROOT_X64}"/opt/wine "${CHROOT_X32}"/opt
+	build_in_chroot 32
 
-mv "${CHROOT_X32}"/opt/wine-build "${MAINDIR}"/wine-${BUILD_NAME}-amd64
-mv "${CHROOT_X32}"/opt/wine32-build "${MAINDIR}"/wine-${BUILD_NAME}-x86
+	mv "${CHROOT_X32}"/opt/wine-build "${MAINDIR}"/wine-${BUILD_NAME}-amd64
+	mv "${CHROOT_X32}"/opt/wine32-build "${MAINDIR}"/wine-${BUILD_NAME}-x86
 
-rm -rf "${CHROOT_X64}"/opt
-mkdir "${CHROOT_X64}"/opt
-rm -rf "${CHROOT_X32}"/opt
-mkdir "${CHROOT_X32}"/opt
+	rm -rf "${CHROOT_X64}"/opt
+	mkdir "${CHROOT_X64}"/opt
+	rm -rf "${CHROOT_X32}"/opt
+	mkdir "${CHROOT_X32}"/opt
+else
+	export CC="${C_COMPILER}"
+	export CXX="${CXX_COMPILER}"
+
+	if [ "$(getconf LONG_BIT)" = 32 ]; then
+		export CFLAGS="${CFLAGS_X32}"
+		export CXXFLAGS="${CFLAGS_X32}"
+		export LDFLAGS="${LDFLAGS_X32}"
+		export CROSSCFLAGS="${CROSSCFLAGS_X32}"
+		export CROSSLDFLAGS="${CROSSLDFLAGS_X32}"
+
+		mkdir build
+		cd build
+		"${SOURCES_DIR}"/wine/configure ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-x86
+		make -j$(nproc)
+		make install
+	else
+		export CFLAGS="${CFLAGS_X64}"
+		export CXXFLAGS="${CFLAGS_X64}"
+		export LDFLAGS="${LDFLAGS_X64}"
+		export CROSSCFLAGS="${CROSSCFLAGS_X64}"
+		export CROSSLDFLAGS="${CROSSLDFLAGS_X64}"
+
+		mkdir build64
+		mkdir build32
+
+		cd build64
+		"${SOURCES_DIR}"/wine/configure --enable-win64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
+		make -j$(nproc)
+		make install
+
+		cd "${SOURCES_DIR}"/build32
+		"${SOURCES_DIR}"/wine/configure --with-wine64="${SOURCES_DIR}"/build64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
+		make -j$(nproc)
+		make install
+	fi
+fi
 
 cd "${MAINDIR}"/wine-${BUILD_NAME}-x86 && rm -r include && rm -r share/applications && rm -r share/man
 cd "${MAINDIR}"/wine-${BUILD_NAME}-amd64 && rm -r include && rm -r share/applications && rm -r share/man
