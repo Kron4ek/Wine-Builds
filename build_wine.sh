@@ -380,16 +380,23 @@ clear
 echo "Compilation complete"
 echo "Creating archives..."
 
-tar -cf wine-${BUILD_NAME}-amd64.tar wine-${BUILD_NAME}-amd64
-tar -cf wine-${BUILD_NAME}-amd64-nomultilib.tar wine-${BUILD_NAME}-amd64-nomultilib
-tar -cf wine-${BUILD_NAME}-x86.tar wine-${BUILD_NAME}-x86
-xz -T0 -9 wine-${BUILD_NAME}-amd64.tar
-xz -T0 -9 wine-${BUILD_NAME}-amd64-nomultilib.tar
-xz -T0 -9 wine-${BUILD_NAME}-x86.tar
+if [ -d wine-${BUILD_NAME}-amd64 ]; then
+	tar -cf wine-${BUILD_NAME}-amd64.tar wine-${BUILD_NAME}-amd64
+	xz -T0 -9 wine-${BUILD_NAME}-amd64.tar
+	rm -r wine-${BUILD_NAME}-amd64
+fi
 
-rm -r wine-${BUILD_NAME}-amd64
-rm -r wine-${BUILD_NAME}-amd64-nomultilib
-rm -r wine-${BUILD_NAME}-x86
+if [ -d wine-${BUILD_NAME}-amd64-nomultilib ]; then
+	tar -cf wine-${BUILD_NAME}-amd64-nomultilib.tar wine-${BUILD_NAME}-amd64-nomultilib
+	xz -T0 -9 wine-${BUILD_NAME}-amd64-nomultilib.tar
+	rm -r wine-${BUILD_NAME}-amd64-nomultilib
+fi
+
+if [ -d wine-${BUILD_NAME}-x86 ]; then
+	tar -cf wine-${BUILD_NAME}-x86.tar wine-${BUILD_NAME}-x86
+	xz -T0 -9 wine-${BUILD_NAME}-x86.tar
+	rm -r wine-${BUILD_NAME}-x86
+fi
 
 clear
 echo "Done"
