@@ -347,12 +347,13 @@ else
 		cd build64
 		"${SOURCES_DIR}"/wine/configure --enable-win64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
 		make -j$(nproc)
-		make install
 
 		cd "${SOURCES_DIR}"/build32
 		"${SOURCES_DIR}"/wine/configure --with-wine64="${SOURCES_DIR}"/build64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
 		make -j$(nproc)
-		make install
+
+		make -C "${SOURCES_DIR}"/build64 install
+		make -C "${SOURCES_DIR}"/build32 install
 	fi
 fi
 
