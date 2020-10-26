@@ -19,7 +19,7 @@
 # Wine version to compile.
 # You can set it to "latest" to compile the latest available version.
 # This doesn't affect tkg branch as it always builds the latest available version.
-export WINE_VERSION="5.15"
+export WINE_VERSION="5.20"
 
 # Sometimes Wine and Staging versions doesn't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
