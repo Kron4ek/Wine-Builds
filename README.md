@@ -53,15 +53,17 @@ applications and it doesn't require 32-bit dependencies.
 
 ---
 
-**Vanilla** is unmodified Wine compiled from the official WineHQ sources.
+### Available builds
 
-**Staging** is Wine with Staging patchset, it contains many useful patches that are not present in a regular (vanilla) Wine, it adds new functions, fixes some bugs and improves performance in some cases.
+* **Vanilla** is unmodified Wine compiled from the official WineHQ sources.
 
-**Proton** is Wine modified by Valve, it contains many useful patches (primarily for a better gaming experience). The differences from Steam's Proton are the lack of the Proton's python script and the lack of some builtin dlls (like DXVK), as well as the build environment.
+* **Staging** is Wine with Staging patchset, it contains many useful patches that are not present in a regular (vanilla) Wine, it adds new functions, fixes some bugs and improves performance in some cases.
 
-**TkG** is Wine with Staging patchset and with many additional useful patches. Full list of patches is in wine-tkg-config.txt inside the build directory. Compiled from [this sources](https://github.com/Kron4ek/wine-tkg). Main Wine-TkG repo is [here](https://github.com/Frogging-Family/wine-tkg-git).
+* **Proton** is Wine modified by Valve, it contains many useful patches (primarily for a better gaming experience). The differences from Steam's Proton are the lack of the Proton's python script and the lack of some builtin dlls (like DXVK), as well as the build environment.
 
-**Wayland** is Wine with patches from the [wine-wayland project](https://github.com/varmd/wine-wayland). These builds work only on Wayland and support only Vulkan, OpenGL is not supported. So you can only run Vulkan games (by using DXVK as well). Before using, read all the caveats and notes on the project repo.
+* **TkG** is Wine with Staging patchset and with many additional useful patches. Full list of patches is in wine-tkg-config.txt inside the build directory. Compiled from [this sources](https://github.com/Kron4ek/wine-tkg). Main Wine-TkG repo is [here](https://github.com/Frogging-Family/wine-tkg-git).
+
+* **Wayland** is Wine with patches from the [wine-wayland project](https://github.com/varmd/wine-wayland). These builds work only on Wayland (they don't work on Xorg at all) and support only Vulkan, OpenGL is not supported. So you can only run Vulkan games (by using DXVK as well). Before using, read all the caveats and notes on the wine-wayland project page.
 
 ---
 
