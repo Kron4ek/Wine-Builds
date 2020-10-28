@@ -18,14 +18,16 @@
 
 # Wine version to compile.
 # You can set it to "latest" to compile the latest available version.
-# This doesn't affect tkg branch as it always builds the latest available version.
+#
+# This doesn't affect tkg and wayland branches as they always build the
+# latest available version.
 export WINE_VERSION="5.20"
 
 # Sometimes Wine and Staging versions doesn't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
 export STAGING_VERSION=""
 
-# Available branches: vanilla, staging, proton, tkg.
+# Available branches: vanilla, staging, proton, tkg, wayland.
 export WINE_BRANCH="staging"
 
 # Set this to a path to your Wine sources (for example, /home/username/wine-custom-src).
@@ -184,6 +186,8 @@ if [ ! -z "${CUSTOM_SRC_PATH}" ]; then
 	echo "Wine custom ${CUSTOM_SRC_PATH}"
 elif [ "${WINE_BRANCH}" = "tkg" ]; then
 	echo "Wine-TkG"
+elif [ "${WINE_BRANCH}" = "wayland" ]; then
+	echo "Wine-Wayland"
 else
 	echo "Wine ${WINE_VERSION} ${WINE_BRANCH}"
 fi
@@ -214,6 +218,20 @@ elif [ "$WINE_BRANCH" = "tkg" ]; then
 
 	WINE_VERSION="$(cat wine/VERSION | sed "s/Wine version //g")"
 	BUILD_NAME="${WINE_VERSION}"-staging-tkg
+elif [ "$WINE_BRANCH" = "wayland" ]; then
+	git clone https://github.com/Kron4ek/wine-wayland wine
+
+	WINE_VERSION="$(cat wine/VERSION | sed "s/Wine version //g")"
+	BUILD_NAME="${WINE_VERSION}"-wayland
+
+	export WINE_BUILD_OPTIONS="--without-x --without-xcomposite \
+                               --without-xfixes --without-xinerama \
+                               --without-xinput --without-xinput2 \
+                               --without-xrandr --without-xrender \
+                               --without-xshape --without-xshm  \
+                               --without-xslt --without-xxf86vm \
+                               --without-xcursor --without-opengl \
+                               ${WINE_BUILD_OPTIONS}"
 elif [ "$WINE_BRANCH" = "proton" ]; then
 	if [ "$(echo $WINE_VERSION | head -c3)" = "3.7" ]; then
 		git clone https://github.com/ValveSoftware/wine -b proton_3.7
