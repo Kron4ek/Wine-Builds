@@ -243,6 +243,8 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 		git clone https://github.com/ValveSoftware/wine -b proton_4.11
 	elif [ "$(echo $WINE_VERSION | head -c3)" = "5.0" ]; then
 		git clone https://github.com/ValveSoftware/wine -b proton_5.0
+	elif [ "$(echo $WINE_VERSION | head -c4)" = "5.13" ]; then
+		git clone https://github.com/ValveSoftware/wine -b proton_5.13
 	else
 		git clone https://github.com/ValveSoftware/wine
 
