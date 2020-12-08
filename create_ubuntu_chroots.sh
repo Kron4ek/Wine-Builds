@@ -4,6 +4,8 @@
 ##
 ## debootstrap is required
 ## root rights are required
+##
+## About 5.5 GB of free space is required
 
 if [ "$EUID" != 0 ]; then
 	echo "This script requires root rights!"
