@@ -64,11 +64,12 @@ export MAINDIR="${HOME}"
 # This directory is removed and recreated on each script run.
 export SOURCES_DIR="${MAINDIR}"/src
 
-export CHROOT_X64="${MAINDIR}"/chroots/bionic64_chroot
-export CHROOT_X32="${MAINDIR}"/chroots/bionic32_chroot
+# Change these paths to where your chroots lie
+export CHROOT_X64=/opt/chroots/bionic64_chroot
+export CHROOT_X32=/opt/chroots/bionic32_chroot
 
-export C_COMPILER="gcc-8"
-export CXX_COMPILER="g++-8"
+export C_COMPILER="gcc-9"
+export CXX_COMPILER="g++-9"
 
 export CFLAGS_X32="-march=i686 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
 export CFLAGS_X64="-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
@@ -106,43 +107,50 @@ build_in_chroot () {
 }
 
 create_build_scripts () {
-	echo '#!/bin/sh' > "${MAINDIR}"/build32.sh
-	echo 'cd /opt' >> "${MAINDIR}"/build32.sh
-	echo 'export CC="'${C_COMPILER}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export CXX="'${CXX_COMPILER}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export CFLAGS="'${CFLAGS_X32}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export CXXFLAGS="'${CFLAGS_X32}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export LDFLAGS="'${LDFLAGS_X32}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export CROSSCFLAGS="'${CROSSCFLAGS_X32}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export CROSSLDFLAGS="'${CROSSLDFLAGS_X32}'"' >> "${MAINDIR}"/build32.sh
-	echo 'mkdir build-tools && cd build-tools' >> "${MAINDIR}"/build32.sh
-	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --prefix /opt/wine32-build' >> "${MAINDIR}"/build32.sh
-	echo 'make -j$(nproc)' >> "${MAINDIR}"/build32.sh
-	echo 'make install' >> "${MAINDIR}"/build32.sh
-	echo 'export CFLAGS="'${CFLAGS_X64}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export CXXFLAGS="'${CFLAGS_X64}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export LDFLAGS="'${LDFLAGS_X64}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export CROSSCFLAGS="'${CROSSCFLAGS_X64}'"' >> "${MAINDIR}"/build32.sh
-	echo 'export CROSSLDFLAGS="'${CROSSLDFLAGS_X64}'"' >> "${MAINDIR}"/build32.sh
-	echo 'cd ..' >> "${MAINDIR}"/build32.sh
-	echo 'mkdir build-combo && cd build-combo' >> "${MAINDIR}"/build32.sh
-	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --with-wine64=../build64 --with-wine-tools=../build-tools --prefix /opt/wine-build' >> "${MAINDIR}"/build32.sh
-	echo 'make -j$(nproc)' >> "${MAINDIR}"/build32.sh
-	echo 'make install' >> "${MAINDIR}"/build32.sh
+	cat <<EOF > "${MAINDIR}"/build32.sh
+#!/bin/sh
 
-	echo '#!/bin/sh' > "${MAINDIR}"/build64.sh
-	echo 'cd /opt' >> "${MAINDIR}"/build64.sh
-	echo 'export CC="'${C_COMPILER}'"' >> "${MAINDIR}"/build64.sh
-	echo 'export CXX="'${CXX_COMPILER}'"' >> "${MAINDIR}"/build64.sh
-	echo 'export CFLAGS="'${CFLAGS_X64}'"' >> "${MAINDIR}"/build64.sh
-	echo 'export CXXFLAGS="'${CFLAGS_X64}'"' >> "${MAINDIR}"/build64.sh
-	echo 'export LDFLAGS="'${LDFLAGS_X64}'"' >> "${MAINDIR}"/build64.sh
-	echo 'export CROSSCFLAGS="'${CROSSCFLAGS_X64}'"' >> "${MAINDIR}"/build64.sh
-	echo 'export CROSSLDFLAGS="'${CROSSLDFLAGS_X64}'"' >> "${MAINDIR}"/build64.sh
-	echo 'mkdir build64 && cd build64' >> "${MAINDIR}"/build64.sh
-	echo '../wine/configure '${WINE_BUILD_OPTIONS}' --enable-win64 --prefix /opt/wine-build' >> "${MAINDIR}"/build64.sh
-	echo 'make -j$(nproc)' >> "${MAINDIR}"/build64.sh
-	echo 'make install' >> "${MAINDIR}"/build64.sh
+cd /opt
+export CC="${C_COMPILER}"
+export CXX="${CXX_COMPILER}"
+export CFLAGS="${CFLAGS_X32}"
+export CXXFLAGS="${CFLAGS_X32}"
+export LDFLAGS="${LDFLAGS_X32}"
+export CROSSCFLAGS="${CROSSCFLAGS_X32}"
+export CROSSLDFLAGS="${CROSSLDFLAGS_X32}"
+mkdir build-tools && cd build-tools
+../wine/configure ${WINE_BUILD_OPTIONS} --prefix /opt/wine32-build
+make -j$(nproc)
+make install
+
+export CFLAGS="${CFLAGS_X64}"
+export CXXFLAGS="${CFLAGS_X64}"
+export LDFLAGS="${LDFLAGS_X64}"
+export CROSSCFLAGS="${CROSSCFLAGS_X64}"
+export CROSSLDFLAGS="${CROSSLDFLAGS_X64}"
+cd ..
+mkdir build-combo && cd build-combo
+../wine/configure ${WINE_BUILD_OPTIONS} --with-wine64=../build64 --with-wine-tools=../build-tools --prefix /opt/wine-build
+make -j$(nproc)
+make install
+EOF
+
+	cat <<EOF > "${MAINDIR}"/build64.sh
+#!/bin/sh
+
+cd /opt
+export CC="${C_COMPILER}"
+export CXX="${CXX_COMPILER}"
+export CFLAGS="${CFLAGS_X64}"
+export CXXFLAGS="${CFLAGS_X64}"
+export LDFLAGS="${LDFLAGS_X64}"
+export CROSSCFLAGS="${CROSSCFLAGS_X64}"
+export CROSSLDFLAGS="${CROSSLDFLAGS_X64}"
+mkdir build64 && cd build64
+../wine/configure ${WINE_BUILD_OPTIONS} --enable-win64 --prefix /opt/wine-build
+make -j$(nproc)
+make install
+EOF
 
 	chmod +x "${MAINDIR}"/build64.sh
 	chmod +x "${MAINDIR}"/build32.sh
