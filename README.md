@@ -47,8 +47,6 @@ Configure options: `--without-curses --without-oss --disable-winemenubuilder --d
 ### Architectures
 
 * **amd64** - for 64-bit systems, it can run both 32-bit and 64-bit applications.
-* **amd64-nomultilib** - for 64-bit systems, it can run only 64-bit
-applications and it doesn't require 32-bit dependencies.
 * **x86** - for 32-bit systems, it can run only 32-bit applications.
 
 ---
