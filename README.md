@@ -2,7 +2,7 @@
 
 Check the [**releases**](https://github.com/Kron4ek/Wine-Builds/releases) page to download some of the recent Wine builds.
 
-All other builds (including wayland, nomultilib, stable and old versions) can be downloaded from: 
+All other builds (including wayland, stable and old versions) can be downloaded from: 
 * **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)**
 * **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
 
