@@ -21,7 +21,7 @@
 #
 # This doesn't affect tkg and wayland branches as they always build the
 # latest available version.
-export WINE_VERSION="5.20"
+export WINE_VERSION="5.22"
 
 # Sometimes Wine and Staging versions doesn't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
@@ -54,6 +54,16 @@ export DO_NOT_COMPILE="false"
 # variables below.
 export DISABLE_CHROOTS="false"
 
+# Set to true to use ccache to speed up subsequent compilations.
+# First compilation will be a little longer, but subsequent compilations
+# will be significantly faster (especially if you use a fast storage like SSD).
+#
+# Note that ccache requires additional storage space.
+# By default it has a 5 GB limit for its cache size.
+#
+# Make sure that ccache is installed before enabling this.
+export USE_CCACHE="false"
+
 export WINE_BUILD_OPTIONS="--without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests"
 
 # Keep in mind that the root's HOME directory is /root.
@@ -71,6 +81,11 @@ export CHROOT_X32=/opt/chroots/bionic32_chroot
 export C_COMPILER="gcc-9"
 export CXX_COMPILER="g++-9"
 
+export CROSSCC_X32="i686-w64-mingw32-gcc"
+export CROSSCXX_X32="i686-w64-mingw32-g++"
+export CROSSCC_X64="x86_64-w64-mingw32-gcc"
+export CROSSCXX_X64="x86_64-w64-mingw32-g++"
+
 export CFLAGS_X32="-march=i686 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
 export CFLAGS_X64="-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
 export LDFLAGS_X32="-Wl,-O1,--sort-common,--as-needed"
@@ -80,6 +95,16 @@ export CROSSCFLAGS_X32="${CFLAGS_X32}"
 export CROSSCFLAGS_X64="${CFLAGS_X64}"
 export CROSSLDFLAGS_X32="${LDFLAGS_X32}"
 export CROSSLDFLAGS_X64="${LDFLAGS_X64}"
+
+if [ "$USE_CCACHE" = "true" ]; then
+	export C_COMPILER="ccache ${C_COMPILER}"
+	export CXX_COMPILER="ccache ${CXX_COMPILER}"
+
+	export CROSSCC_X32="ccache ${CROSSCC_X32}"
+	export CROSSCXX_X32="ccache ${CROSSCXX_X32}"
+	export CROSSCC_X64="ccache ${CROSSCC_X64}"
+	export CROSSCXX_X64="ccache ${CROSSCXX_X64}"
+fi
 
 build_in_chroot () {
 	if [ "$1" = "32" ]; then
@@ -113,6 +138,8 @@ create_build_scripts () {
 cd /opt
 export CC="${C_COMPILER}"
 export CXX="${CXX_COMPILER}"
+export CROSSCC="${CROSSCC_X32}"
+export CROSSCXX="${CROSSCXX_X32}"
 export CFLAGS="${CFLAGS_X32}"
 export CXXFLAGS="${CFLAGS_X32}"
 export LDFLAGS="${LDFLAGS_X32}"
@@ -141,6 +168,8 @@ EOF
 cd /opt
 export CC="${C_COMPILER}"
 export CXX="${CXX_COMPILER}"
+export CROSSCC="${CROSSCC_X64}"
+export CROSSCXX="${CROSSCXX_X64}"
 export CFLAGS="${CFLAGS_X64}"
 export CXXFLAGS="${CFLAGS_X64}"
 export LDFLAGS="${LDFLAGS_X64}"
@@ -351,6 +380,9 @@ else
 	export CXX="${CXX_COMPILER}"
 
 	if [ "$(getconf LONG_BIT)" = 32 ]; then
+		export CROSSCC="${CROSSCC_X32}"
+		export CROSSCXX="${CROSSCXX_X32}"
+
 		export CFLAGS="${CFLAGS_X32}"
 		export CXXFLAGS="${CFLAGS_X32}"
 		export LDFLAGS="${LDFLAGS_X32}"
@@ -372,16 +404,21 @@ else
 		mkdir build64
 		mkdir build32
 
+		export CROSSCC="${CROSSCC_X64}"
+		export CROSSCXX="${CROSSCXX_X64}"
+
 		cd build64
 		"${SOURCES_DIR}"/wine/configure --enable-win64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
 		make -j$(nproc)
+		make install
+
+		export CROSSCC="${CROSSCC_X32}"
+		export CROSSCXX="${CROSSCXX_X32}"
 
 		cd "${SOURCES_DIR}"/build32
 		"${SOURCES_DIR}"/wine/configure --with-wine64="${SOURCES_DIR}"/build64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
 		make -j$(nproc)
-
-		make -C "${SOURCES_DIR}"/build64 install
-		make -C "${SOURCES_DIR}"/build32 install
+		make install
 	fi
 fi
 
