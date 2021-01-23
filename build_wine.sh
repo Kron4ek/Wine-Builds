@@ -19,11 +19,19 @@
 # Wine version to compile.
 # You can set it to "latest" to compile the latest available version.
 #
-# This doesn't affect tkg and wayland branches as they always build the
-# latest available version.
+# This variable affects only vanilla and staging branches. Other branches
+# use their own versions.
 export WINE_VERSION="5.22"
 
-# Sometimes Wine and Staging versions doesn't match (for example, 5.15.2).
+# Available branches: vanilla, staging, proton, tkg, wayland.
+export WINE_BRANCH="staging"
+
+# Available proton branches: proton_3.7, proton_3.16, proton_4.2,
+# proton_4.11, proton_5.0, proton_5.13, experimental_5.13
+# Leave empty to use the default branch.
+export PROTON_BRANCH="proton_5.13"
+
+# Sometimes Wine and Staging versions don't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
 export STAGING_VERSION=""
 
@@ -33,9 +41,6 @@ export STAGING_VERSION=""
 # "--all -W ntdll-NtAlertThreadByThreadId"
 # Leave empty to apply all Staging patches
 export STAGING_ARGS=""
-
-# Available branches: vanilla, staging, proton, tkg, wayland.
-export WINE_BRANCH="staging"
 
 # Set this to a path to your Wine sources (for example, /home/username/wine-custom-src).
 # This is useful if you already have Wine sources somewhere on your storage
@@ -226,12 +231,14 @@ else
 fi
 
 clear
-if [ ! -z "${CUSTOM_SRC_PATH}" ]; then
+if [ -n "${CUSTOM_SRC_PATH}" ]; then
 	echo "Wine custom ${CUSTOM_SRC_PATH}"
 elif [ "${WINE_BRANCH}" = "tkg" ]; then
 	echo "Wine-TkG"
 elif [ "${WINE_BRANCH}" = "wayland" ]; then
 	echo "Wine-Wayland"
+elif [ "${WINE_BRANCH}" = "proton" ]; then
+	echo "Wine-Proton ${PROTON_BRANCH}"
 else
 	echo "Wine ${WINE_VERSION} ${WINE_BRANCH}"
 fi
@@ -277,24 +284,13 @@ elif [ "$WINE_BRANCH" = "wayland" ]; then
                                --without-xcursor --without-opengl \
                                ${WINE_BUILD_OPTIONS}"
 elif [ "$WINE_BRANCH" = "proton" ]; then
-	if [ "$(echo $WINE_VERSION | head -c3)" = "3.7" ]; then
-		git clone https://github.com/ValveSoftware/wine -b proton_3.7
-	elif [ "$(echo $WINE_VERSION | head -c4)" = "3.16" ]; then
-		git clone https://github.com/ValveSoftware/wine -b proton_3.16
-	elif [ "$(echo $WINE_VERSION | head -c3)" = "4.2" ]; then
-		git clone https://github.com/ValveSoftware/wine -b proton_4.2
-	elif [ "$(echo $WINE_VERSION | head -c4)" = "4.11" ]; then
-		git clone https://github.com/ValveSoftware/wine -b proton_4.11
-	elif [ "$(echo $WINE_VERSION | head -c3)" = "5.0" ]; then
-		git clone https://github.com/ValveSoftware/wine -b proton_5.0
-	elif [ "$(echo $WINE_VERSION | head -c4)" = "5.13" ]; then
-		git clone https://github.com/ValveSoftware/wine -b proton_5.13
-	else
+	if [ -z "${PROTON_BRANCH}" ]; then
 		git clone https://github.com/ValveSoftware/wine
-
-		WINE_VERSION="$(cat wine/VERSION | sed "s/Wine version //g")"
+	else
+		git clone https://github.com/ValveSoftware/wine -b "${PROTON_BRANCH}"
 	fi
 
+	WINE_VERSION="$(cat wine/VERSION | sed "s/Wine version //g")"
 	BUILD_NAME="${WINE_VERSION}"-proton
 else
 	BUILD_NAME="${WINE_VERSION}"
