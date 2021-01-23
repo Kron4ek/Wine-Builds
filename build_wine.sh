@@ -27,6 +27,13 @@ export WINE_VERSION="5.22"
 # Leave this empty to use Staging version that matches the Wine version.
 export STAGING_VERSION=""
 
+# Specify custom arguments for the Staging's patchinstall.sh script.
+# For example, if you want to disable ntdll-NtAlertThreadByThreadId
+# patchset, but apply all other patches, then set this variable to
+# "--all -W ntdll-NtAlertThreadByThreadId"
+# Leave empty to apply all Staging patches
+export STAGING_ARGS=""
+
 # Available branches: vanilla, staging, proton, tkg, wayland.
 export WINE_BRANCH="staging"
 
@@ -311,7 +318,11 @@ else
 			git clone https://github.com/wine-staging/wine-staging wine-staging-${WINE_VERSION}
 		fi
 
-		wine-staging-${WINE_VERSION}/patches/patchinstall.sh DESTDIR="${SOURCES_DIR}"/wine --all
+		if [ -n "${STAGING_ARGS}" ]; then
+			wine-staging-${WINE_VERSION}/patches/patchinstall.sh DESTDIR="${SOURCES_DIR}"/wine ${STAGING_ARGS}
+		else
+			wine-staging-${WINE_VERSION}/patches/patchinstall.sh DESTDIR="${SOURCES_DIR}"/wine --all
+		fi
 
 		if [ $? -ne 0 ]; then
 			echo
