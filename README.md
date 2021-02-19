@@ -22,9 +22,9 @@ Extract the desired build to any directory, and then you can run applications us
     
 ## Requirements
 
-Some libraries (libfreetype6, libpng16-16, libopenal1, etc.) are required for these builds to work properly.
+Some libraries (libfreetype6, libpng16-16, libopenal1, etc.) are required for these builds to work properly, including their 32-bit versions (if you plan to run 32-bit applications).
 
-The easiest way to install almost all required libraries is to install Wine from your distribution's package repository.
+The easiest way to install (almost) all required libraries is to install Wine from your distribution's package repository. I highly recommend to do this, otherwise you have to manually figure out what libraries are needed, which may be not an easy task.
 
 **GLIBC** **2.27** or newer is required.
 
@@ -61,7 +61,7 @@ Configure options: `--without-curses --without-oss --disable-winemenubuilder --d
 
 * **TkG** is Wine with Staging patchset and with many additional useful patches. Full list of patches is in wine-tkg-config.txt inside the build directory. Compiled from [this sources](https://github.com/Kron4ek/wine-tkg). Main Wine-TkG repo is [here](https://github.com/Frogging-Family/wine-tkg-git).
 
-* **Wayland** is Wine with patches from the [wine-wayland project](https://github.com/varmd/wine-wayland). These builds work only on Wayland (they don't work on Xorg at all) and support only Vulkan, OpenGL is not supported. So you can only run Vulkan games (by using DXVK as well). Before using, read all the caveats and notes on the wine-wayland project page.
+* **Wayland** is Wine with patches from the [wine-wayland project](https://github.com/varmd/wine-wayland). These builds work only on Wayland (they don't work on Xorg at all) and support only Vulkan, OpenGL is not supported. So you can only run Vulkan games (by using DXVK as well). Before using, read all the caveats and notes on the wine-wayland project page. There are also builds with [Collabora's wayland driver](https://gitlab.collabora.com/alf/wine/-/commits/wayland) that supports OpenGL, but doesn't support Vulkan.
 
 ---
 
@@ -86,3 +86,4 @@ These scripts are a pretty convenient way to compile your own Wine builds if you
 * https://github.com/ValveSoftware/wine
 * https://github.com/varmd/wine-wayland
 * https://github.com/Kron4ek/wine-wayland
+* https://gitlab.collabora.com/alf/wine/-/tree/wayland
