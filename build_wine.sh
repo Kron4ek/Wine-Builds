@@ -5,12 +5,12 @@
 ## Script for Wine compilation.
 ## By default it uses two chroots (x32 and x64).
 ##
-## This script requires: git, wget, autoconf
+## This script requires: git, wget, autoconf, xz
 ##
 ## Root rights are required because of chroot.
 ##
 ## Root rights are not required if you explicitly disable chroots
-## usage below (DISABLE_CHROOTS variable).
+## usage below (DISABLE_CHROOTS) or enable bubblewrap (USE_BWRAP).
 ##
 ## You can change the environment variables below to your desired values.
 ##
@@ -21,7 +21,7 @@
 #
 # This variable affects only vanilla and staging branches. Other branches
 # use their own versions.
-export WINE_VERSION="5.22"
+export WINE_VERSION="6.4"
 
 # Available branches: vanilla, staging, proton, tkg, wayland.
 export WINE_BRANCH="staging"
@@ -55,6 +55,12 @@ export CUSTOM_SRC_PATH=""
 # Set to true to download and prepare sources, but do not compile them.
 # If this variable is set to true, root rights are not required.
 export DO_NOT_COMPILE="false"
+
+# Compile inside chroots using bubblewrap instead of regular chroot command.
+# The main benefit of this approach is that root rights are not required.
+#
+# Make sure that bubblewrap is installed on your system.
+export USE_BWRAP="false"
 
 # Set to true to disable chroots usage for compilation and compile
 # Wine on your host system instead.
@@ -141,6 +147,25 @@ build_in_chroot () {
 
 	echo "Unmounting chroot directories"
 	umount -Rl "${CHROOT_PATH}"
+}
+
+build_with_bwrap () {
+	if [ "$1" = "32" ]; then
+		CHROOT_PATH="${CHROOT_X32}"
+	else
+		CHROOT_PATH="${CHROOT_X64}"
+	fi
+
+	if [ "$1" = "32" ] || [ "$1" = "64" ]; then
+		shift
+	fi
+
+    bwrap --ro-bind "${CHROOT_PATH}" / --dev /dev \
+		  --proc /proc --tmpfs /tmp --tmpfs /home --tmpfs /run \
+		  --tmpfs /var --bind "${MAINDIR}" "${MAINDIR}" \
+		  --bind-try "${HOME}"/.cache/ccache "${HOME}"/.cache/ccache \
+		  --setenv PATH "/bin:/sbin:/usr/bin:/usr/sbin" \
+			"$@"
 }
 
 create_build_scripts () {
@@ -342,13 +367,16 @@ if [ ! -d wine ]; then
 	exit 1
 fi
 
-if [ "$EUID" != 0 ] && [ "$DISABLE_CHROOTS" != "true" ]; then
+if [ "$EUID" != 0 ] && [ "$DISABLE_CHROOTS" != "true" ] && [ "$USE_BWRAP" != "true" ]; then
 	clear
 	echo "Root rights are required for compilation!"
+	echo
+	echo "If you want to compile without root rights, enable DISABLE_CHROOTS"
+	echo "or USE_BWRAP variable."
 	exit 1
 fi
 
-if [ "$DISABLE_CHROOTS" != "true" ]; then
+if [ "$DISABLE_CHROOTS" != "true" ] || [ "$USE_BWRAP" = "true" ]; then
 	if [ ! -d "${CHROOT_X64}" ] || [ ! -d "${CHROOT_X32}" ]; then
 		clear
 		echo "Chroots are required for compilation!"
@@ -356,7 +384,7 @@ if [ "$DISABLE_CHROOTS" != "true" ]; then
 	fi
 fi
 
-if [ "$DISABLE_CHROOTS" != "true" ]; then
+if [ "$DISABLE_CHROOTS" != "true" ] && [ "$USE_BWRAP" != "true" ]; then
 	clear
 	echo "Creating build scripts"
 	create_build_scripts
@@ -383,6 +411,19 @@ if [ "$DISABLE_CHROOTS" != "true" ]; then
 	rm -rf "${CHROOT_X32}"/opt
 	mkdir "${CHROOT_X32}"/opt
 else
+	if [ "$USE_BWRAP" = "true" ]; then
+		BWRAP64="build_with_bwrap 64"
+		BWRAP32="build_with_bwrap 32"
+
+		clear
+		if ! command -v bwrap 1>/dev/null; then
+			echo "Bubblewrap is not installed on your system!"
+			exit 1
+		fi
+
+		echo "Using bubblewrap"
+	fi
+
 	export CC="${C_COMPILER}"
 	export CXX="${CXX_COMPILER}"
 
@@ -398,9 +439,9 @@ else
 
 		mkdir build
 		cd build
-		"${SOURCES_DIR}"/wine/configure ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-x86
-		make -j$(nproc)
-		make install
+		${BWRAP32} "${SOURCES_DIR}"/wine/configure ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-x86
+		${BWRAP32} make -j$(nproc)
+		${BWRAP32} make install
 	else
 		export CFLAGS="${CFLAGS_X64}"
 		export CXXFLAGS="${CFLAGS_X64}"
@@ -415,17 +456,29 @@ else
 		export CROSSCXX="${CROSSCXX_X64}"
 
 		cd build64
-		"${SOURCES_DIR}"/wine/configure --enable-win64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
-		make -j$(nproc)
-		make install
+		${BWRAP64} "${SOURCES_DIR}"/wine/configure --enable-win64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
+		${BWRAP64} make -j$(nproc)
+		${BWRAP64} make install
 
 		export CROSSCC="${CROSSCC_X32}"
 		export CROSSCXX="${CROSSCXX_X32}"
 
-		cd "${SOURCES_DIR}"/build32
-		"${SOURCES_DIR}"/wine/configure --with-wine64="${SOURCES_DIR}"/build64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
-		make -j$(nproc)
-		make install
+		if [ "$USE_BWRAP" = "true" ]; then
+			mkdir "${SOURCES_DIR}"/build-tools
+			cd "${SOURCES_DIR}"/build-tools
+			${BWRAP32} "${SOURCES_DIR}"/wine/configure ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
+			${BWRAP32} make -j$(nproc)
+
+			cd "${SOURCES_DIR}"/build32
+			${BWRAP32} "${SOURCES_DIR}"/wine/configure --with-wine64="${SOURCES_DIR}"/build64 --with-wine-tools="${SOURCES_DIR}"/build-tools ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
+			${BWRAP32} make -j$(nproc)
+			${BWRAP32} make install
+		else
+			cd "${SOURCES_DIR}"/build32
+			"${SOURCES_DIR}"/wine/configure --with-wine64="${SOURCES_DIR}"/build64 ${WINE_BUILD_OPTIONS} --prefix "${MAINDIR}"/wine-${BUILD_NAME}-amd64
+			make -j$(nproc)
+			make install
+		fi
 	fi
 fi
 
