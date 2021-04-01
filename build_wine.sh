@@ -26,10 +26,10 @@ export WINE_VERSION="6.4"
 # Available branches: vanilla, staging, proton, tkg, wayland.
 export WINE_BRANCH="staging"
 
-# Available proton branches: proton_3.7, proton_3.16, proton_4.2,
-# proton_4.11, proton_5.0, proton_5.13, experimental_5.13
+# Available proton branches: proton_3.7, proton_3.16, proton_4.2, proton_4.11
+# proton_5.0, proton_5.13, experimental_5.13, proton_6.3, experimental_6.3
 # Leave empty to use the default branch.
-export PROTON_BRANCH="proton_5.13"
+export PROTON_BRANCH="proton_6.3"
 
 # Sometimes Wine and Staging versions don't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
