@@ -52,9 +52,9 @@ prepare_chroot () {
 
 create_build_scripts () {
 	sdl2_version="2.0.12"
-	faudio_version="21.01"
-	vulkan_headers_version="1.2.168"
-	vulkan_loader_version="1.2.166"
+	faudio_version="21.04"
+	vulkan_headers_version="1.2.174"
+	vulkan_loader_version="1.2.174"
 	spirv_headers_version="1.5.4.raytracing.fixed"
 
 	cat <<EOF > "${MAINDIR}"/prepare_chroot.sh
