@@ -4,11 +4,8 @@ Check the [**releases**](https://github.com/Kron4ek/Wine-Builds/releases) page t
 
 All other builds (including wayland, stable and old versions) can be downloaded from: 
 * **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)**
-* **[Google Drive](https://drive.google.com/drive/folders/1HkgqEEdAkCSYUCRFN64GGFTLF7H_Q5Xr)** 
 
-For some reason (unknown to me) Google marks some builds as malware, so not all builds can be downloaded from Google Drive. Don't be afraid, there is no malware in my builds, it's just Google weirdness. Use MEGA to download such builds.
-
-Due to space limitations, i delete very old builds about once a year.
+Due to the cloud space limitation, i delete very old builds every two years.
 
 ---
 
