@@ -27,27 +27,28 @@ export CHROOT_X32="${MAINDIR}"/${CHROOT_DISTRO}32_chroot
 
 prepare_chroot () {
 	if [ "$1" = "32" ]; then
-		CHROOT_PATH="$CHROOT_X32"
+		CHROOT_PATH="${CHROOT_X32}"
 	else
-		CHROOT_PATH="$CHROOT_X64"
+		CHROOT_PATH="${CHROOT_X64}"
 	fi
 
 	echo "Unmount chroot directories. Just in case."
-	umount -Rl "$CHROOT_PATH"
+	umount -Rl "${CHROOT_PATH}"
 
 	echo "Mount directories for chroot"
-	mount --bind "$CHROOT_PATH" "$CHROOT_PATH"
-	mount --bind /dev "$CHROOT_PATH/dev"
-	mount --bind /dev/shm "$CHROOT_PATH/dev/shm"
-	mount --bind /dev/pts "$CHROOT_PATH/dev/pts"
-	mount --bind /proc "$CHROOT_PATH/proc"
-	mount --bind /sys "$CHROOT_PATH/sys"
+	mount --bind "${CHROOT_PATH}" "${CHROOT_PATH}"
+	mount --bind /dev "${CHROOT_PATH}"/dev
+	mount --bind /dev/shm "${CHROOT_PATH}"/dev/shm
+	mount --bind /dev/pts "${CHROOT_PATH}"/dev/pts
+	mount --bind /proc "${CHROOT_PATH}"/proc
+	mount --bind /sys "${CHROOT_PATH}"/sys
+	mount --bind /etc/resolv.conf "${CHROOT_PATH}"/etc/resolv.conf
 
-	echo "Chrooting into $CHROOT_PATH"
-	chroot "$CHROOT_PATH" /usr/bin/env LANG=en_US.UTF-8 TERM=xterm PATH="/bin:/sbin:/usr/bin:/usr/sbin" /opt/prepare_chroot.sh
+	echo "Chrooting into ${CHROOT_PATH}"
+	chroot "${CHROOT_PATH}" /usr/bin/env LANG=en_US.UTF-8 TERM=xterm PATH="/bin:/sbin:/usr/bin:/usr/sbin" /opt/prepare_chroot.sh
 
 	echo "Unmount chroot directories"
-	umount -Rl "$CHROOT_PATH"
+	umount -Rl "${CHROOT_PATH}"
 }
 
 create_build_scripts () {
