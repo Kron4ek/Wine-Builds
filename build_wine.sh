@@ -136,17 +136,24 @@ build_in_chroot () {
 
 	echo "Mounting directories for chroots"
 	mount --bind "${CHROOT_PATH}" "${CHROOT_PATH}"
-	mount --bind /dev "${CHROOT_PATH}"/dev
-	mount --bind /dev/shm "${CHROOT_PATH}"/dev/shm
-	mount --bind /dev/pts "${CHROOT_PATH}"/dev/pts
-	mount --bind /proc "${CHROOT_PATH}"/proc
+	mount -t proc /proc "${CHROOT_PATH}"/proc
 	mount --bind /sys "${CHROOT_PATH}"/sys
+	mount --make-rslave "${CHROOT_PATH}"/sys
+	mount --bind /dev "${CHROOT_PATH}"/dev
+	mount --bind /dev/pts "${CHROOT_PATH}"/dev/pts
+	mount --bind /dev/shm "${CHROOT_PATH}"/dev/shm
+	mount --make-rslave "${CHROOT_PATH}"/dev
 
 	echo "Chrooting into ${CHROOT_PATH}"
 	chroot "${CHROOT_PATH}" /usr/bin/env LANG=en_US.UTF-8 TERM=xterm PATH="/bin:/sbin:/usr/bin:/usr/sbin" /opt/build.sh
 
 	echo "Unmounting chroot directories"
-	umount -Rl "${CHROOT_PATH}"
+	umount -l "${CHROOT_PATH}"
+	umount "${CHROOT_PATH}"/proc
+	umount "${CHROOT_PATH}"/sys
+	umount "${CHROOT_PATH}"/dev/pts
+	umount "${CHROOT_PATH}"/dev/shm
+	umount "${CHROOT_PATH}"/dev
 }
 
 build_with_bwrap () {

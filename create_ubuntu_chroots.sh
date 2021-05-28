@@ -37,25 +37,34 @@ prepare_chroot () {
 
 	echo "Mount directories for chroot"
 	mount --bind "${CHROOT_PATH}" "${CHROOT_PATH}"
-	mount --bind /dev "${CHROOT_PATH}"/dev
-	mount --bind /dev/shm "${CHROOT_PATH}"/dev/shm
-	mount --bind /dev/pts "${CHROOT_PATH}"/dev/pts
-	mount --bind /proc "${CHROOT_PATH}"/proc
+	mount -t proc /proc "${CHROOT_PATH}"/proc
 	mount --bind /sys "${CHROOT_PATH}"/sys
-	mount --bind /etc/resolv.conf "${CHROOT_PATH}"/etc/resolv.conf
+	mount --make-rslave "${CHROOT_PATH}"/sys
+	mount --bind /dev "${CHROOT_PATH}"/dev
+	mount --bind /dev/pts "${CHROOT_PATH}"/dev/pts
+	mount --bind /dev/shm "${CHROOT_PATH}"/dev/shm
+	mount --make-rslave "${CHROOT_PATH}"/dev
+
+	rm -f "${CHROOT_PATH}"/etc/resolv.conf
+	cp /etc/resolv.conf "${CHROOT_PATH}"/etc/resolv.conf
 
 	echo "Chrooting into ${CHROOT_PATH}"
 	chroot "${CHROOT_PATH}" /usr/bin/env LANG=en_US.UTF-8 TERM=xterm PATH="/bin:/sbin:/usr/bin:/usr/sbin" /opt/prepare_chroot.sh
 
 	echo "Unmount chroot directories"
-	umount -Rl "${CHROOT_PATH}"
+	umount -l "${CHROOT_PATH}"
+	umount "${CHROOT_PATH}"/proc
+	umount "${CHROOT_PATH}"/sys
+	umount "${CHROOT_PATH}"/dev/pts
+	umount "${CHROOT_PATH}"/dev/shm
+	umount "${CHROOT_PATH}"/dev
 }
 
 create_build_scripts () {
 	sdl2_version="2.0.12"
-	faudio_version="21.04"
-	vulkan_headers_version="1.2.174"
-	vulkan_loader_version="1.2.174"
+	faudio_version="21.05"
+	vulkan_headers_version="1.2.179"
+	vulkan_loader_version="1.2.179"
 	spirv_headers_version="1.5.4.raytracing.fixed"
 
 	cat <<EOF > "${MAINDIR}"/prepare_chroot.sh
