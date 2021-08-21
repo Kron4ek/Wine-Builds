@@ -321,7 +321,13 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 	else
 		git clone https://github.com/ValveSoftware/wine -b "${PROTON_BRANCH}"
 	fi
-
+	
+	cd wine
+	dlls/winevulkan/make_vulkan
+	tools/make_requests
+	autoreconf -f
+	cd "${SOURCES_DIR}"
+	
 	WINE_VERSION="$(cat wine/VERSION | sed "s/Wine version //g")"
 	BUILD_NAME="${WINE_VERSION}"-proton
 else
