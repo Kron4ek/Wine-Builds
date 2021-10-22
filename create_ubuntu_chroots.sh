@@ -13,6 +13,11 @@ if [ "$EUID" != 0 ]; then
 	exit 1
 fi
 
+if ! command -v debootstrap 1>/dev/null || ! command -v perl 1>/dev/null; then
+	echo "Please install debootstrap and perl and run the script again"
+	exit 1
+fi
+
 # Keep in mind that although you can choose any version of Ubuntu/Debian
 # here, but this script has only been tested with Ubuntu 18.04 Bionic
 export CHROOT_DISTRO="bionic"
