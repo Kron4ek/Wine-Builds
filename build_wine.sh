@@ -279,15 +279,15 @@ echo "Downloading sources and patches"
 echo "Preparing Wine for compilation"
 echo
 
-if [ ! -z "${CUSTOM_SRC_PATH}" ]; then
+if [ -n "${CUSTOM_SRC_PATH}" ]; then
 	is_url="$(echo "${CUSTOM_SRC_PATH}" | head -c 6)"
 
 	if [ "${is_url}" = "git://" ] || [ "${is_url}" = "https:" ]; then
 		git clone "${CUSTOM_SRC_PATH}" wine
 	else
-		if [ ! -d "${CUSTOM_SRC_PATH}" ]; then
-			echo "CUSTOM_SRC_PATH is set to a non-existing directory!"
-			echo "Please make sure to use a correct path."
+		if [ ! -f "${CUSTOM_SRC_PATH}"/configure ]; then
+			echo "CUSTOM_SRC_PATH is set to an incorrect or non-existent directory!"
+			echo "Please make sure to use a directory with correct Wine sources."
 			exit 1
 		fi
 
