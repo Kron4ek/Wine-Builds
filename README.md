@@ -1,31 +1,30 @@
 ## Download
 
-Check the [**releases**](https://github.com/Kron4ek/Wine-Builds/releases) page to download some of the recent Wine builds.
+The builds can be downloaded either from [**the releases page**](https://github.com/Kron4ek/Wine-Builds/releases) or from the **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)** cloud. 
 
-All other builds (including wayland, stable and old versions) can be downloaded from: 
-* **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)**
+Some builds (stable and wayland versions) are available only on the cloud.
 
-Due to the cloud space limitation, i delete very old builds every two years.
+Due to the cloud space limitation, i delete very old builds every few years.
 
 ---
 
 ## How to use
 
-Extract the desired build to any directory, and then you can run applications using the path to the Wine binary. For example:
+Extract to any directory and run applications using the path to the Wine binary. For example:
 
-    /home/username/wine-5.0-amd64/bin/wine application.exe
+    /home/username/wine-6.0-amd64/bin/wine application.exe
     
 ---
     
 ## Requirements
 
-Some libraries (libfreetype6, libpng16-16, libopenal1, etc.) are required for these builds to work properly, including their 32-bit versions (if you plan to run 32-bit applications).
+All regular Wine dependencies (libfreetype6, libpng16-16, libopenal1, etc.) are required for these builds to work properly, including their 32-bit versions if you plan to run 32-bit applications.
 
-The easiest way to install (almost) all required libraries is to install Wine from your distribution's package repository. I highly recommend to do this, otherwise you have to manually figure out what libraries are needed, which may be not an easy task.
+The easiest way to install (almost) all required libraries is to install Wine from your distribution's package repository. I highly recommend to do this, otherwise you will have to manually figure out what libraries are needed, which may be not an easy task.
 
-**GLIBC** **2.27** or newer is required.
+More precisely, not all the Wine dependecies are strictly required, some of them are optional and needed only for some Windows applications or only for some functions. Still, it's better to keep them all (or at least most of them) installed.
 
-Older (4.11 and older) builds require **GLIBC 2.23** or newer.
+Also, do note that **glibc (libc6)** **2.27** or newer is required.
 
 ---
 
@@ -50,36 +49,31 @@ Configure options: `--without-curses --without-oss --disable-winemenubuilder --d
 
 ### Available builds
 
-* **Vanilla** is unmodified Wine compiled from the official WineHQ sources.
+* **Vanilla** is a Wine build compiled from the official WineHQ sources.
 
-* **Staging** is Wine with Staging patchset, it contains many useful patches that are not present in a regular (vanilla) Wine, it adds new functions, fixes some bugs and improves performance in some cases.
+* **Staging** is a Wine build with [the Staging patchset](https://github.com/wine-staging/wine-staging) applied. It contains many useful patches that are not present in vanilla.
 
-* **Proton** is Wine modified by Valve, it contains many useful patches (primarily for a better gaming experience). The differences from Steam's Proton are the lack of the Proton's python script and the lack of some builtin dlls (like DXVK), as well as the build environment.
+* **Staging-TkG** is a Wine build with [the Staging patchset applied](https://github.com/wine-staging/wine-staging) and with many additional useful patches. A complete list of patches is in wine-tkg-config.txt inside the build directory. Compiled from [this source code](https://github.com/Kron4ek/wine-tkg), which is generated using [the wine-tkg build system](https://github.com/Frogging-Family/wine-tkg-git).
 
-* **TkG** is Wine with Staging patchset and with many additional useful patches. Full list of patches is in wine-tkg-config.txt inside the build directory. Compiled from [this sources](https://github.com/Kron4ek/wine-tkg). Main Wine-TkG repo is [here](https://github.com/Frogging-Family/wine-tkg-git).
+* **Proton** is a Wine build modified by Valve and other contributors. It contains many useful patches (primarily for a better gaming experience), some of them are unique and not present in other builds. The differences from the official Steam's Proton are the lack of the Proton's python script and the lack of some builtin dlls (like DXVK and vkd3d-proton), the build environment is also different. However, you can still install DXVK and vkd3d-proton manually to your prefix, like you do with regular Wine builds.
 
-* **Wayland** is Wine with patches from the [wine-wayland project](https://github.com/varmd/wine-wayland). These builds work only on Wayland (they don't work on Xorg at all) and support only Vulkan, OpenGL is not supported. So you can only run Vulkan games (by using DXVK as well). Before using, read all the caveats and notes on the wine-wayland project page. There are also builds with [Collabora's wayland driver](https://gitlab.collabora.com/alf/wine/-/commits/wayland) that supports OpenGL, but doesn't support Vulkan.
-
+* **Wayland** is a Wine build with the patches from the [wine-wayland project](https://github.com/varmd/wine-wayland). Wine-Wayland works only on Wayland (it doesn't work on Xorg at all) and supports only Vulkan, OpenGL is not supported. Thus you can only run Vulkan games with it (by using DXVK and vkd3d as well). Before using, read all the caveats and notes on [the wine-wayland project page](https://github.com/varmd/wine-wayland).
 ---
 
 ## Compilation / Build environment
 
-I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine builds, so you can use these scripts to compile the same Wine builds. The first script creates two Ubuntu chroots (32-bit and 64-bit) that are identical (but versions of the libraries may differ) to my chroots that i use to compile my Wine builds, and the second script compiles Wine builds using the created chroots.
+I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine builds, you can use these scripts to compile your own Wine builds. The first script creates two Ubuntu chroots (32-bit and 64-bit) and the second script compiles Wine builds inside the created chroots. Optionally, you can disable the chroots usage in the **build_wine.sh** script and compile Wine builds on your host system.
 
 These scripts are a pretty convenient way to compile your own Wine builds if you don't trust my binaries or if you want to apply different patches.
 
 ---
 
-### Links to the sources:
+### Links to the sources
 
 * https://dl.winehq.org/wine/source
 * https://github.com/wine-staging/wine-staging
 * https://github.com/Frogging-Family/wine-tkg-git
 * https://github.com/Kron4ek/wine-tkg
-* https://github.com/Frogging-Family/community-patches
-* https://github.com/zfigura/wine/tree/esync
-* https://github.com/acomminos/wine-pba
-* https://gitlab.com/Firer4t/wine-pba
 * https://github.com/ValveSoftware/wine
 * https://github.com/varmd/wine-wayland
 * https://github.com/Kron4ek/wine-wayland
