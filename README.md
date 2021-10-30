@@ -22,7 +22,7 @@ All regular Wine dependencies are required for these builds to work properly, in
 
 The easiest way to install (almost) all required libraries is to install Wine from your distribution's package repository. I highly recommend to do this, otherwise you will have to manually figure out what libraries are needed, which may be not an easy task.
 
-More precisely, not all the Wine dependecies are strictly required, some of them are optional and needed only for some Windows applications or only for some functions. Still, it's better to keep them all (or at least most of them) installed.
+More precisely, not all the Wine dependencies are strictly required, some of them are optional and needed only for some Windows applications or only for some functions. Still, it's better to keep them all (or at least most of them) installed.
 
 Also, do note that **glibc (libc6)** **2.27** or newer is required.
 
