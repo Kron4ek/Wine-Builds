@@ -18,7 +18,7 @@ Extract to any directory and run applications using the path to the Wine binary.
     
 ## Requirements
 
-All regular Wine dependencies (libfreetype6, libpng16-16, libopenal1, etc.) are required for these builds to work properly, including their 32-bit versions if you plan to run 32-bit applications.
+All regular Wine dependencies are required for these builds to work properly, including their 32-bit versions if you plan to run 32-bit applications.
 
 The easiest way to install (almost) all required libraries is to install Wine from your distribution's package repository. I highly recommend to do this, otherwise you will have to manually figure out what libraries are needed, which may be not an easy task.
 
