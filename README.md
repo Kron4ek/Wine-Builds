@@ -1,6 +1,6 @@
 ## Download
 
-The builds can be downloaded either from [**the releases page**](https://github.com/Kron4ek/Wine-Builds/releases) or from the **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)** cloud. 
+The builds can be downloaded either from [**the releases page**](https://github.com/Kron4ek/Wine-Builds/releases) or from the **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)** cloud.
 
 Some builds (stable and wayland versions) are available only on the cloud.
 
@@ -13,9 +13,9 @@ Due to the cloud space limitation, i delete very old builds every few years.
 Extract to any directory and run applications using the path to the Wine binary. For example:
 
     /home/username/wine-6.0-amd64/bin/wine application.exe
-    
+
 ---
-    
+
 ## Requirements
 
 All regular Wine dependencies are required for these builds to work properly, including their 32-bit versions if you plan to run 32-bit applications.
@@ -36,7 +36,7 @@ Build flags (amd64): `-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize`
 
 Build flags (x86): `-march=i686 -msse2 -mfpmath=sse -O2 -ftree-vectorize`
 
-Configure options: `--without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests`
+Configure options: `--without-ldap --without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests`
 
 ---
 
