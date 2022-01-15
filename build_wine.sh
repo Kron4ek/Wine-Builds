@@ -523,23 +523,22 @@ cd "${MAINDIR}"
 
 clear
 echo "Compilation complete"
-echo "Creating archives..."
+echo "Creating and compressing archives..."
+
+export XZ_OPT="-9 -T0"
 
 if [ -d wine-${BUILD_NAME}-amd64 ]; then
-	tar -cf wine-${BUILD_NAME}-amd64.tar wine-${BUILD_NAME}-amd64
-	xz -T0 -9 wine-${BUILD_NAME}-amd64.tar
+	tar -Jcf wine-${BUILD_NAME}-amd64.tar.xz wine-${BUILD_NAME}-amd64
 	rm -r wine-${BUILD_NAME}-amd64
 fi
 
 if [ -d wine-${BUILD_NAME}-amd64-nomultilib ]; then
-	tar -cf wine-${BUILD_NAME}-amd64-nomultilib.tar wine-${BUILD_NAME}-amd64-nomultilib
-	xz -T0 -9 wine-${BUILD_NAME}-amd64-nomultilib.tar
+	tar -Jcf wine-${BUILD_NAME}-amd64-nomultilib.tar.xz wine-${BUILD_NAME}-amd64-nomultilib
 	rm -r wine-${BUILD_NAME}-amd64-nomultilib
 fi
 
 if [ -d wine-${BUILD_NAME}-x86 ]; then
-	tar -cf wine-${BUILD_NAME}-x86.tar wine-${BUILD_NAME}-x86
-	xz -T0 -9 wine-${BUILD_NAME}-x86.tar
+	tar -Jcf wine-${BUILD_NAME}-x86.tar.xz wine-${BUILD_NAME}-x86
 	rm -r wine-${BUILD_NAME}-x86
 fi
 
