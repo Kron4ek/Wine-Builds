@@ -28,6 +28,22 @@ Also, do note that **glibc (libc6)** **2.27** or newer is required.
 
 ---
 
+### What to do if Wine hangs during prefix creation/updating
+
+There is [a bug in gstreamer](https://bugs.winehq.org/show_bug.cgi?id=51086), which causes Wine to hang during prefix creation/updating, and even if you wait long enough for Wine to finish, your prefix will still be broken.
+
+There are two ways to workaround this issue:
+
+* You can remove the **gst-editing-services** package from your system. The package may have a different name on some Linux distros (for example, on Debian-based distros the package is called libges-1.0-0).
+* You can disable **winegstreamer** before creating/updating your prefix. For example, you can do that with the `WINEDLLOVERRIDES` environment variable:
+
+        export WINEDLLOVERRIDES="winegstreamer="
+        winecfg
+
+The second way, although works, may break video or audio playblack in some games, so it is better to use the first way if possible.
+
+---
+
 ## Builds description
 
 ### Compilation parameters
@@ -65,22 +81,6 @@ Configure options: `--without-ldap --without-curses --without-oss --disable-wine
 I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine builds, you can use these scripts to compile your own Wine builds. The first script creates two Ubuntu chroots (32-bit and 64-bit) and the second script compiles Wine builds inside the created chroots. Optionally, you can disable the chroots usage in the **build_wine.sh** script and compile Wine builds on your host system.
 
 These scripts are a pretty convenient way to compile your own Wine builds if you don't trust my binaries or if you want to apply different patches.
-
----
-
-### What to do if Wine hangs during prefix creation/updating
-
-There is [a bug in gstreamer](https://bugs.winehq.org/show_bug.cgi?id=51086), which causes Wine to hang during prefix creation/updating, and even if you wait long enough for Wine to finish, your prefix will still be broken.
-
-There are two ways to workaround this issue:
-
-* You can remove the **gst-editing-services** package from your system. The package may have a different name on some Linux distros (for example, on Debian-based distros the package is called libges-1.0-0).
-* You can disable **winegstreamer** before creating/updating your prefix. For example, you can do that with the `WINEDLLOVERRIDES` environment variable:
-
-        export WINEDLLOVERRIDES="winegstreamer="
-        winecfg
-
-The second way, although works, may break video or audio playblack in some games, so it is better to use the first way if possible.
 
 ---
 
