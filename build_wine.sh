@@ -21,7 +21,7 @@
 #
 # This variable affects only vanilla and staging branches. Other branches
 # use their own versions.
-export WINE_VERSION="6.22"
+export WINE_VERSION="6.23"
 
 # Available branches: vanilla, staging, proton, tkg, wayland.
 export WINE_BRANCH="staging"
@@ -86,7 +86,7 @@ export USE_CCACHE="false"
 # Also, this may break Wine builds if you are using old binutils version, enable this with caution
 export STRIP_BUILD="false"
 
-export WINE_BUILD_OPTIONS="--without-ldap --without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests"
+export WINE_BUILD_OPTIONS="--without-ldap --without-oss --disable-winemenubuilder --disable-win16 --disable-tests"
 
 # Keep in mind that the root's HOME directory is /root.
 export MAINDIR="${HOME}"
