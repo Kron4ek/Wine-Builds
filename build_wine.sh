@@ -21,7 +21,7 @@
 #
 # This variable affects only vanilla and staging branches. Other branches
 # use their own versions.
-export WINE_VERSION="7.1"
+export WINE_VERSION="7.2"
 
 # Available branches: vanilla, staging, proton, tkg, wayland.
 export WINE_BRANCH="staging"
