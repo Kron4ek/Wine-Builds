@@ -26,6 +26,8 @@ More precisely, not all the Wine dependencies are strictly required, some of the
 
 Also, do note that **glibc (libc6)** **2.27** or newer is required.
 
+If you want to use Wine, but don't want to install any of its dependencies, take a look at my [**Conty project**](https://github.com/Kron4ek/Conty). Conty is a container that includes Wine itself and all of its dependencies (including 32-bit ones), you can use it to run any games and programs.
+
 ---
 
 ### What to do if Wine hangs during prefix creation/updating
