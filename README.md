@@ -54,7 +54,7 @@ Build flags (amd64): `-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize`
 
 Build flags (x86): `-march=i686 -msse2 -mfpmath=sse -O2 -ftree-vectorize`
 
-Configure options: `--without-ldap --without-curses --without-oss --disable-winemenubuilder --disable-win16 --disable-tests`
+Configure options: `--without-ldap --without-oss --disable-winemenubuilder --disable-win16 --disable-tests`
 
 ---
 
