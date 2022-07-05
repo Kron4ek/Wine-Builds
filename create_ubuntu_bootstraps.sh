@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-## Script for creating Ubuntu chroots for Wine compilation.
+## A script for creating Ubuntu bootstraps for Wine compilation.
 ##
 ## debootstrap and perl are required
 ## root rights are required
 ##
-## About 5.5 GB of free space is required for chroots
+## About 5.5 GB of free space is required
 ## And additional 2.5 GB is required for Wine compilation
 
 if [ "$EUID" != 0 ]; then

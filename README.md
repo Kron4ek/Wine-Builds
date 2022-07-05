@@ -12,7 +12,7 @@ Due to the cloud space limitation, i delete very old builds every few years.
 
 Extract to any directory and run applications using the path to the Wine binary. For example:
 
-    /home/username/wine-6.0-amd64/bin/wine application.exe
+    /home/username/wine-7.0-amd64/bin/wine application.exe
 
 ---
 
@@ -80,7 +80,7 @@ Configure options: `--without-ldap --without-oss --disable-winemenubuilder --dis
 
 ## Compilation / Build environment
 
-I use **create_ubuntu_chroots.sh** and **build_wine.sh** to compile my Wine builds, you can use these scripts to compile your own Wine builds. The first script creates two Ubuntu chroots (32-bit and 64-bit) and the second script compiles Wine builds inside the created chroots. Optionally, you can disable the chroots usage in the **build_wine.sh** script and compile Wine builds on your host system.
+I use `create_ubuntu_bootstraps.sh` and `build_wine.sh` to compile my Wine builds, you can use these scripts to compile your own Wine builds. The first script creates two Ubuntu bootstraps (32-bit and 64-bit) and the second script compiles Wine builds inside the created bootstraps by using `bubblewrap`.
 
 These scripts are a pretty convenient way to compile your own Wine builds if you don't trust my binaries or if you want to apply different patches.
 
