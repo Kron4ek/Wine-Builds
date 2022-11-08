@@ -125,7 +125,9 @@ cmake ../FAudio-${faudio_version} && make -j$(nproc) && make install
 cd ../ && rm -r build && mkdir build && cd build
 cmake ../Vulkan-Headers-${vulkan_headers_version} && make -j$(nproc) && make install
 cd ../ && rm -r build && mkdir build && cd build
-cmake ../Vulkan-Loader-${vulkan_loader_version} && make -j$(nproc) && make install
+cmake ../Vulkan-Loader-${vulkan_loader_version}
+make -j$(nproc)
+make install
 cd ../ && rm -r build && mkdir build && cd build
 cmake ../SPIRV-Headers-${spirv_headers_version} && make -j$(nproc) && make install
 cd ../ && dpkg -x wine.deb .
