@@ -334,11 +334,18 @@ ${BWRAP32} "${BUILD_DIR}"/wine/configure --with-wine64="${BUILD_DIR}"/build64 --
 ${BWRAP32} make -j$(nproc)
 ${BWRAP32} make install
 
-clear
+echo
 echo "Compilation complete"
 echo "Creating and compressing archives..."
 
 cd "${BUILD_DIR}"
+
+if touch "${scriptdir}"/write_test; then
+	rm -f "${scriptdir}"/write_test
+	result_dir="${scriptdir}"
+else
+	result_dir="${HOME}"
+fi
 
 export XZ_OPT="-9 -T0"
 
@@ -351,12 +358,12 @@ for build in wine-${BUILD_NAME}-x86 wine-${BUILD_NAME}-amd64; do
 		fi
 
 		tar -Jcf "${build}".tar.xz "${build}"
-		mv "${build}".tar.xz "${scriptdir}"
+		mv "${build}".tar.xz "${result_dir}"
 	fi
 done
 
 rm -rf "${BUILD_DIR}"
 
-clear
+echo
 echo "Done"
-echo "The builds should be in ${scriptdir}"
+echo "The builds should be in ${result_dir}"
