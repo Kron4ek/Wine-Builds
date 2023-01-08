@@ -139,6 +139,26 @@ build_with_bwrap () {
 			"$@"
 }
 
+if ! command -v git 1>/dev/null; then
+	echo "Please install git and run the script again"
+	exit 1
+fi
+
+if ! command -v autoconf 1>/dev/null; then
+	echo "Please install autoconf and run the script again"
+	exit 1
+fi
+
+if ! command -v wget 1>/dev/null; then
+	echo "Please install wget and run the script again"
+	exit 1
+fi
+
+if ! command -v xz 1>/dev/null; then
+	echo "Please install xz and run the script again"
+	exit 1
+fi
+
 # Replace the "latest" parameter with the actual latest Wine version
 if [ "${WINE_VERSION}" = "latest" ] || [ -z "${WINE_VERSION}" ]; then
 	WINE_VERSION="$(wget -q -O - "https://raw.githubusercontent.com/wine-mirror/wine/master/VERSION" | tail -c +14)"
@@ -331,7 +351,6 @@ for build in wine-${BUILD_NAME}-x86 wine-${BUILD_NAME}-amd64; do
 		fi
 
 		tar -Jcf "${build}".tar.xz "${build}"
-
 		mv "${build}".tar.xz "${scriptdir}"
 	fi
 done
@@ -340,3 +359,4 @@ rm -rf "${BUILD_DIR}"
 
 clear
 echo "Done"
+echo "The builds should be in ${scriptdir}"
