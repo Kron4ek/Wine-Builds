@@ -248,10 +248,18 @@ else
 			git clone https://github.com/wine-staging/wine-staging wine-staging-${WINE_VERSION}
 		fi
 
-		if [ -n "${STAGING_ARGS}" ]; then
-			wine-staging-${WINE_VERSION}/patches/patchinstall.sh DESTDIR="${BUILD_DIR}"/wine ${STAGING_ARGS}
+		if [ -f wine-staging-${WINE_VERSION}/patches/patchinstall.sh ]; then
+			staging_patcher=("${BUILD_DIR}"/wine-staging-${WINE_VERSION}/patches/patchinstall.sh
+							DESTDIR="${BUILD_DIR}"/wine)
 		else
-			wine-staging-${WINE_VERSION}/patches/patchinstall.sh DESTDIR="${BUILD_DIR}"/wine --all
+			staging_patcher=("${BUILD_DIR}"/wine-staging-${WINE_VERSION}/staging/patchinstall.py)
+		fi
+
+		cd wine
+		if [ -n "${STAGING_ARGS}" ]; then
+			"${staging_patcher[@]}" ${STAGING_ARGS}
+		else
+			"${staging_patcher[@]}" --all
 		fi
 
 		if [ $? -ne 0 ]; then
@@ -259,6 +267,8 @@ else
 			echo "Wine-Staging patches were not applied correctly!"
 			exit 1
 		fi
+		
+		cd "${BUILD_DIR}"
 	fi
 fi
 
