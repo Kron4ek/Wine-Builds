@@ -21,7 +21,7 @@ fi
 # Keep in mind that although you can choose any version of Ubuntu/Debian
 # here, but this script has only been tested with Ubuntu 18.04 Bionic
 export CHROOT_DISTRO="bionic"
-export CHROOT_MIRROR="http://archive.ubuntu.com/ubuntu/"
+export CHROOT_MIRROR="https://ftp.uni-stuttgart.de/ubuntu/"
 
 # Set your preferred path for storing chroots
 # Also don't forget to change the path to the chroots in the build_wine.sh
@@ -66,11 +66,11 @@ prepare_chroot () {
 }
 
 create_build_scripts () {
-	sdl2_version="2.0.22"
-	faudio_version="22.11"
-	vulkan_headers_version="1.3.233"
-	vulkan_loader_version="1.3.233"
-	spirv_headers_version="sdk-1.3.231.1"
+	sdl2_version="2.26.4"
+	faudio_version="23.03"
+	vulkan_headers_version="1.3.239"
+	vulkan_loader_version="1.3.239"
+	spirv_headers_version="sdk-1.3.239.0"
 
 	cat <<EOF > "${MAINDIR}"/prepare_chroot.sh
 #!/bin/bash
