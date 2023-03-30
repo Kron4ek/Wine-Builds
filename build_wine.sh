@@ -229,35 +229,35 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 else
 	BUILD_NAME="${WINE_VERSION}"
 
-	wget -q --show-progress https://dl.winehq.org/wine/source/${WINE_URL_VERSION}/wine-${WINE_VERSION}.tar.xz
+	wget -q --show-progress "https://dl.winehq.org/wine/source/${WINE_URL_VERSION}/wine-${WINE_VERSION}.tar.xz"
 
-	tar xf wine-${WINE_VERSION}.tar.xz
-	mv wine-${WINE_VERSION} wine
+	tar xf "wine-${WINE_VERSION}.tar.xz"
+	mv "wine-${WINE_VERSION}" wine
 
 	if [ "${WINE_BRANCH}" = "staging" ]; then
-		if [ ! -z "$STAGING_VERSION" ]; then
+		if [ -n "$STAGING_VERSION" ]; then
 			WINE_VERSION="${STAGING_VERSION}"
 		fi
 
 		BUILD_NAME="${WINE_VERSION}"-staging
 
-		wget -q --show-progress https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz
-		tar xf v${WINE_VERSION}.tar.gz
+		wget -q --show-progress "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
+		tar xf v"${WINE_VERSION}".tar.gz
 
-		if [ ! -f v${WINE_VERSION}.tar.gz ]; then
-			git clone https://github.com/wine-staging/wine-staging wine-staging-${WINE_VERSION}
+		if [ ! -f v"${WINE_VERSION}".tar.gz ]; then
+			git clone https://github.com/wine-staging/wine-staging wine-staging-"${WINE_VERSION}"
 		fi
 
-		if [ -f wine-staging-${WINE_VERSION}/patches/patchinstall.sh ]; then
-			staging_patcher=("${BUILD_DIR}"/wine-staging-${WINE_VERSION}/patches/patchinstall.sh
+		if [ -f wine-staging-"${WINE_VERSION}"/patches/patchinstall.sh ]; then
+			staging_patcher=("${BUILD_DIR}"/wine-staging-"${WINE_VERSION}"/patches/patchinstall.sh
 							DESTDIR="${BUILD_DIR}"/wine)
 		else
-			staging_patcher=("${BUILD_DIR}"/wine-staging-${WINE_VERSION}/staging/patchinstall.py)
+			staging_patcher=("${BUILD_DIR}"/wine-staging-"${WINE_VERSION}"/staging/patchinstall.py)
 		fi
 
-		cd wine
+		cd wine || exit
 		if [ -n "${STAGING_ARGS}" ]; then
-			"${staging_patcher[@]}" ${STAGING_ARGS}
+			"${staging_patcher[@]}" "${STAGING_ARGS}"
 		else
 			"${staging_patcher[@]}" --all
 		fi
@@ -268,7 +268,7 @@ else
 			exit 1
 		fi
 		
-		cd "${BUILD_DIR}"
+		cd "${BUILD_DIR}" || exit
 	fi
 fi
 
@@ -279,11 +279,11 @@ if [ ! -d wine ]; then
 	exit 1
 fi
 
-cd wine
+cd wine || exit
 dlls/winevulkan/make_vulkan
 tools/make_requests
 autoreconf -f
-cd "${BUILD_DIR}"
+cd "${BUILD_DIR}" || exit
 
 if [ "${DO_NOT_COMPILE}" = "true" ]; then
 	clear
@@ -315,8 +315,8 @@ export CROSSCFLAGS="${CROSSCFLAGS_X64}"
 export CROSSCXXFLAGS="${CROSSCFLAGS_X64}"
 
 mkdir "${BUILD_DIR}"/build64
-cd "${BUILD_DIR}"/build64
-${BWRAP64} "${BUILD_DIR}"/wine/configure --enable-win64 ${WINE_BUILD_OPTIONS} --prefix "${BUILD_DIR}"/wine-${BUILD_NAME}-amd64
+cd "${BUILD_DIR}"/build64 || exit
+${BWRAP64} "${BUILD_DIR}"/wine/configure --enable-win64 "${WINE_BUILD_OPTIONS}" --prefix "${BUILD_DIR}"/wine-"${BUILD_NAME}"-amd64
 ${BWRAP64} make -j$(nproc)
 ${BWRAP64} make install
 
@@ -328,8 +328,8 @@ export CROSSCFLAGS="${CROSSCFLAGS_X32}"
 export CROSSCXXFLAGS="${CROSSCFLAGS_X32}"
 
 mkdir "${BUILD_DIR}"/build32-tools
-cd "${BUILD_DIR}"/build32-tools
-PKG_CONFIG_LIBDIR=/usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig ${BWRAP32} "${BUILD_DIR}"/wine/configure ${WINE_BUILD_OPTIONS} --prefix "${BUILD_DIR}"/wine-${BUILD_NAME}-x86
+cd "${BUILD_DIR}"/build32-tools || exit
+PKG_CONFIG_LIBDIR=/usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig ${BWRAP32} "${BUILD_DIR}"/wine/configure "${WINE_BUILD_OPTIONS}" --prefix "${BUILD_DIR}"/wine-"${BUILD_NAME}"-x86
 ${BWRAP32} make -j$(nproc)
 ${BWRAP32} make install
 
@@ -339,7 +339,7 @@ export CROSSCFLAGS="${CROSSCFLAGS_X64}"
 export CROSSCXXFLAGS="${CROSSCFLAGS_X64}"
 
 mkdir "${BUILD_DIR}"/build32
-cd "${BUILD_DIR}"/build32
+cd "${BUILD_DIR}"/build32 || exit
 PKG_CONFIG_LIBDIR=/usr/lib/i386-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig ${BWRAP32} "${BUILD_DIR}"/wine/configure --with-wine64="${BUILD_DIR}"/build64 --with-wine-tools="${BUILD_DIR}"/build32-tools ${WINE_BUILD_OPTIONS} --prefix "${BUILD_DIR}"/wine-${BUILD_NAME}-amd64
 ${BWRAP32} make -j$(nproc)
 ${BWRAP32} make install
@@ -348,7 +348,7 @@ echo
 echo "Compilation complete"
 echo "Creating and compressing archives..."
 
-cd "${BUILD_DIR}"
+cd "${BUILD_DIR}" || exit
 
 if touch "${scriptdir}"/write_test; then
 	rm -f "${scriptdir}"/write_test
