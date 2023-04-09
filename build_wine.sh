@@ -225,7 +225,7 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 	fi
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
-	BUILD_NAME="${WINE_VERSION}"-proton
+	BUILD_NAME=proton-"${WINE_VERSION}"
 else
 	BUILD_NAME="${WINE_VERSION}"
 
