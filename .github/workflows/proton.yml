@@ -1,0 +1,24 @@
+name: Proton CI
+
+on:
+  schedule:
+    - cron:  '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Proton
+        run: |
+          sudo apt install debootstrap perl git wget xz-utils bubblewrap autoconf
+          chmod +x create_ubuntu_bootstraps.sh build_wine.sh
+          sudo ./create_ubuntu_bootstraps.sh
+          WINE_BRANCH=proton ./build_wine.sh
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Proton
+          path: ./*.tar.xz
