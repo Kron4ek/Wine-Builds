@@ -24,6 +24,7 @@ fi
 
 # Wine version to compile.
 # You can set it to "latest" to compile the latest available version.
+# You can also set it to "git" to compile the latest git revision.
 #
 # This variable affects only vanilla and staging branches. Other branches
 # use their own versions.
@@ -36,7 +37,7 @@ export WINE_BRANCH="${WINE_BRANCH:-staging}"
 # proton_5.0, proton_5.13, experimental_5.13, proton_6.3, experimental_6.3
 # proton_7.0, experimental_7.0, proton_8.0, experimental_8.0
 # Leave empty to use the default branch.
-export PROTON_BRANCH="${PROTON_BRANCH:-experimental_8.0}"
+export PROTON_BRANCH="${PROTON_BRANCH:-proton_8.0}"
 
 # Sometimes Wine and Staging versions don't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
@@ -224,28 +225,41 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 		git clone https://github.com/ValveSoftware/wine -b "${PROTON_BRANCH}"
 	fi
 
-	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
+	WINE_VERSION="$(cat wine/VERSION | tail -c +14)-$(git -C wine rev-parse --short HEAD)"
 	BUILD_NAME=proton-"${WINE_VERSION}"
 else
-	BUILD_NAME="${WINE_VERSION}"
+	if [ "${WINE_VERSION}" = "git" ]; then
+		git clone https://gitlab.winehq.org/wine/wine.git wine
+		BUILD_NAME="${WINE_VERSION}-$(git -C wine rev-parse --short HEAD)"
+	else
+		BUILD_NAME="${WINE_VERSION}"
 
-	wget -q --show-progress "https://dl.winehq.org/wine/source/${WINE_URL_VERSION}/wine-${WINE_VERSION}.tar.xz"
+		wget -q --show-progress "https://dl.winehq.org/wine/source/${WINE_URL_VERSION}/wine-${WINE_VERSION}.tar.xz"
 
-	tar xf "wine-${WINE_VERSION}.tar.xz"
-	mv "wine-${WINE_VERSION}" wine
+		tar xf "wine-${WINE_VERSION}.tar.xz"
+		mv "wine-${WINE_VERSION}" wine
+	fi
 
 	if [ "${WINE_BRANCH}" = "staging" ]; then
-		if [ -n "$STAGING_VERSION" ]; then
-			WINE_VERSION="${STAGING_VERSION}"
-		fi
-
-		BUILD_NAME="${WINE_VERSION}"-staging
-
-		wget -q --show-progress "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
-		tar xf v"${WINE_VERSION}".tar.gz
-
-		if [ ! -f v"${WINE_VERSION}".tar.gz ]; then
+		if [ "${WINE_VERSION}" = "git" ]; then
 			git clone https://github.com/wine-staging/wine-staging wine-staging-"${WINE_VERSION}"
+
+			upstream_commit="$(cat wine-staging-"${WINE_VERSION}"/staging/upstream-commit)"
+			git -C wine checkout "${upstream_commit}"
+			BUILD_NAME="${WINE_VERSION}-${upstream_commit}-staging"
+		else
+			if [ -n "${STAGING_VERSION}" ]; then
+				WINE_VERSION="${STAGING_VERSION}"
+			fi
+
+			BUILD_NAME="${WINE_VERSION}"-staging
+
+			wget -q --show-progress "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
+			tar xf v"${WINE_VERSION}".tar.gz
+
+			if [ ! -f v"${WINE_VERSION}".tar.gz ]; then
+				git clone https://github.com/wine-staging/wine-staging wine-staging-"${WINE_VERSION}"
+			fi
 		fi
 
 		if [ -f wine-staging-"${WINE_VERSION}"/patches/patchinstall.sh ]; then
@@ -255,7 +269,7 @@ else
 			staging_patcher=("${BUILD_DIR}"/wine-staging-"${WINE_VERSION}"/staging/patchinstall.py)
 		fi
 
-		cd wine || exit
+		cd wine || exit 1
 		if [ -n "${STAGING_ARGS}" ]; then
 			"${staging_patcher[@]}" ${STAGING_ARGS}
 		else
@@ -268,7 +282,7 @@ else
 			exit 1
 		fi
 
-		cd "${BUILD_DIR}" || exit
+		cd "${BUILD_DIR}" || exit 1
 	fi
 fi
 
@@ -279,11 +293,11 @@ if [ ! -d wine ]; then
 	exit 1
 fi
 
-cd wine || exit
+cd wine || exit 1
 dlls/winevulkan/make_vulkan
 tools/make_requests
 autoreconf -f
-cd "${BUILD_DIR}" || exit
+cd "${BUILD_DIR}" || exit 1
 
 if [ "${DO_NOT_COMPILE}" = "true" ]; then
 	clear
