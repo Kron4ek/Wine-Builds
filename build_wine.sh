@@ -27,16 +27,16 @@ fi
 #
 # This variable affects only vanilla and staging branches. Other branches
 # use their own versions.
-export WINE_VERSION="latest"
+export WINE_VERSION="${WINE_VERSION:-latest}"
 
 # Available branches: vanilla, staging, staging-tkg, proton, wayland
-export WINE_BRANCH="staging"
+export WINE_BRANCH="${WINE_BRANCH:-staging}"
 
 # Available proton branches: proton_3.7, proton_3.16, proton_4.2, proton_4.11
 # proton_5.0, proton_5.13, experimental_5.13, proton_6.3, experimental_6.3
-# proton_7.0, experimental_7.0, proton_8.0
+# proton_7.0, experimental_7.0, proton_8.0, experimental_8.0
 # Leave empty to use the default branch.
-export PROTON_BRANCH="proton_8.0"
+export PROTON_BRANCH="${PROTON_BRANCH:-experimental_8.0}"
 
 # Sometimes Wine and Staging versions don't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
@@ -267,7 +267,7 @@ else
 			echo "Wine-Staging patches were not applied correctly!"
 			exit 1
 		fi
-		
+
 		cd "${BUILD_DIR}" || exit
 	fi
 fi
@@ -357,7 +357,7 @@ else
 	result_dir="${HOME}"
 fi
 
-export XZ_OPT="-9 -T0"
+export XZ_OPT="-9"
 
 for build in wine-${BUILD_NAME}-x86 wine-${BUILD_NAME}-amd64; do
 	if [ -d "${build}" ]; then

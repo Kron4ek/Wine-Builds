@@ -1,0 +1,25 @@
+name: Wine CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Wine
+        run: |
+          sudo apt install debootstrap perl git wget xz-utils bubblewrap autoconf
+          chmod +x create_ubuntu_bootstraps.sh build_wine.sh
+          sudo ./create_ubuntu_bootstraps.sh
+          export WINE_VERSION="$(wget -q -O - "https://raw.githubusercontent.com/Kron4ek/wine-tkg/master/VERSION" | tail -c +14)"
+          WINE_BRANCH=vanilla ./build_wine.sh
+          WINE_BRANCH=staging ./build_wine.sh
+          WINE_BRANCH=staging-tkg ./build_wine.sh
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Wine
+          path: ./*.tar.xz
