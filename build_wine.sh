@@ -41,14 +41,17 @@ export PROTON_BRANCH="${PROTON_BRANCH:-proton_8.0}"
 
 # Sometimes Wine and Staging versions don't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
-export STAGING_VERSION=""
+export STAGING_VERSION="${STAGING_VERSION:-}"
 
 # Specify custom arguments for the Staging's patchinstall.sh script.
 # For example, if you want to disable ntdll-NtAlertThreadByThreadId
 # patchset, but apply all other patches, then set this variable to
 # "--all -W ntdll-NtAlertThreadByThreadId"
 # Leave empty to apply all Staging patches
-export STAGING_ARGS=""
+export STAGING_ARGS="${STAGING_ARGS:-}"
+
+# Make 64-bit Wine builds with the new WoW64 mode (32-on-64)
+export EXPERIMENTAL_WOW64="${EXPERIMENTAL_WOW64:-false}"
 
 # Set this to a path to your Wine source code (for example, /home/username/wine-custom-src).
 # This is useful if you already have the Wine source code somewhere on your
@@ -269,6 +272,10 @@ else
 			staging_patcher=("${BUILD_DIR}"/wine-staging-"${WINE_VERSION}"/staging/patchinstall.py)
 		fi
 
+		if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
+			STAGING_ARGS="--all -W ntdll-Syscall_Emulation"
+		fi
+
 		cd wine || exit 1
 		if [ -n "${STAGING_ARGS}" ]; then
 			"${staging_patcher[@]}" ${STAGING_ARGS}
@@ -373,12 +380,25 @@ fi
 
 export XZ_OPT="-9"
 
-for build in wine-${BUILD_NAME}-x86 wine-${BUILD_NAME}-amd64; do
+if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
+	mv wine-${BUILD_NAME}-amd64 wine-${BUILD_NAME}-exp-wow64-amd64
+
+	builds_list="wine-${BUILD_NAME}-exp-wow64-amd64"
+else
+	builds_list="wine-${BUILD_NAME}-x86 wine-${BUILD_NAME}-amd64"
+fi
+
+for build in ${builds_list}; do
 	if [ -d "${build}" ]; then
 		rm -rf "${build}"/include "${build}"/share/applications "${build}"/share/man
 
 		if [ -f wine/wine-tkg-config.txt ]; then
 			cp wine/wine-tkg-config.txt "${build}"
+		fi
+
+		if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
+			rm "${build}"/bin/wine "${build}"/bin/wine-preloader
+			cp "${build}"/bin/wine64 "${build}"/bin/wine
 		fi
 
 		tar -Jcf "${build}".tar.xz "${build}"
