@@ -110,6 +110,9 @@ if [ "$USE_CCACHE" = "true" ]; then
 	export CC="ccache ${CC}"
 	export CXX="ccache ${CXX}"
 
+	export i386_CC="ccache ${CROSSCC_X32}"
+	export x86_64_CC="ccache ${CROSSCC_X64}"
+
 	export CROSSCC_X32="ccache ${CROSSCC_X32}"
 	export CROSSCXX_X32="ccache ${CROSSCXX_X32}"
 	export CROSSCC_X64="ccache ${CROSSCC_X64}"
