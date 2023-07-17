@@ -12,6 +12,7 @@ jobs:
 
       - name: Build Wine
         run: |
+          sudo apt update
           sudo apt install debootstrap perl git wget xz-utils bubblewrap autoconf
           chmod +x create_ubuntu_bootstraps.sh build_wine.sh
           sudo ./create_ubuntu_bootstraps.sh
