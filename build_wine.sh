@@ -276,7 +276,9 @@ else
 		fi
 
 		if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
-			STAGING_ARGS="--all -W ntdll-Syscall_Emulation"
+  			if ! grep Disabled "${BUILD_DIR}"/wine-staging-"${WINE_VERSION}"/patches/ntdll-Syscall_Emulation/definition 1>/dev/null; then
+				STAGING_ARGS="--all -W ntdll-Syscall_Emulation"
+			fi
 		fi
 
 		cd wine || exit 1
