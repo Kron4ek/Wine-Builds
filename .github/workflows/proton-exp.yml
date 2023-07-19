@@ -1,8 +1,8 @@
-name: Wine-32on64-WoW64 CI
+name: Proton Experimental CI
 
 on:
   schedule:
-    - cron:  '0 0 1 * *'
+    - cron:  '0 0 1,17 * *'
   workflow_dispatch:
 
 jobs:
@@ -12,17 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build Wine
+      - name: Build Proton
         run: |
           sudo apt update
           sudo apt install debootstrap perl git wget xz-utils bubblewrap autoconf
           chmod +x create_ubuntu_bootstraps.sh build_wine.sh
           sudo ./create_ubuntu_bootstraps.sh
-          export WINE_VERSION="latest"
-          export EXPERIMENTAL_WOW64="true"
-          WINE_BRANCH=vanilla ./build_wine.sh
-          WINE_BRANCH=staging ./build_wine.sh
+          WINE_BRANCH=proton PROTON_BRANCH=experimental_8.0 ./build_wine.sh
       - uses: actions/upload-artifact@v3
         with:
-          name: Wine-32on64-WoW64
+          name: Proton Experimental
           path: ./*.tar.xz
