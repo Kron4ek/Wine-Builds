@@ -2,7 +2,7 @@
 
 The builds can be downloaded either from [**the releases page**](https://github.com/Kron4ek/Wine-Builds/releases) or from the **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)** cloud. 
 
-They are also avaiable on [the Actions page](https://github.com/Kron4ek/Wine-Builds/actions), you need to be logged into your GitHub account to be able to download from there.
+They are also available on [the Actions page](https://github.com/Kron4ek/Wine-Builds/actions), you need to be logged into your GitHub account to be able to download from there.
 
 ---
 
