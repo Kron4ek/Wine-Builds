@@ -1,10 +1,8 @@
 ## Download
 
-The builds can be downloaded either from [**the releases page**](https://github.com/Kron4ek/Wine-Builds/releases) or from the **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)** cloud.
+The builds can be downloaded either from [**the releases page**](https://github.com/Kron4ek/Wine-Builds/releases) or from the **[MEGA](https://mega.nz/folder/ZZUV1K7J#kIenmTQoi0if-SAcMSuAHA)** cloud. 
 
-Some builds (stable and wayland versions) are available only on the cloud.
-
-Due to the cloud space limitation, i delete very old builds every few years.
+They are also avaiable on [the Actions page](https://github.com/Kron4ek/Wine-Builds/actions), you need to be logged into your GitHub account to be able to download from there.
 
 ---
 
@@ -26,7 +24,7 @@ More precisely, not all the Wine dependencies are strictly required, some of the
 
 Also, do note that **glibc (libc6)** **2.27** or newer is required.
 
-If you want to use Wine, but don't want to install any of its dependencies, take a look at my [**Conty project**](https://github.com/Kron4ek/Conty). Conty is a container that includes Wine itself and all of its dependencies (including 32-bit ones), you can use it to run any games and programs.
+If you want to use Wine, but don't want to install any of its dependencies, take a look at my [**Conty project**](https://github.com/Kron4ek/Conty). Conty is a container that includes, among other things, Wine and all of its dependencies (including 32-bit ones), you can use it to run any games and programs.
 
 ---
 
