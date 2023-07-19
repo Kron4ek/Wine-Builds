@@ -23,4 +23,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: Bootstraps
-          path: /opt/chroots/bootstraps.tar.xz
+          path: /opt/bootstraps.tar.xz
