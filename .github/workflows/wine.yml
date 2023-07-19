@@ -9,13 +9,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: bootstraps.yml
+          workflow_conclusion: success
+          path: /opt
       - name: Build Wine
         run: |
           sudo apt update
           sudo apt install debootstrap perl git wget xz-utils bubblewrap autoconf
-          chmod +x create_ubuntu_bootstraps.sh build_wine.sh
-          sudo ./create_ubuntu_bootstraps.sh
+          sudo tar -C /opt -xpf /opt/Bootstraps/bootstraps.tar.xz
+          chmod +x build_wine.sh
           export WINE_VERSION="$(wget -q -O - "https://raw.githubusercontent.com/Kron4ek/wine-tkg/master/VERSION" | tail -c +14)"
           WINE_BRANCH=vanilla ./build_wine.sh
           WINE_BRANCH=staging ./build_wine.sh
