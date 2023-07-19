@@ -1,0 +1,26 @@
+name: Bootstraps CI
+
+on:
+  schedule:
+    - cron:  0 0 1 */2 *
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create bootstraps
+        run: |
+          sudo apt update
+          sudo apt install debootstrap perl
+          chmod +x create_ubuntu_bootstraps.sh
+          sudo ./create_ubuntu_bootstraps.sh
+          cd /opt
+          sudo tar -I "xz -T0 -9" -cpf bootstraps.tar.xz chroots
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Bootstraps
+          path: ./*.tar.xz
