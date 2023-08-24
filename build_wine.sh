@@ -240,6 +240,7 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 		BUILD_NAME=proton-exp-"${WINE_VERSION}"
 	else
 		BUILD_NAME=proton-"${WINE_VERSION}"
+	fi
 else
 	if [ "${WINE_VERSION}" = "git" ]; then
 		git clone https://gitlab.winehq.org/wine/wine.git wine
