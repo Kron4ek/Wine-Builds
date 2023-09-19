@@ -24,6 +24,7 @@ jobs:
           chmod +x build_wine.sh
           export WINE_VERSION="$(wget -q -O - "https://gitlab.winehq.org/wine/wine/-/raw/stable/VERSION" | tail -c +14)"
           WINE_BRANCH=vanilla ./build_wine.sh
+          sha256sum *.tar.xz
       - uses: actions/upload-artifact@v3
         with:
           name: Wine Stable

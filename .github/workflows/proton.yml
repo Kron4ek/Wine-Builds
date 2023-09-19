@@ -25,6 +25,7 @@ jobs:
           sudo tar -C /opt -xpf /opt/Bootstraps/bootstraps.tar.xz
           chmod +x build_wine.sh
           WINE_BRANCH=proton ./build_wine.sh
+          sha256sum *.tar.xz
       - uses: actions/upload-artifact@v3
         with:
           name: Proton

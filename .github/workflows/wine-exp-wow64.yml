@@ -28,6 +28,7 @@ jobs:
           export EXPERIMENTAL_WOW64="true"
           WINE_BRANCH=vanilla ./build_wine.sh
           WINE_BRANCH=staging ./build_wine.sh
+          sha256sum *.tar.xz
       - uses: actions/upload-artifact@v3
         with:
           name: Wine-32on64-WoW64

@@ -20,6 +20,7 @@ jobs:
           sudo ./create_ubuntu_bootstraps.sh
           cd /opt
           sudo tar -I "xz -T0 -9" -cpf bootstraps.tar.xz chroots
+          sha256sum *.tar.xz
       - uses: actions/upload-artifact@v3
         with:
           name: Bootstraps
