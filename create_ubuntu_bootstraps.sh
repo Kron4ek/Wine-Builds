@@ -71,6 +71,7 @@ create_build_scripts () {
 	vulkan_headers_version="1.3.239"
 	vulkan_loader_version="1.3.239"
 	spirv_headers_version="sdk-1.3.239.0"
+ 	libpcap_version="1.10.4"
 
 	cat <<EOF > "${MAINDIR}"/prepare_chroot.sh
 #!/bin/bash
@@ -96,8 +97,9 @@ add-apt-repository -y ppa:cybermax-dexter/mingw-w64-backport
 apt-get update
 apt-get -y build-dep wine-development libsdl2 libvulkan1
 apt-get -y install ccache gcc-9 g++-9 wget git gcc-mingw-w64 g++-mingw-w64
-apt-get -y install libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev
+apt-get -y install libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libcapi20-dev
 apt-get -y install libjpeg62-dev samba-dev
+apt-get -y install libpcsclite-dev libcups2-dev
 apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove
 apt-get -y clean
 apt-get -y autoclean
@@ -108,6 +110,7 @@ wget -O faudio.tar.gz https://github.com/FNA-XNA/FAudio/archive/${faudio_version
 wget -O vulkan-loader.tar.gz https://github.com/KhronosGroup/Vulkan-Loader/archive/v${vulkan_loader_version}.tar.gz
 wget -O vulkan-headers.tar.gz https://github.com/KhronosGroup/Vulkan-Headers/archive/v${vulkan_headers_version}.tar.gz
 wget -O spirv-headers.tar.gz https://github.com/KhronosGroup/SPIRV-Headers/archive/${spirv_headers_version}.tar.gz
+wget -O libpcap.tar.gz https://www.tcpdump.org/release/libpcap-${libpcap_version}.tar.gz
 if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi
 if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi
 git clone git://source.winehq.org/git/vkd3d.git
@@ -116,6 +119,7 @@ tar xf faudio.tar.gz
 tar xf vulkan-loader.tar.gz
 tar xf vulkan-headers.tar.gz
 tar xf spirv-headers.tar.gz
+tar xf libpcap.tar.gz
 export CFLAGS="-O2"
 export CXXFLAGS="-O2"
 mkdir build && cd build
@@ -135,6 +139,8 @@ cp opt/wine-stable/bin/widl /usr/bin
 cd vkd3d && ./autogen.sh
 cd ../ && rm -r build && mkdir build && cd build
 ../vkd3d/configure && make -j$(nproc) && make install
+cd ../ && rm -r build && mkdir build && cd build
+../libpcap-${libpcap_version}/configure && make -j$(nproc) install
 cd /opt && rm -r /opt/build_libs
 EOF
 
