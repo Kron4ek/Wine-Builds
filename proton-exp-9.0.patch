@@ -1,0 +1,27 @@
+--- proton-wine-a/dlls/winegstreamer/wg_source.c	2024-03-01 16:51:11.441373814 +0100
++++ proton-wine-b/dlls/winegstreamer/wg_source.c	2024-03-01 17:23:35.341565300 +0100
+@@ -82,23 +82,7 @@ static GstCaps *detect_caps_from_data(co
+     GstCaps *caps;
+     gchar *str;
+ 
+-    if (!(caps = gst_type_find_helper_for_data_with_extension(NULL, data, size,
+-            extension ? extension + 1 : NULL, &probability)))
+-    {
+-        GST_ERROR("Failed to detect caps for url %s, data %p, size %u", url, data, size);
+-        return NULL;
+-    }
+-
+-    str = gst_caps_to_string(caps);
+-    if (probability > GST_TYPE_FIND_POSSIBLE)
+-        GST_INFO("Detected caps %s with probability %u for url %s, data %p, size %u",
+-                str, probability, url, data, size);
+-    else
+-        GST_FIXME("Detected caps %s with probability %u for url %s, data %p, size %u",
+-                str, probability, url, data, size);
+-    g_free(str);
+-
+-    return caps;
++    return NULL;
+ }
+ 
+ static GstPad *create_pad_with_caps(GstPadDirection direction, GstCaps *caps)
