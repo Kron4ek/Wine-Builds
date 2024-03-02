@@ -321,6 +321,7 @@ fi
 cd wine || exit 1
 dlls/winevulkan/make_vulkan
 tools/make_requests
+tools/make_specfiles
 autoreconf -f
 cd "${BUILD_DIR}" || exit 1
 
