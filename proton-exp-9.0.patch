@@ -1,6 +1,53 @@
---- proton-wine-a/dlls/winegstreamer/wg_source.c	2024-03-01 16:51:11.441373814 +0100
-+++ proton-wine-b/dlls/winegstreamer/wg_source.c	2024-03-01 17:23:35.341565300 +0100
-@@ -82,23 +82,7 @@ static GstCaps *detect_caps_from_data(co
+diff -ruN proton-exp/dlls/ntdll/unix/virtual.c proton-exp-new/dlls/ntdll/unix/virtual.c
+--- proton-exp/dlls/ntdll/unix/virtual.c	2024-03-18 19:25:21.058328739 +0000
++++ proton-exp-new/dlls/ntdll/unix/virtual.c	2024-03-18 19:49:46.183942035 +0000
+@@ -456,41 +456,7 @@
+ 
+ static void kernel_writewatch_register_range( struct file_view *view, void *base, size_t size )
+ {
+-    struct uffdio_register uffdio_register;
+-    struct uffdio_writeprotect wp;
+-
+-    if (!(view->protect & VPROT_WRITEWATCH) || !use_kernel_writewatch) return;
+-
+-    madvise( base, size, MADV_NOHUGEPAGE );
+-    if (use_kernel_writewatch == 2)
+-    {
+-        kernel_writewatch_reset( base, size );
+-        return;
+-    }
+-
+-    uffdio_register.range.start = (UINT_PTR)base;
+-    uffdio_register.range.len = size;
+-    uffdio_register.mode = UFFDIO_REGISTER_MODE_WP;
+-    if (ioctl( uffd_fd, UFFDIO_REGISTER, &uffdio_register ) == -1)
+-    {
+-        ERR( "ioctl( UFFDIO_REGISTER ) failed, %s.\n", strerror(errno) );
+-        return;
+-    }
+-
+-    if (!(uffdio_register.ioctls & UFFDIO_WRITEPROTECT))
+-    {
+-        ERR( "uffdio_register.ioctls %s.\n", wine_dbgstr_longlong(uffdio_register.ioctls) );
+-        return;
+-    }
+-    wp.range.start = (UINT_PTR)base;
+-    wp.range.len = size;
+-    wp.mode = UFFDIO_WRITEPROTECT_MODE_WP;
+-
+-    if (ioctl(uffd_fd, UFFDIO_WRITEPROTECT, &wp) == -1)
+-    {
+-        perror("ioctl(UFFDIO_WRITEPROTECT)");
+-        exit(-1);
+-    }
++	return;
+ }
+ 
+ static NTSTATUS kernel_soft_dirty_get_write_watches( void *base, SIZE_T size, void **addresses, ULONG_PTR *count, BOOL reset )
+diff -ruN proton-exp/dlls/winegstreamer/wg_source.c proton-exp-new/dlls/winegstreamer/wg_source.c
+--- proton-exp/dlls/winegstreamer/wg_source.c	2024-03-18 19:25:21.226334815 +0000
++++ proton-exp-new/dlls/winegstreamer/wg_source.c	2024-03-18 19:48:31.471089586 +0000
+@@ -82,23 +82,7 @@
      GstCaps *caps;
      gchar *str;
  
