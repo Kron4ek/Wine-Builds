@@ -1,6 +1,6 @@
 diff -ruN proton-exp/dlls/ntdll/unix/virtual.c proton-exp-new/dlls/ntdll/unix/virtual.c
---- proton-exp/dlls/ntdll/unix/virtual.c	2024-03-18 19:25:21.058328739 +0000
-+++ proton-exp-new/dlls/ntdll/unix/virtual.c	2024-03-18 19:49:46.183942035 +0000
+--- proton-exp/dlls/ntdll/unix/virtual.c	2024-03-30 17:41:14.502971853 +0000
++++ proton-exp-new/dlls/ntdll/unix/virtual.c	2024-03-30 17:42:36.542545865 +0000
 @@ -456,41 +456,7 @@
  
  static void kernel_writewatch_register_range( struct file_view *view, void *base, size_t size )
@@ -44,9 +44,49 @@ diff -ruN proton-exp/dlls/ntdll/unix/virtual.c proton-exp-new/dlls/ntdll/unix/vi
  }
  
  static NTSTATUS kernel_soft_dirty_get_write_watches( void *base, SIZE_T size, void **addresses, ULONG_PTR *count, BOOL reset )
+diff -ruN proton-exp/dlls/winegstreamer/Makefile.in proton-exp-new/dlls/winegstreamer/Makefile.in
+--- proton-exp/dlls/winegstreamer/Makefile.in	2024-03-30 17:41:14.746982507 +0000
++++ proton-exp-new/dlls/winegstreamer/Makefile.in	2024-03-30 17:43:10.436018032 +0000
+@@ -32,10 +32,4 @@
+ 	winegstreamer_classes.idl \
+ 	wm_reader.c \
+ 	wma_decoder.c \
+-	wmv_decoder.c \
+-	media-converter/audioconv.c \
+-	media-converter/audioconvbin.c \
+-	media-converter/fossilize.c \
+-	media-converter/lib.c \
+-	media-converter/murmur3.c \
+-	media-converter/videoconv.c
++	wmv_decoder.c
+diff -ruN proton-exp/dlls/winegstreamer/unixlib.c proton-exp-new/dlls/winegstreamer/unixlib.c
+--- proton-exp/dlls/winegstreamer/unixlib.c	2024-03-30 17:41:14.748982595 +0000
++++ proton-exp-new/dlls/winegstreamer/unixlib.c	2024-03-30 17:44:07.638497433 +0000
+@@ -46,8 +46,6 @@
+ 
+ GST_DEBUG_CATEGORY(wine);
+ 
+-extern bool media_converter_init(void);
+-
+ GstGLDisplay *gl_display;
+ 
+ GstStreamType stream_type_from_caps(GstCaps *caps)
+@@ -325,12 +323,5 @@
+         }
+     }
+ 
+-    if (!media_converter_init())
+-    {
+-        GST_ERROR("Failed to init media converter.");
+-        gst_object_unref(gl_display);
+-        return STATUS_UNSUCCESSFUL;
+-    }
+-
+     return STATUS_SUCCESS;
+ }
 diff -ruN proton-exp/dlls/winegstreamer/wg_source.c proton-exp-new/dlls/winegstreamer/wg_source.c
---- proton-exp/dlls/winegstreamer/wg_source.c	2024-03-18 19:25:21.226334815 +0000
-+++ proton-exp-new/dlls/winegstreamer/wg_source.c	2024-03-18 19:48:31.471089586 +0000
+--- proton-exp/dlls/winegstreamer/wg_source.c	2024-03-30 17:41:14.748982595 +0000
++++ proton-exp-new/dlls/winegstreamer/wg_source.c	2024-03-30 17:42:36.542545865 +0000
 @@ -82,23 +82,7 @@
      GstCaps *caps;
      gchar *str;
