@@ -38,7 +38,7 @@ export WINE_BRANCH="${WINE_BRANCH:-staging}"
 # proton_7.0, experimental_7.0, proton_8.0, experimental_8.0, experimental_9.0
 # bleeding-edge
 # Leave empty to use the default branch.
-export PROTON_BRANCH="${PROTON_BRANCH:-proton_8.0}"
+export PROTON_BRANCH="${PROTON_BRANCH:-proton_9.0}"
 
 # Sometimes Wine and Staging versions don't match (for example, 5.15.2).
 # Leave this empty to use Staging version that matches the Wine version.
@@ -238,6 +238,10 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 
 	if [ "${PROTON_BRANCH}" = "experimental_9.0" ] || [ "${PROTON_BRANCH}" = "bleeding-edge" ]; then
 		patch -d wine -Np1 < "${scriptdir}"/proton-exp-9.0.patch
+	fi
+
+	if [ "${PROTON_BRANCH}" = "proton_9.0" ]; then
+		patch -d wine -Np1 < "${scriptdir}"/proton-9.0.patch
 	fi
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)-$(git -C wine rev-parse --short HEAD)"

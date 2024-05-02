@@ -1,0 +1,46 @@
+diff -ruN proton/dlls/ntdll/unix/virtual.c proton-new/dlls/ntdll/unix/virtual.c
+--- proton/dlls/ntdll/unix/virtual.c	2024-05-02 19:10:23.862327789 +0000
++++ proton-new/dlls/ntdll/unix/virtual.c	2024-05-02 19:12:10.895492903 +0000
+@@ -335,41 +335,7 @@
+ 
+ static void kernel_writewatch_register_range( struct file_view *view, void *base, size_t size )
+ {
+-    struct uffdio_register uffdio_register;
+-    struct uffdio_writeprotect wp;
+-
+-    if (!(view->protect & VPROT_WRITEWATCH) || !use_kernel_writewatch) return;
+-
+-    madvise( base, size, MADV_NOHUGEPAGE );
+-    if (use_kernel_writewatch == 2)
+-    {
+-        kernel_writewatch_reset( base, size );
+-        return;
+-    }
+-
+-    uffdio_register.range.start = (UINT_PTR)base;
+-    uffdio_register.range.len = size;
+-    uffdio_register.mode = UFFDIO_REGISTER_MODE_WP;
+-    if (ioctl( uffd_fd, UFFDIO_REGISTER, &uffdio_register ) == -1)
+-    {
+-        ERR( "ioctl( UFFDIO_REGISTER ) failed, %s.\n", strerror(errno) );
+-        return;
+-    }
+-
+-    if (!(uffdio_register.ioctls & UFFDIO_WRITEPROTECT))
+-    {
+-        ERR( "uffdio_register.ioctls %s.\n", wine_dbgstr_longlong(uffdio_register.ioctls) );
+-        return;
+-    }
+-    wp.range.start = (UINT_PTR)base;
+-    wp.range.len = size;
+-    wp.mode = UFFDIO_WRITEPROTECT_MODE_WP;
+-
+-    if (ioctl(uffd_fd, UFFDIO_WRITEPROTECT, &wp) == -1)
+-    {
+-        perror("ioctl(UFFDIO_WRITEPROTECT)");
+-        exit(-1);
+-    }
++	return;
+ }
+ 
+ static NTSTATUS kernel_soft_dirty_get_write_watches( void *base, SIZE_T size, void **addresses, ULONG_PTR *count, BOOL reset )
