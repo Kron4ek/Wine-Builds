@@ -99,8 +99,8 @@ export CROSSCXX_X32="i686-w64-mingw32-g++"
 export CROSSCC_X64="x86_64-w64-mingw32-gcc"
 export CROSSCXX_X64="x86_64-w64-mingw32-g++"
 
-export CFLAGS_X32="-march=i686 -msse2 -mfpmath=sse -O2 -ftree-vectorize"
-export CFLAGS_X64="-march=x86-64 -msse3 -mfpmath=sse -O2 -ftree-vectorize"
+export CFLAGS_X32="-march=i686 -O2"
+export CFLAGS_X64="-march=x86-64 -O2"
 export LDFLAGS="-Wl,-O1,--sort-common,--as-needed"
 
 export CROSSCFLAGS_X32="${CFLAGS_X32}"
