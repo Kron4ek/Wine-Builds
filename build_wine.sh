@@ -30,7 +30,7 @@ fi
 # use their own versions.
 export WINE_VERSION="${WINE_VERSION:-latest}"
 
-# Available branches: vanilla, staging, staging-tkg, proton
+# Available branches: vanilla, staging, proton, staging-tkg, staging-tkg-ntsync
 export WINE_BRANCH="${WINE_BRANCH:-staging}"
 
 # Available proton branches: proton_3.7, proton_3.16, proton_4.2, proton_4.11
@@ -206,11 +206,15 @@ if [ -n "${CUSTOM_SRC_PATH}" ]; then
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
 	BUILD_NAME="${WINE_VERSION}"-custom
-elif [ "$WINE_BRANCH" = "staging-tkg" ]; then
-	git clone https://github.com/Kron4ek/wine-tkg wine
+elif [ "$WINE_BRANCH" = "staging-tkg" ] || [ "$WINE_BRANCH" = "staging-tkg-ntsync" ]; then
+	if [ "$WINE_BRANCH" = "staging-tkg" ]; then
+		git clone https://github.com/Kron4ek/wine-tkg wine
+	else
+		git clone https://github.com/Kron4ek/wine-tkg wine -b ntsync
+	fi
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
-	BUILD_NAME="${WINE_VERSION}"-staging-tkg
+	BUILD_NAME="${WINE_VERSION}"-"${WINE_BRANCH}"
 elif [ "$WINE_BRANCH" = "proton" ]; then
 	if [ -z "${PROTON_BRANCH}" ]; then
 		git clone https://github.com/ValveSoftware/wine
