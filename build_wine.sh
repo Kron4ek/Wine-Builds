@@ -30,7 +30,7 @@ fi
 # use their own versions.
 export WINE_VERSION="${WINE_VERSION:-latest}"
 
-# Available branches: vanilla, staging, staging-tkg, proton, wayland
+# Available branches: vanilla, staging, staging-tkg, proton
 export WINE_BRANCH="${WINE_BRANCH:-staging}"
 
 # Available proton branches: proton_3.7, proton_3.16, proton_4.2, proton_4.11
@@ -211,20 +211,6 @@ elif [ "$WINE_BRANCH" = "staging-tkg" ]; then
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
 	BUILD_NAME="${WINE_VERSION}"-staging-tkg
-elif [ "$WINE_BRANCH" = "wayland" ]; then
-	git clone https://github.com/Kron4ek/wine-wayland wine
-
-	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
-	BUILD_NAME="${WINE_VERSION}"-wayland
-
-	export WINE_BUILD_OPTIONS="--without-x --without-xcomposite \
-                               --without-xfixes --without-xinerama \
-                               --without-xinput --without-xinput2 \
-                               --without-xrandr --without-xrender \
-                               --without-xshape --without-xshm  \
-                               --without-xslt --without-xxf86vm \
-                               --without-xcursor --without-opengl \
-                               ${WINE_BUILD_OPTIONS}"
 elif [ "$WINE_BRANCH" = "proton" ]; then
 	if [ -z "${PROTON_BRANCH}" ]; then
 		git clone https://github.com/ValveSoftware/wine
