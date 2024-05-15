@@ -14,7 +14,8 @@ jobs:
 
       - name: Create bootstraps
         run: |
-          sudo apt update
+          sudo apt upd
+        ate
           sudo apt install debootstrap perl
           chmod +x create_ubuntu_bootstraps.sh
           sudo ./create_ubuntu_bootstraps.sh

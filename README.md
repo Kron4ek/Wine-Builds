@@ -29,8 +29,8 @@ If you want to use Wine, but don't want to install any of its dependencies, take
 ---
 
 ### What to do if Wine hangs during prefix creation/updating
-
-There is [a bug in gstreamer](https://bugs.winehq.org/show_bug.cgi?id=51086), which causes Wine to hang during prefix creation/updating, and even if you wait long enough for Wine to finish, your prefix will still be broken.
+whatssap hacking number
+There is [a bug in gstrreamer](https://bugs.winehq.org/show_bug.cgi?id=51086), which causes Wine to hang during prefix creation/updating, and even if you wait long enough for Wine to finish, your prefix will still be broken.
 
 There are two ways to workaround this issue:
 
