@@ -1,7 +1,7 @@
-diff -ruN proton/dlls/ntdll/unix/virtual.c proton-new/dlls/ntdll/unix/virtual.c
---- proton/dlls/ntdll/unix/virtual.c	2024-05-02 19:10:23.862327789 +0000
-+++ proton-new/dlls/ntdll/unix/virtual.c	2024-05-02 19:12:10.895492903 +0000
-@@ -335,41 +335,7 @@
+diff -ruN proton-9.0/dlls/ntdll/unix/virtual.c proton-9.0-new/dlls/ntdll/unix/virtual.c
+--- proton-9.0/dlls/ntdll/unix/virtual.c	2024-06-12 21:33:09.217784470 +0000
++++ proton-9.0-new/dlls/ntdll/unix/virtual.c	2024-06-12 21:34:14.103729743 +0000
+@@ -456,41 +456,7 @@
  
  static void kernel_writewatch_register_range( struct file_view *view, void *base, size_t size )
  {
@@ -44,3 +44,43 @@ diff -ruN proton/dlls/ntdll/unix/virtual.c proton-new/dlls/ntdll/unix/virtual.c
  }
  
  static NTSTATUS kernel_soft_dirty_get_write_watches( void *base, SIZE_T size, void **addresses, ULONG_PTR *count, BOOL reset )
+diff -ruN proton-9.0/dlls/winegstreamer/Makefile.in proton-9.0-new/dlls/winegstreamer/Makefile.in
+--- proton-9.0/dlls/winegstreamer/Makefile.in	2024-06-12 21:33:09.449784276 +0000
++++ proton-9.0-new/dlls/winegstreamer/Makefile.in	2024-06-12 21:34:47.525701339 +0000
+@@ -30,10 +30,4 @@
+ 	winegstreamer_classes.idl \
+ 	wm_reader.c \
+ 	wma_decoder.c \
+-	wmv_decoder.c \
+-	media-converter/audioconv.c \
+-	media-converter/audioconvbin.c \
+-	media-converter/fossilize.c \
+-	media-converter/lib.c \
+-	media-converter/murmur3.c \
+-	media-converter/videoconv.c
++	wmv_decoder.c
+diff -ruN proton-9.0/dlls/winegstreamer/unixlib.c proton-9.0-new/dlls/winegstreamer/unixlib.c
+--- proton-9.0/dlls/winegstreamer/unixlib.c	2024-06-12 21:33:09.451784274 +0000
++++ proton-9.0-new/dlls/winegstreamer/unixlib.c	2024-06-12 21:35:39.125657224 +0000
+@@ -46,8 +46,6 @@
+ 
+ GST_DEBUG_CATEGORY(wine);
+ 
+-extern bool media_converter_init(void);
+-
+ GstGLDisplay *gl_display;
+ 
+ GstStreamType stream_type_from_caps(GstCaps *caps)
+@@ -325,12 +323,5 @@
+         }
+     }
+ 
+-    if (!media_converter_init())
+-    {
+-        GST_ERROR("Failed to init media converter.");
+-        gst_object_unref(gl_display);
+-        return STATUS_UNSUCCESSFUL;
+-    }
+-
+     return STATUS_SUCCESS;
+ }
