@@ -99,7 +99,7 @@ add-apt-repository -y ppa:ubuntu-toolchain-r/test
 add-apt-repository -y ppa:cybermax-dexter/mingw-w64-backport
 apt-get update
 apt-get -y build-dep wine-development libsdl2 libvulkan1 python3
-apt-get -y install ccache gcc-9 g++-9 wget git gcc-mingw-w64 g++-mingw-w64 ninja-build
+apt-get -y install ccache gcc-11 g++-11 wget git gcc-mingw-w64 g++-mingw-w64 ninja-build
 apt-get -y install libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libcapi20-dev
 apt-get -y install libjpeg62-dev samba-dev
 apt-get -y install libpcsclite-dev libcups2-dev
@@ -120,6 +120,7 @@ wget -O libpcap.tar.gz https://www.tcpdump.org/release/libpcap-${libpcap_version
 wget -O libxkbcommon.tar.xz https://xkbcommon.org/download/libxkbcommon-${libxkbcommon_version}.tar.xz
 wget -O python3.tar.gz https://www.python.org/ftp/python/${python3_version}/Python-${python3_version}.tgz
 wget -O meson.tar.gz https://github.com/mesonbuild/meson/releases/download/${meson_version}/meson-${meson_version}.tar.gz
+wget -O mingw.tar.xz https://github.com/Kron4ek/Wine-Builds/raw/master/Red-Rose-MinGW-w64-Posix-Urct-v12.0.0.r0.g819a6ec2e-Gcc-11.4.1.tar.xz
 wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/f787614c40519eb2c8ebdc116b2cd09d46e5ec85/include/uapi/linux/ntsync.h
 wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/f787614c40519eb2c8ebdc116b2cd09d46e5ec85/include/uapi/linux/userfaultfd.h
 if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi
@@ -134,6 +135,7 @@ tar xf spirv-headers.tar.gz
 tar xf libpcap.tar.gz
 tar xf libxkbcommon.tar.xz
 tar xf python3.tar.gz
+tar xf mingw.tar.xz -C /
 tar xf meson.tar.gz -C /usr/local
 ln -s /usr/local/meson-${meson_version}/meson.py /usr/local/bin/meson
 export CFLAGS="-O2"
