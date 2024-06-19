@@ -107,7 +107,7 @@ apt-get -y install python3-pip libxcb-xkb-dev libbz2-dev
 apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 libpcap0.8-dev libpcap0.8 --purge --autoremove
 apt-get -y clean
 apt-get -y autoclean
-export PATH="/usr/local/bin:${PATH}"
+export PATH="/usr/local/bin:\${PATH}"
 mkdir /opt/build_libs
 cd /opt/build_libs
 wget -O sdl.tar.gz https://www.libsdl.org/release/SDL2-${sdl2_version}.tar.gz
@@ -131,6 +131,7 @@ tar xf vulkan-headers.tar.gz
 tar xf spirv-headers.tar.gz
 tar xf libpcap.tar.gz
 tar xf libxkbcommon.tar.xz
+tar xf python3.tar.gz
 tar xf meson.tar.gz -C /usr/local
 ln -s /usr/local/meson-${meson_version}/meson.py /usr/local/bin/meson
 export CFLAGS="-O2"
