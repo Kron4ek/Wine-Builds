@@ -91,8 +91,8 @@ export BOOTSTRAP_X32=/opt/chroots/bionic32_chroot
 
 export scriptdir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
-export CC="gcc-9"
-export CXX="g++-9"
+export CC="gcc-11"
+export CXX="g++-11"
 
 export CROSSCC_X32="i686-w64-mingw32-gcc"
 export CROSSCXX_X32="i686-w64-mingw32-g++"
@@ -143,7 +143,7 @@ build_with_bwrap () {
 		  --tmpfs /mnt --tmpfs /media --bind "${BUILD_DIR}" "${BUILD_DIR}" \
 		  --bind-try "${XDG_CACHE_HOME}"/ccache "${XDG_CACHE_HOME}"/ccache \
 		  --bind-try "${HOME}"/.ccache "${HOME}"/.ccache \
-		  --setenv PATH "/bin:/sbin:/usr/bin:/usr/sbin" \
+		  --setenv PATH "/opt/Red-Rose-MinGW-w64-Posix-Urct-v12.0.0.r0.g819a6ec2e-Gcc-11.4.1/bin:/bin:/sbin:/usr/bin:/usr/sbin" \
 			"$@"
 }
 
@@ -220,18 +220,6 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 		git clone https://github.com/ValveSoftware/wine
 	else
 		git clone https://github.com/ValveSoftware/wine -b "${PROTON_BRANCH}"
-	fi
-
-	if [ "${PROTON_BRANCH}" = "experimental_8.0" ]; then
-		patch -d wine -Np1 < "${scriptdir}"/proton-exp-8.0.patch
-	fi
-
-	if [ "${PROTON_BRANCH}" = "experimental_9.0" ] || [ "${PROTON_BRANCH}" = "bleeding-edge" ]; then
-		patch -d wine -Np1 < "${scriptdir}"/proton-exp-9.0.patch
-	fi
-
-	if [ "${PROTON_BRANCH}" = "proton_9.0" ]; then
-		patch -d wine -Np1 < "${scriptdir}"/proton-9.0.patch
 	fi
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)-$(git -C wine rev-parse --short HEAD)"
