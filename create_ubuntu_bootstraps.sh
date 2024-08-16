@@ -125,7 +125,6 @@ wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel
 wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/f787614c40519eb2c8ebdc116b2cd09d46e5ec85/include/uapi/linux/userfaultfd.h
 if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi
 if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi
-git clone git://source.winehq.org/git/vkd3d.git
 git clone https://gitlab.freedesktop.org/gstreamer/gstreamer.git -b 1.22
 tar xf sdl.tar.gz
 tar xf faudio.tar.gz
@@ -154,9 +153,6 @@ cd ../ && rm -r build && mkdir build && cd build
 cmake ../SPIRV-Headers-${spirv_headers_version} && make -j$(nproc) && make install
 cd ../ && dpkg -x wine.deb .
 cp opt/wine-stable/bin/widl /usr/bin
-cd vkd3d && ./autogen.sh
-cd ../ && rm -r build && mkdir build && cd build
-../vkd3d/configure && make -j$(nproc) && make install
 cd ../ && rm -r build && mkdir build && cd build
 ../libpcap-${libpcap_version}/configure && make -j$(nproc) install
 cd ../ && rm -r build && mkdir build && cd build
