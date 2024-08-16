@@ -153,7 +153,7 @@ cd ../ && rm -r build && mkdir build && cd build
 cmake ../SPIRV-Headers-${spirv_headers_version} && make -j$(nproc) && make install
 cd ../ && dpkg -x wine.deb .
 cp opt/wine-stable/bin/widl /usr/bin
-cd ../ && rm -r build && mkdir build && cd build
+rm -r build && mkdir build && cd build
 ../libpcap-${libpcap_version}/configure && make -j$(nproc) install
 cd ../ && rm -r build && mkdir build && cd build
 ../Python-${python3_version}/configure --enable-optimizations
