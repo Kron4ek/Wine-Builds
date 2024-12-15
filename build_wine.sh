@@ -207,10 +207,14 @@ if [ -n "${CUSTOM_SRC_PATH}" ]; then
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
 	BUILD_NAME="${WINE_VERSION}"-custom
 elif [ "$WINE_BRANCH" = "staging-tkg" ] || [ "$WINE_BRANCH" = "staging-tkg-ntsync" ]; then
-	if [ "$WINE_BRANCH" = "staging-tkg" ]; then
-		git clone https://github.com/Kron4ek/wine-tkg wine
+	if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
+		git clone https://github.com/Kron4ek/wine-tkg wine -b wow64
 	else
-		git clone https://github.com/Kron4ek/wine-tkg wine -b ntsync
+		if [ "$WINE_BRANCH" = "staging-tkg" ]; then
+			git clone https://github.com/Kron4ek/wine-tkg wine
+		else
+			git clone https://github.com/Kron4ek/wine-tkg wine -b ntsync
+		fi
 	fi
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
