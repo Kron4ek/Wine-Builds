@@ -68,8 +68,8 @@ prepare_chroot () {
 create_build_scripts () {
 	sdl2_version="2.26.4"
 	faudio_version="23.03"
-	vulkan_headers_version="1.3.295"
-	vulkan_loader_version="1.3.295"
+	vulkan_headers_version="1.4.304"
+	vulkan_loader_version="1.4.304"
 	spirv_headers_version="sdk-1.3.239.0"
  	libpcap_version="1.10.4"
   	libxkbcommon_version="1.6.0"
@@ -122,7 +122,7 @@ wget -O libpcap.tar.gz https://www.tcpdump.org/release/libpcap-${libpcap_version
 wget -O libxkbcommon.tar.xz https://xkbcommon.org/download/libxkbcommon-${libxkbcommon_version}.tar.xz
 wget -O python3.tar.gz https://www.python.org/ftp/python/${python3_version}/Python-${python3_version}.tgz
 wget -O meson.tar.gz https://github.com/mesonbuild/meson/releases/download/${meson_version}/meson-${meson_version}.tar.gz
-wget -O mingw.tar.xz http://techer.pascal.free.fr/Red-Rose_MinGW-w64-Toolchain/Red-Rose-MinGW-w64-Posix-Urct-v12.0.0.r0.g819a6ec2e-Gcc-11.4.1.tar.xz
+wget -O mingw.tar.xz http://techer.pascal.free.fr/Red-Rose_MinGW-w64-Toolchain/Red-Rose-MinGW-w64-Posix-Urct-v12.0.0.r458.g03d8a40f5-Gcc-11.5.0.tar.xz
 wget -O cmake.tar.gz https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-${cmake_version}.tar.gz
 wget -O ccache.tar.gz https://github.com/ccache/ccache/releases/download/v${ccache_version}/ccache-${ccache_version}.tar.gz
 wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/f787614c40519eb2c8ebdc116b2cd09d46e5ec85/include/uapi/linux/ntsync.h
