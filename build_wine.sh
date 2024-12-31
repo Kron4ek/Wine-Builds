@@ -143,7 +143,7 @@ build_with_bwrap () {
 		  --tmpfs /mnt --tmpfs /media --bind "${BUILD_DIR}" "${BUILD_DIR}" \
 		  --bind-try "${XDG_CACHE_HOME}"/ccache "${XDG_CACHE_HOME}"/ccache \
 		  --bind-try "${HOME}"/.ccache "${HOME}"/.ccache \
-		  --setenv PATH "/opt/Red-Rose-MinGW-w64-Posix-Urct-v12.0.0.r0.g819a6ec2e-Gcc-11.4.1/bin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin" \
+		  --setenv PATH "/opt/Red-Rose-MinGW-w64-Posix-Urct-v12.0.0.r458.g03d8a40f5-Gcc-11.5.0/bin:/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin" \
 			"$@"
 }
 
