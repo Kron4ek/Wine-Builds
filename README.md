@@ -59,6 +59,7 @@ Configure options: `--without-ldap --without-oss --disable-winemenubuilder --dis
 ### Architectures
 
 * **amd64** - for 64-bit systems, it can run both 32-bit and 64-bit applications.
+* **amd64-wow64** - same as amd64, but does not require 32-bit libraries to run 32-bit applications, therefore it can work on systems without multilib.
 * **x86** - for 32-bit systems, it can run only 32-bit applications.
 
 ---
@@ -73,7 +74,6 @@ Configure options: `--without-ldap --without-oss --disable-winemenubuilder --dis
 
 * **Proton** is a Wine build modified by Valve and other contributors. It contains many useful patches (primarily for a better gaming experience), some of them are unique and not present in other builds. The differences from the official Steam's Proton are the lack of the Proton's python script and the lack of some builtin dlls (like DXVK and vkd3d-proton), the build environment is also different. However, you can still install DXVK and vkd3d-proton manually to your prefix, like you do with regular Wine builds.
 
-* **Wayland** is a Wine build with the patches from the [wine-wayland project](https://github.com/varmd/wine-wayland). Wine-Wayland works only on Wayland (it doesn't work on Xorg at all) and supports only Vulkan, OpenGL is not supported. Thus you can only run Vulkan games with it (by using DXVK and vkd3d as well). Before using, read all the caveats and notes on [the wine-wayland project page](https://github.com/varmd/wine-wayland).
 ---
 
 ## Compilation / Build environment
