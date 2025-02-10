@@ -455,9 +455,9 @@ for i in mpc isl mpfr gmp; do
     ln -s "$SRC_PATH/gcc/$i" "$SRC_PATH/binutils/$i"
 done
 
-export CFLAGS="-g0"
-export CXXFLAGS="-g0"
-export LDFLAGS="-s"
+export CFLAGS="-O2"
+export CXXFLAGS="-O2"
+export LDFLAGS="-Wl,-O1,--sort-common,--as-needed"
 
 ADD_TO_PATH=()
 
