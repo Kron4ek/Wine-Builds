@@ -105,7 +105,7 @@ apt-get -y install ccache gcc-11 g++-11 wget git gcc-mingw-w64 g++-mingw-w64 nin
 apt-get -y install libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libcapi20-dev
 apt-get -y install libjpeg62-dev samba-dev
 apt-get -y install libpcsclite-dev libcups2-dev
-apt-get -y install python3-pip libxcb-xkb-dev libbz2-dev
+apt-get -y install python3-pip libxcb-xkb-dev libbz2-dev texinfo curl
 apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 libpcap0.8-dev libpcap0.8 --purge --autoremove
 apt-get -y purge *gstreamer* --purge --autoremove
 apt-get -y clean
@@ -122,7 +122,6 @@ wget -O libpcap.tar.gz https://www.tcpdump.org/release/libpcap-${libpcap_version
 wget -O libxkbcommon.tar.xz https://xkbcommon.org/download/libxkbcommon-${libxkbcommon_version}.tar.xz
 wget -O python3.tar.gz https://www.python.org/ftp/python/${python3_version}/Python-${python3_version}.tgz
 wget -O meson.tar.gz https://github.com/mesonbuild/meson/releases/download/${meson_version}/meson-${meson_version}.tar.gz
-wget -O mingw.tar.xz http://techer.pascal.free.fr/Red-Rose_MinGW-w64-Toolchain/Red-Rose-MinGW-w64-Posix-Urct-v12.0.0.r458.g03d8a40f5-Gcc-11.5.0.tar.xz
 wget -O cmake.tar.gz https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-${cmake_version}.tar.gz
 wget -O ccache.tar.gz https://github.com/ccache/ccache/releases/download/v${ccache_version}/ccache-${ccache_version}.tar.gz
 wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/f787614c40519eb2c8ebdc116b2cd09d46e5ec85/include/uapi/linux/ntsync.h
@@ -130,6 +129,7 @@ wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-k
 if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi
 if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi
 git clone https://gitlab.freedesktop.org/gstreamer/gstreamer.git -b 1.22
+wget https://raw.githubusercontent.com/Kron4ek/Wine-Builds/refs/heads/master/mingw-w64-build
 tar xf sdl.tar.gz
 tar xf faudio.tar.gz
 tar xf vulkan-loader.tar.gz
@@ -140,9 +140,10 @@ tar xf libxkbcommon.tar.xz
 tar xf python3.tar.gz
 tar xf cmake.tar.gz
 tar xf ccache.tar.gz
-tar xf mingw.tar.xz -C /
 tar xf meson.tar.gz -C /usr/local
 ln -s /usr/local/meson-${meson_version}/meson.py /usr/local/bin/meson
+bash mingw-w64-build x86_64
+bash mingw-w64-build i686
 export CC=gcc-11
 export CXX=g++-11
 export CFLAGS="-O2"
