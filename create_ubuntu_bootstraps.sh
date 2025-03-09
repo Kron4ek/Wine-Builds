@@ -185,7 +185,7 @@ cd ../gstreamer
 meson setup build
 ninja -C build
 ninja -C build install
-cd ../libglvnd-${libglvnd_version}
+cd ../libglvnd-v${libglvnd_version}
 meson setup build
 meson compile -C build
 meson install -C build
