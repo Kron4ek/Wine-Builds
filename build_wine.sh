@@ -392,8 +392,6 @@ fi
 
 for build in ${builds_list}; do
 	if [ -d "${build}" ]; then
-		rm -rf "${build}"/include "${build}"/share/applications "${build}"/share/man
-
 		if [ -f wine/wine-tkg-config.txt ]; then
 			cp wine/wine-tkg-config.txt "${build}"
 		fi
