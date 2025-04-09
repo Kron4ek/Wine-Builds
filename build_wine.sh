@@ -383,9 +383,9 @@ fi
 export XZ_OPT="-9"
 
 if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
-	mv wine-${BUILD_NAME}-amd64 wine-${BUILD_NAME}-exp-wow64-amd64
+	mv wine-${BUILD_NAME}-amd64 wine-${BUILD_NAME}-amd64-wow64
 
-	builds_list="wine-${BUILD_NAME}-exp-wow64-amd64"
+	builds_list="wine-${BUILD_NAME}-amd64-wow64"
 else
 	builds_list="wine-${BUILD_NAME}-x86 wine-${BUILD_NAME}-amd64"
 fi
