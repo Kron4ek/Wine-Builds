@@ -274,12 +274,6 @@ else
 			staging_patcher=("${BUILD_DIR}"/wine-staging-"${WINE_VERSION}"/staging/patchinstall.py)
 		fi
 
-		if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
-  			if ! grep Disabled "${BUILD_DIR}"/wine-staging-"${WINE_VERSION}"/patches/ntdll-Syscall_Emulation/definition 1>/dev/null; then
-				STAGING_ARGS="--all -W ntdll-Syscall_Emulation"
-			fi
-		fi
-
 		cd wine || exit 1
 		if [ -n "${STAGING_ARGS}" ]; then
 			"${staging_patcher[@]}" ${STAGING_ARGS}
