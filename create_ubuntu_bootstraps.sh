@@ -68,16 +68,17 @@ prepare_chroot () {
 create_build_scripts () {
 	sdl2_version="2.26.4"
 	faudio_version="23.03"
-	vulkan_headers_version="1.4.304"
-	vulkan_loader_version="1.4.304"
+	vulkan_headers_version="1.4.328"
+	vulkan_loader_version="1.4.328"
 	spirv_headers_version="sdk-1.3.239.0"
  	libpcap_version="1.10.4"
   	libxkbcommon_version="1.6.0"
    	python3_version="3.12.4"
-    	meson_version="1.3.2"
-     	cmake_version="3.30.3"
-      	ccache_version="4.10.2"
-        libglvnd_version="1.7.0"
+    meson_version="1.3.2"
+    cmake_version="3.30.3"
+    ccache_version="4.12.1"
+    libglvnd_version="1.7.0"
+	bison_version="3.8.2"
 
 	cat <<EOF > "${MAINDIR}"/prepare_chroot.sh
 #!/bin/bash
@@ -126,8 +127,9 @@ wget -O meson.tar.gz https://github.com/mesonbuild/meson/releases/download/${mes
 wget -O cmake.tar.gz https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-${cmake_version}.tar.gz
 wget -O ccache.tar.gz https://github.com/ccache/ccache/releases/download/v${ccache_version}/ccache-${ccache_version}.tar.gz
 wget -O libglvnd.tar.gz https://gitlab.freedesktop.org/glvnd/libglvnd/-/archive/v${libglvnd_version}/libglvnd-v${libglvnd_version}.tar.gz
-wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.13/main/include/uapi/linux/ntsync.h
-wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.13/main/include/uapi/linux/userfaultfd.h
+wget -O bison.tar.xz https://ftp.gnu.org/gnu/bison/bison-${bison_version}.tar.xz
+wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/ntsync.h
+wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/userfaultfd.h
 if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi
 if [ -d /usr/lib/x86_64-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-amd64/wine-stable_4.0.3~bionic_amd64.deb; fi
 git clone https://gitlab.freedesktop.org/gstreamer/gstreamer.git -b 1.22
@@ -143,6 +145,7 @@ tar xf python3.tar.gz
 tar xf cmake.tar.gz
 tar xf ccache.tar.gz
 tar xf libglvnd.tar.gz
+tar xf bison.tar.xz
 tar xf meson.tar.gz -C /usr/local
 ln -s /usr/local/meson-${meson_version}/meson.py /usr/local/bin/meson
 bash mingw-w64-build x86_64
@@ -189,6 +192,9 @@ cd ../libglvnd-v${libglvnd_version}
 meson setup build
 meson compile -C build
 meson install -C build
+cd ../bison-${bison_version}
+./configure
+make -j$(nproc) install
 cd /opt && rm -r /opt/build_libs
 EOF
 
