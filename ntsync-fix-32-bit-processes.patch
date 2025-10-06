@@ -1,0 +1,24 @@
+diff -ruN wine_src_10.16/dlls/ntdll/unix/sync.c wine_src_10.16_ntsync/dlls/ntdll/unix/sync.c
+--- wine_src_10.16/dlls/ntdll/unix/sync.c	2025-10-06 15:56:52.666567524 +0300
++++ wine_src_10.16_ntsync/dlls/ntdll/unix/sync.c	2025-10-06 15:56:14.112958888 +0300
+@@ -412,7 +412,7 @@
+     else if (timeout->QuadPart <= 0)
+     {
+         clock_gettime( CLOCK_MONOTONIC, &now );
+-        args.timeout = (now.tv_sec * NSECPERSEC) + now.tv_nsec + (-timeout->QuadPart * 100);
++        args.timeout = ((__s64)now.tv_sec * NSECPERSEC) + now.tv_nsec + (-timeout->QuadPart * 100);
+     }
+     else
+     {
+diff -ruN wine_src_10.16/dlls/ntdll/unix/unix_private.h wine_src_10.16_ntsync/dlls/ntdll/unix/unix_private.h
+--- wine_src_10.16/dlls/ntdll/unix/unix_private.h	2025-10-06 15:56:54.712705463 +0300
++++ wine_src_10.16_ntsync/dlls/ntdll/unix/unix_private.h	2025-10-06 15:56:14.112958888 +0300
+@@ -400,7 +400,7 @@
+ #define IMAGE_DLLCHARACTERISTICS_PREFER_NATIVE 0x0010 /* Wine extension */
+ 
+ #define TICKSPERSEC 10000000
+-#define NSECPERSEC 1000000000
++#define NSECPERSEC (LONG64)1000000000
+ #define SECS_1601_TO_1970  ((369 * 365 + 89) * (ULONGLONG)86400)
+ 
+ static inline ULONGLONG ticks_from_time_t( time_t time )
