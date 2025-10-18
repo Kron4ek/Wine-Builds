@@ -1,4 +1,4 @@
-name: Wine-WoW64-NTSYNC CI
+name: Wine-WoW64 CI
 
 on:
   schedule:
@@ -29,9 +29,8 @@ jobs:
           WINE_BRANCH=vanilla ./build_wine.sh
           WINE_BRANCH=staging ./build_wine.sh
           WINE_BRANCH=staging-tkg ./build_wine.sh
-          WINE_BRANCH=staging-tkg-ntsync ./build_wine.sh
           sha256sum *.tar.xz
       - uses: actions/upload-artifact@v4
         with:
-          name: Wine-WoW64-NTSYNC
+          name: Wine-WoW64
           path: ./*.tar.xz
