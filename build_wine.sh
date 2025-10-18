@@ -247,7 +247,7 @@ else
 		mv "wine-${WINE_VERSION}" wine
 	fi
 
-	patch -d wine -Np1 < "${scriptdir}"/ntsync-fix-32-bit-processes.patch && echo "Applied fix for 32-bit processes for NTSYNC"
+	# patch -d wine -Np1 < "${scriptdir}"/ntsync-fix-32-bit-processes.patch && echo "Applied fix for 32-bit processes for NTSYNC"
 
 	if [ "${WINE_BRANCH}" = "staging" ]; then
 		if [ "${WINE_VERSION}" = "git" ]; then
