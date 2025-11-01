@@ -207,14 +207,10 @@ if [ -n "${CUSTOM_SRC_PATH}" ]; then
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
 	BUILD_NAME="${WINE_VERSION}"-custom
 elif [ "$WINE_BRANCH" = "staging-tkg" ] || [ "$WINE_BRANCH" = "staging-tkg-ntsync" ]; then
-	if [ "$WINE_BRANCH" = "staging-tkg" ] && [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
-		git clone https://github.com/Kron4ek/wine-tkg wine -b wow64
+	if [ "$WINE_BRANCH" = "staging-tkg" ]; then
+		git clone https://github.com/Kron4ek/wine-tkg wine
 	else
-		if [ "$WINE_BRANCH" = "staging-tkg" ]; then
-			git clone https://github.com/Kron4ek/wine-tkg wine
-		else
-			git clone https://github.com/Kron4ek/wine-tkg wine -b ntsync
-		fi
+		git clone https://github.com/Kron4ek/wine-tkg wine -b ntsync
 	fi
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)"
@@ -378,14 +374,14 @@ else
 	result_dir="${HOME}"
 fi
 
-export XZ_OPT="-9"
+export XZ_OPT="-9 -T 0"
+
+builds_list="wine-${BUILD_NAME}-x86 wine-${BUILD_NAME}-amd64"
 
 if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
-	mv wine-${BUILD_NAME}-amd64 wine-${BUILD_NAME}-amd64-wow64
+	cp -r wine-${BUILD_NAME}-amd64 wine-${BUILD_NAME}-amd64-wow64
 
-	builds_list="wine-${BUILD_NAME}-amd64-wow64"
-else
-	builds_list="wine-${BUILD_NAME}-x86 wine-${BUILD_NAME}-amd64"
+	builds_list="${builds_list} wine-${BUILD_NAME}-amd64-wow64"
 fi
 
 for build in ${builds_list}; do
@@ -394,13 +390,13 @@ for build in ${builds_list}; do
 			cp wine/wine-tkg-config.txt "${build}"
 		fi
 
-		if [ "${EXPERIMENTAL_WOW64}" = "true" ]; then
+		if [ "${build}" = "wine-${BUILD_NAME}-amd64-wow64" ]; then
   			if [ -f "${build}"/bin/wine64 ]; then
-				rm "${build}"/bin/wine "${build}"/bin/wine-preloader
+				rm -f "${build}"/bin/wine "${build}"/bin/wine-preloader
 				cp "${build}"/bin/wine64 "${build}"/bin/wine
-    			else
-       				rm "${build}"/lib/wine/i386-unix/wine "${build}"/lib/wine/i386-unix/wine-preloader
-	   		fi
+			fi
+
+	   		rm -rf "${build}"/lib/wine/i386-unix
 		fi
 
 		tar -Jcf "${build}".tar.xz "${build}"
