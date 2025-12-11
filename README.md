@@ -84,13 +84,16 @@ These scripts are a pretty convenient way to compile your own Wine builds if you
 
 ---
 
+### Issue reporting
+
+Please do not report issues that are not specific to my builds - for example, if the issue is reproducible not only with my builds, but also with other builds (like the official WineHQ builds). Also, if you merely want to ask or discuss something, do not create an issue thread, you can do this in [discussions](https://github.com/Kron4ek/Wine-Builds/discussions).
+
+---
+
 ### Links to the sources
 
-* https://dl.winehq.org/wine/source
+* https://dl.winehq.org/wine/source/
 * https://github.com/wine-staging/wine-staging
 * https://github.com/Frogging-Family/wine-tkg-git
 * https://github.com/Kron4ek/wine-tkg
 * https://github.com/ValveSoftware/wine
-* https://github.com/varmd/wine-wayland
-* https://github.com/Kron4ek/wine-wayland
-* https://gitlab.collabora.com/alf/wine/-/tree/wayland
