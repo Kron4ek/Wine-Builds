@@ -299,6 +299,7 @@ if [ ! -d wine ]; then
 fi
 
 cd wine || exit 1
+patch -Np1 < "${scriptdir}"/EnableMouseInPointer.patch && echo "EnableMouseInPointer patch applied"
 dlls/winevulkan/make_vulkan
 tools/make_requests
 tools/make_specfiles
