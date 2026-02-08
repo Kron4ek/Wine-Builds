@@ -72,7 +72,7 @@ create_build_scripts () {
 	vulkan_loader_version="1.4.343"
 	spirv_headers_version="sdk-1.3.239.0"
  	libpcap_version="1.10.4"
-  	libxkbcommon_version="1.13.1"
+  	libxkbcommon_version="1.6.0"
    	python3_version="3.12.4"
     meson_version="1.3.2"
     cmake_version="3.30.3"
