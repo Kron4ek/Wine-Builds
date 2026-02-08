@@ -187,6 +187,10 @@ cd ../ && rm -r build && mkdir build && cd build
 make -j$(nproc)
 make -j$(nproc) install
 pip3 install setuptools
+cd ../gstreamer
+meson setup build
+ninja -C build
+ninja -C build install
 cd ../bison-${bison_version}
 ./configure
 make -j$(nproc) install
@@ -202,10 +206,6 @@ cd ../libxkbcommon-xkbcommon-${libxkbcommon_version}
 meson setup build -Denable-docs=false
 meson compile -C build
 meson install -C build
-cd ../gstreamer
-meson setup build
-ninja -C build
-ninja -C build install
 cd ../libglvnd-v${libglvnd_version}
 meson setup build
 meson compile -C build
