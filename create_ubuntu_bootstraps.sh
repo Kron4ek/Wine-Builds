@@ -83,7 +83,7 @@ create_build_scripts () {
 	wayland_protocols_version="1.47"
 	gnutls_version="3.8.12"
 	nettle_version="3.10.2"
-	p11-kit_version="0.26.2"
+	p11_kit_version="0.26.2"
 
 	cat <<EOF > "${MAINDIR}"/prepare_chroot.sh
 #!/bin/bash
@@ -138,7 +138,7 @@ wget -O wayland.tar.xz https://gitlab.freedesktop.org/wayland/wayland/-/releases
 wget -O wayland-protocols.tar.xz https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/${wayland_protocols_version}/downloads/wayland-protocols-${wayland_protocols_version}.tar.xz
 wget -O gnutls.tar.xz https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-${gnutls_version}.tar.xz
 wget -O nettle.tar.gz https://ftp.gnu.org/gnu/nettle/nettle-${nettle_version}.tar.gz
-wget -O p11-kit.tar.xz https://github.com/p11-glue/p11-kit/releases/download/${p11-kit_version}/p11-kit-${p11-kit_version}.tar.xz
+wget -O p11-kit.tar.xz https://github.com/p11-glue/p11-kit/releases/download/${p11_kit_version}/p11-kit-${p11_kit_version}.tar.xz
 wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/ntsync.h
 wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/userfaultfd.h
 if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi
@@ -222,7 +222,7 @@ meson install -C build
 cd ../nettle-${nettle_version}
 ./configure
 make -j$(nproc) install
-cd ../p11-kit-${p11-kit_version}
+cd ../p11-kit-${p11_kit_version}
 meson setup build
 meson compile -C build
 meson install -C build
