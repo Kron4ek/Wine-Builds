@@ -81,6 +81,9 @@ create_build_scripts () {
 	bison_version="3.8.2"
 	wayland_version="1.24.0"
 	wayland_protocols_version="1.47"
+	gnutls_version="3.8.12"
+	nettle_version="3.10.2"
+	p11-kit_version="0.26.2"
 
 	cat <<EOF > "${MAINDIR}"/prepare_chroot.sh
 #!/bin/bash
@@ -133,6 +136,9 @@ wget -O libglvnd.tar.gz https://gitlab.freedesktop.org/glvnd/libglvnd/-/archive/
 wget -O bison.tar.xz https://ftp.gnu.org/gnu/bison/bison-${bison_version}.tar.xz
 wget -O wayland.tar.xz https://gitlab.freedesktop.org/wayland/wayland/-/releases/${wayland_version}/downloads/wayland-${wayland_version}.tar.xz
 wget -O wayland-protocols.tar.xz https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/${wayland_protocols_version}/downloads/wayland-protocols-${wayland_protocols_version}.tar.xz
+wget -O gnutls.tar.xz https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-${gnutls_version}.tar.xz
+wget -O nettle.tar.gz https://ftp.gnu.org/gnu/nettle/nettle-${nettle_version}.tar.gz
+wget -O p11-kit.tar.xz https://github.com/p11-glue/p11-kit/releases/download/${p11-kit_version}/p11-kit-${p11-kit_version}.tar.xz
 wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/ntsync.h
 wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/userfaultfd.h
 if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi
@@ -153,6 +159,9 @@ tar xf libglvnd.tar.gz
 tar xf bison.tar.xz
 tar xf wayland.tar.xz
 tar xf wayland-protocols.tar.xz
+tar xf gnutls.tar.xz
+tar xf nettle.tar.gz
+tar xf p11-kit.tar.xz
 tar xf meson.tar.gz -C /usr/local
 ln -s /usr/local/meson-${meson_version}/meson.py /usr/local/bin/meson
 bash mingw-w64-build x86_64
@@ -210,6 +219,16 @@ cd ../libglvnd-v${libglvnd_version}
 meson setup build
 meson compile -C build
 meson install -C build
+cd ../nettle-${nettle_version}
+./configure
+make -j$(nproc) install
+cd ../p11-kit-${p11-kit_version}
+meson setup build
+meson compile -C build
+meson install -C build
+cd ../gnutls-${gnutls_version}
+./configure --with-included-unistring --disable-doc
+make -j$(nproc) install
 cd /opt && rm -r /opt/build_libs
 EOF
 
