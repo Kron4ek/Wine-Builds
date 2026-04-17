@@ -76,7 +76,7 @@ create_build_scripts () {
    	python3_version="3.12.4"
     meson_version="1.3.2"
     cmake_version="3.30.3"
-    ccache_version="4.12.3"
+    ccache_version="4.13.3"
     libglvnd_version="1.7.0"
 	bison_version="3.8.2"
 	wayland_version="1.24.0"
@@ -84,6 +84,8 @@ create_build_scripts () {
 	gnutls_version="3.8.12"
 	nettle_version="3.10.2"
 	p11_kit_version="0.26.2"
+	libgpg_error_version="1.59"
+	libgcrypt_version="1.12.2"
 
 	cat <<EOF > "${MAINDIR}"/prepare_chroot.sh
 #!/bin/bash
@@ -139,6 +141,8 @@ wget -O wayland-protocols.tar.xz https://gitlab.freedesktop.org/wayland/wayland-
 wget -O gnutls.tar.xz https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-${gnutls_version}.tar.xz
 wget -O nettle.tar.gz https://ftp.gnu.org/gnu/nettle/nettle-${nettle_version}.tar.gz
 wget -O p11-kit.tar.xz https://github.com/p11-glue/p11-kit/releases/download/${p11_kit_version}/p11-kit-${p11_kit_version}.tar.xz
+wget -O libgpg-error.tar.bz2 https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${libgpg_error_version}.tar.bz2
+wget -O libgcrypt.tar.bz2 https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${libgcrypt_version}.tar.bz2
 wget -O /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/ntsync.h
 wget -O /usr/include/linux/userfaultfd.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/refs/heads/6.15/main/include/uapi/linux/userfaultfd.h
 if [ -d /usr/lib/i386-linux-gnu ]; then wget -O wine.deb https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb; fi
@@ -162,6 +166,8 @@ tar xf wayland-protocols.tar.xz
 tar xf gnutls.tar.xz
 tar xf nettle.tar.gz
 tar xf p11-kit.tar.xz
+tar xf libgpg-error.tar.bz2
+tar xf libgcrypt.tar.bz2
 tar xf meson.tar.gz -C /usr/local
 ln -s /usr/local/meson-${meson_version}/meson.py /usr/local/bin/meson
 bash mingw-w64-build x86_64
@@ -228,6 +234,12 @@ meson compile -C build
 meson install -C build
 cd ../gnutls-${gnutls_version}
 ./configure --with-included-unistring --disable-doc
+make -j$(nproc) install
+cd ../libgpg-error-${libgpg_error_version}
+./configure
+make -j$(nproc) install
+cd ../libgcrypt-${libgcrypt_version}
+./configure
 make -j$(nproc) install
 cd /opt && rm -r /opt/build_libs
 EOF
