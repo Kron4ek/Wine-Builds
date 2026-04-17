@@ -222,7 +222,7 @@ elif [ "$WINE_BRANCH" = "proton" ]; then
 		git clone https://github.com/ValveSoftware/wine -b "${PROTON_BRANCH}"
 	fi
 
- 	patch -d wine -Np1 < "${scriptdir}"/proton-opencl.patch
+ 	patch -d wine -Np1 < "${scriptdir}"/fix-proton-compilation-and-version-output.patch
 
 	WINE_VERSION="$(cat wine/VERSION | tail -c +14)-$(git -C wine rev-parse --short HEAD)"
 	if [[ "${PROTON_BRANCH}" == "experimental_"* ]] || [ "${PROTON_BRANCH}" = "bleeding-edge" ]; then

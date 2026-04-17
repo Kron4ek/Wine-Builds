@@ -1,0 +1,44 @@
+diff -ruN wine-proton_old/configure.ac wine-proton_new/configure.ac
+--- wine-proton_old/configure.ac	2026-04-17 11:47:06.436551647 +0000
++++ wine-proton_new/configure.ac	2026-04-17 12:59:39.805401561 +0000
+@@ -2509,6 +2509,8 @@
+ 
+ wine_srcdir=
+ test "$srcdir" = . || wine_srcdir="$srcdir/"
++GIT_DIR=${wine_srcdir}.git git rev-parse --short HEAD 2>/dev/null && wine_git_revision=-g"$(GIT_DIR=${wine_srcdir}.git git rev-parse --short HEAD)"
++wine_version_suffix=" (Proton)"
+ 
+ WINE_CONFIG_MAKEFILE(dlls/acledit)
+ WINE_CONFIG_MAKEFILE(dlls/aclui)
+@@ -3839,7 +3841,7 @@
+ 
+ WINE_APPEND_RULE(
+ [dlls/ntdll/unix/version.c: dummy
+-	@version=\`(GIT_DIR=${wine_srcdir}.git git describe HEAD 2>/dev/null || echo \"wine-\$(PACKAGE_VERSION)\") | sed -n -e '\$\$s/\(.*\)/const char wine_build[[]] = \"\\1\";/p'\` && (echo \$\$version | cmp -s - \$[@]) || echo \$\$version >\$[@] || (rm -f \$[@] && exit 1)
++	@version=\`(echo \"wine-\$(PACKAGE_VERSION)$wine_git_revision$wine_version_suffix\") | sed -n -e '\$\$s/\(.*\)/const char wine_build[[]] = \"\\1\";/p'\` && (echo \$\$version | cmp -s - \$[@]) || echo \$\$version >\$[@] || (rm -f \$[@] && exit 1)
+ programs/winetest/build.rc: dummy
+ 	@build=\"STRINGTABLE { 1 \\\"\`GIT_DIR=${wine_srcdir}.git git rev-parse HEAD 2>/dev/null\`\\\" }\" && (echo \$\$build | cmp -s - \$[@]) || echo \$\$build >\$[@] || (rm -f \$[@] && exit 1)
+ dlls/wineandroid.drv/wine-debug.apk: dlls/wineandroid.drv/build.gradle ${wine_srcdir}dlls/wineandroid.drv/AndroidManifest.xml ${wine_srcdir}dlls/wineandroid.drv/WineActivity.java ${wine_srcdir}dlls/wineandroid.drv/wine.svg
+diff -ruN wine-proton_old/dlls/ntdll/unix/signal_x86_64.c wine-proton_new/dlls/ntdll/unix/signal_x86_64.c
+--- wine-proton_old/dlls/ntdll/unix/signal_x86_64.c	2026-04-17 11:47:06.516905967 +0000
++++ wine-proton_new/dlls/ntdll/unix/signal_x86_64.c	2026-04-17 12:39:05.174279828 +0000
+@@ -109,6 +109,8 @@
+  */
+ #ifdef linux
+ 
++#define MAP_FIXED_NOREPLACE 0x100000
++
+ #include <asm/prctl.h>
+ static inline int arch_prctl( int func, void *ptr ) { return syscall( __NR_arch_prctl, func, ptr ); }
+ 
+diff -ruN wine-proton_old/dlls/opencl/Makefile.in wine-proton_new/dlls/opencl/Makefile.in
+--- wine-proton_old/dlls/opencl/Makefile.in	2026-04-17 11:47:06.521681660 +0000
++++ wine-proton_new/dlls/opencl/Makefile.in	2026-04-17 12:38:28.987470149 +0000
+@@ -1,6 +1,6 @@
+ MODULE    = opencl.dll
+ UNIXLIB   = opencl.so
+-UNIX_LIBS = $(OPENCL_LIBS)
++UNIX_LIBS = -lOpenCL
+ 
+ SOURCES = \
+ 	pe_thunks.c \
