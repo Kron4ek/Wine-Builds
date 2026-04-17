@@ -52,7 +52,7 @@ export STAGING_VERSION="${STAGING_VERSION:-}"
 export STAGING_ARGS="${STAGING_ARGS:-}"
 
 # Make 64-bit Wine builds with the new WoW64 mode (32-on-64)
-export EXPERIMENTAL_WOW64="${EXPERIMENTAL_WOW64:-false}"
+export EXPERIMENTAL_WOW64="${EXPERIMENTAL_WOW64:-true}"
 
 # Set this to a path to your Wine source code (for example, /home/username/wine-custom-src).
 # This is useful if you already have the Wine source code somewhere on your
