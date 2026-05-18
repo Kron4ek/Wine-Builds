@@ -31,7 +31,7 @@ fi
 export WINE_VERSION="${WINE_VERSION:-latest}"
 
 # Available branches: vanilla, staging, proton, staging-tkg, staging-tkg-fsync
-export WINE_BRANCH="${WINE_BRANCH:-staging}"
+export WINE_BRANCH="${WINE_BRANCH:-proton}"
 
 # Available proton branches: proton_3.7, proton_3.16, proton_4.2, proton_4.11
 # proton_5.0, proton_5.13, experimental_5.13, proton_6.3, experimental_6.3
@@ -76,23 +76,26 @@ export DO_NOT_COMPILE="false"
 # By default it has a 5 GB limit for its cache size.
 #
 # Make sure that ccache is installed before enabling this.
-export USE_CCACHE="false"
+export USE_CCACHE="true"
 
 export WINE_BUILD_OPTIONS="--without-oss --disable-winemenubuilder --disable-tests"
 
 # A temporary directory where the Wine source code will be stored.
 # Do not set this variable to an existing non-empty directory!
 # This directory is removed and recreated on each script run.
-export BUILD_DIR="${HOME}"/build_wine
+export BUILD_DIR="${PWD}"/build_wine
+
+# Fetch working Ubuntu distro from our other bash script
+CHROOT_DISTRO=$(bash create_ubuntu_bootstraps.sh --print-CHROOT_DISTRO)
 
 # Change these paths to where your Ubuntu bootstraps reside
-export BOOTSTRAP_X64=/opt/chroots/bionic64_chroot
-export BOOTSTRAP_X32=/opt/chroots/bionic32_chroot
+export BOOTSTRAP_X64=/opt/chroots/${CHROOT_DISTRO}64_chroot
+export BOOTSTRAP_X32=/opt/chroots/${CHROOT_DISTRO}32_chroot
 
 export scriptdir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
-export CC="gcc-11"
-export CXX="g++-11"
+export CC="gcc-16"
+export CXX="g++-16"
 
 export CROSSCC_X32="i686-w64-mingw32-gcc"
 export CROSSCXX_X32="i686-w64-mingw32-g++"
