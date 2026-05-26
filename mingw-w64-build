@@ -19,8 +19,8 @@
 ROOT_PATH="/opt/mingw"
 
 MINGW_W64_BRANCH="master"
-BINUTILS_BRANCH="binutils-2_42-branch"
-GCC_BRANCH="releases/gcc-12"
+BINUTILS_BRANCH="binutils-2_43-branch"
+GCC_BRANCH="releases/gcc-15"
 
 ENABLE_THREADS="--enable-threads=posix"
 
