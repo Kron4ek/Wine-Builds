@@ -131,15 +131,15 @@ download_sources()
 
     execute "downloading Binutils source" "" \
         git clone --depth 1 -b "$BINUTILS_BRANCH" \
-            https://sourceware.org/git/binutils-gdb.git binutils
+            https://gitlab.com/gnutools/binutils-gdb.git binutils
 
     execute "downloading GCC source" "" \
         git clone --depth 1 -b "$GCC_BRANCH" \
-            https://gcc.gnu.org/git/gcc.git gcc
+            https://gitlab.com/gnutools/gcc.git gcc
 
     execute "downloading config.guess" "" \
         curl -o config.guess \
-            "https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD"
+            "https://gitlab.com/gnutools/gcc/-/raw/master/config.guess?ref_type=heads&inline=false"
 }
 
 build()
