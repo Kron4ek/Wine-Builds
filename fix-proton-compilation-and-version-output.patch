@@ -1,6 +1,6 @@
-diff -ruN wine-proton/configure.ac wine-proton-new/configure.ac
---- wine-proton/configure.ac	2026-05-29 07:54:13.774833837 +0000
-+++ wine-proton-new/configure.ac	2026-05-29 07:54:41.116484035 +0000
+diff -ruN wine-proton_old/configure.ac wine-proton_new/configure.ac
+--- wine-proton_old/configure.ac	2026-09-27 13:40:02.531550827 +0000
++++ wine-proton_new/configure.ac	2026-09-27 14:19:10.389052186 +0000
 @@ -2513,6 +2513,8 @@
  
  wine_srcdir=
@@ -10,7 +10,7 @@ diff -ruN wine-proton/configure.ac wine-proton-new/configure.ac
  
  WINE_CONFIG_MAKEFILE(dlls/acledit)
  WINE_CONFIG_MAKEFILE(dlls/aclui)
-@@ -3847,7 +3849,7 @@
+@@ -3848,7 +3850,7 @@
  
  WINE_APPEND_RULE(
  [dlls/ntdll/unix/version.c: dummy
@@ -19,9 +19,9 @@ diff -ruN wine-proton/configure.ac wine-proton-new/configure.ac
  programs/winetest/build.rc: dummy
  	@build=\"STRINGTABLE { 1 \\\"\`GIT_DIR=${wine_srcdir}.git git rev-parse HEAD 2>/dev/null\`\\\" }\" && (echo \$\$build | cmp -s - \$[@]) || echo \$\$build >\$[@] || (rm -f \$[@] && exit 1)
  dlls/wineandroid.drv/wine-debug.apk: dlls/wineandroid.drv/build.gradle ${wine_srcdir}dlls/wineandroid.drv/AndroidManifest.xml ${wine_srcdir}dlls/wineandroid.drv/WineActivity.java ${wine_srcdir}dlls/wineandroid.drv/wine.svg
-diff -ruN wine-proton/dlls/nsiproxy.sys/Makefile.in wine-proton-new/dlls/nsiproxy.sys/Makefile.in
---- wine-proton/dlls/nsiproxy.sys/Makefile.in	2026-05-29 07:54:13.229171929 +0000
-+++ wine-proton-new/dlls/nsiproxy.sys/Makefile.in	2026-05-29 07:55:36.941890199 +0000
+diff -ruN wine-proton_old/dlls/nsiproxy.sys/Makefile.in wine-proton_new/dlls/nsiproxy.sys/Makefile.in
+--- wine-proton_old/dlls/nsiproxy.sys/Makefile.in	2026-09-27 13:30:04.369928586 +0000
++++ wine-proton_new/dlls/nsiproxy.sys/Makefile.in	2026-09-27 14:19:10.391080440 +0000
 @@ -1,7 +1,7 @@
  MODULE    = nsiproxy.sys
  UNIXLIB   = nsiproxy.so
@@ -31,9 +31,33 @@ diff -ruN wine-proton/dlls/nsiproxy.sys/Makefile.in wine-proton-new/dlls/nsiprox
  
  EXTRADLLFLAGS = -Wl,--subsystem,native
  
-diff -ruN wine-proton/dlls/ntdll/unix/signal_x86_64.c wine-proton-new/dlls/ntdll/unix/signal_x86_64.c
---- wine-proton/dlls/ntdll/unix/signal_x86_64.c	2026-05-29 07:54:13.235781570 +0000
-+++ wine-proton-new/dlls/ntdll/unix/signal_x86_64.c	2026-05-29 07:54:41.118484229 +0000
+diff -ruN wine-proton_old/dlls/ntdll/unix/loader.c wine-proton_new/dlls/ntdll/unix/loader.c
+--- wine-proton_old/dlls/ntdll/unix/loader.c	2026-09-27 14:18:44.101082527 +0000
++++ wine-proton_new/dlls/ntdll/unix/loader.c	2026-09-27 14:19:33.505769161 +0000
+@@ -548,19 +548,7 @@
+ static void preloader_exec( char **argv, WORD machine )
+ {
+ #ifdef HAVE_WINE_PRELOADER
+-#if !defined(__arm__) && !defined(__aarch64__)
+-    const char *p;
+-
+-    if (machine == IMAGE_FILE_MACHINE_AMD64
+-        && ((p = remove_tail( argv[1], "x86_64-unix/wine" )) || (p = remove_tail( argv[1], "i386-unix/wine64" ))))
+-    {
+-        asprintf( &argv[0], "%si386-unix/wine64-preloader", p );
+-        asprintf( &argv[1], "%si386-unix/wine64", p );
+-    }
+-    else
+-#endif
+-        asprintf( &argv[0], "%s-preloader", argv[1] );
+-
++    asprintf( &argv[0], "%s-preloader", argv[1] );
+ #ifdef __APPLE__
+     {
+         posix_spawnattr_t attr;
+diff -ruN wine-proton_old/dlls/ntdll/unix/signal_x86_64.c wine-proton_new/dlls/ntdll/unix/signal_x86_64.c
+--- wine-proton_old/dlls/ntdll/unix/signal_x86_64.c	2026-09-27 14:18:44.103082525 +0000
++++ wine-proton_new/dlls/ntdll/unix/signal_x86_64.c	2026-09-27 14:19:10.391765594 +0000
 @@ -109,6 +109,8 @@
   */
  #ifdef linux
@@ -43,9 +67,9 @@ diff -ruN wine-proton/dlls/ntdll/unix/signal_x86_64.c wine-proton-new/dlls/ntdll
  #include <asm/prctl.h>
  static inline int arch_prctl( int func, void *ptr ) { return syscall( __NR_arch_prctl, func, ptr ); }
  
-diff -ruN wine-proton/dlls/opencl/Makefile.in wine-proton-new/dlls/opencl/Makefile.in
---- wine-proton/dlls/opencl/Makefile.in	2026-05-29 07:54:13.261701948 +0000
-+++ wine-proton-new/dlls/opencl/Makefile.in	2026-05-29 07:54:41.122274765 +0000
+diff -ruN wine-proton_old/dlls/opencl/Makefile.in wine-proton_new/dlls/opencl/Makefile.in
+--- wine-proton_old/dlls/opencl/Makefile.in	2026-09-27 13:30:04.375018711 +0000
++++ wine-proton_new/dlls/opencl/Makefile.in	2026-09-27 14:19:10.394262444 +0000
 @@ -1,6 +1,6 @@
  MODULE    = opencl.dll
  UNIXLIB   = opencl.so
@@ -54,3 +78,28 @@ diff -ruN wine-proton/dlls/opencl/Makefile.in wine-proton-new/dlls/opencl/Makefi
  
  SOURCES = \
  	pe_thunks.c \
+diff -ruN wine-proton_old/dlls/win32u/vulkan.c wine-proton_new/dlls/win32u/vulkan.c
+--- wine-proton_old/dlls/win32u/vulkan.c	2026-09-27 14:18:44.108082520 +0000
++++ wine-proton_new/dlls/win32u/vulkan.c	2026-09-27 14:19:10.395170566 +0000
+@@ -28,6 +28,7 @@
+ #include <dlfcn.h>
+ #include <pthread.h>
+ #include <unistd.h>
++#include <sys/syscall.h>
+ #include <assert.h>
+ 
+ #include "ntstatus.h"
+@@ -37,6 +38,13 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(vulkan);
+ 
++#if defined(__linux__) && (!defined(__GLIBC__) || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 30))
++#include <sys/types.h>
++static inline pid_t gettid(void) {
++    return syscall(SYS_gettid);
++}
++#endif
++
+ static PFN_vkGetDeviceProcAddr p_vkGetDeviceProcAddr;
+ static PFN_vkGetInstanceProcAddr p_vkGetInstanceProcAddr;
+ static PFN_vkCreateInstance p_vkCreateInstance;
