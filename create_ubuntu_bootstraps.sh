@@ -114,7 +114,7 @@ apt-get -y install ccache gcc-12 g++-12 gcc-15 g++-15 wget git gcc-mingw-w64 g++
 apt-get -y install libxpresent-dev libjxr-dev libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libcapi20-dev
 apt-get -y install libjpeg62-dev samba-dev libffi-dev
 apt-get -y install libpcsclite-dev libcups2-dev
-apt-get -y install python3-pip libxcb-xkb-dev libbz2-dev texinfo curl
+apt-get -y install python3-pip libxcb-xkb-dev libbz2-dev texinfo curl mdbook
 apt-get -y install graphviz xmlto --no-install-recommends
 apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 libpcap0.8-dev libpcap0.8 --purge --autoremove
 apt-get -y purge *gstreamer* --purge --autoremove
