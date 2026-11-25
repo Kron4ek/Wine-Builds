@@ -68,19 +68,19 @@ prepare_chroot () {
 create_build_scripts () {
 	sdl2_version="2.32.10"
 	faudio_version="23.03"
-	vulkan_headers_version="1.4.352"
-	vulkan_loader_version="1.4.352"
-	spirv_headers_version="sdk-1.3.239.0"
+	vulkan_headers_version="1.4.369"
+	vulkan_loader_version="1.4.369"
+	spirv_headers_version="vulkan-sdk-1.4.363.0"
  	libpcap_version="1.10.4"
   	libxkbcommon_version="1.13.1"
    	python3_version="3.12.4"
     meson_version="1.3.2"
     cmake_version="3.30.3"
-    ccache_version="4.13.6"
+    ccache_version="4.14.3"
     libglvnd_version="1.7.0"
 	bison_version="3.8.2"
-	wayland_version="1.24.0"
-	wayland_protocols_version="1.47"
+	wayland_version="1.26.0"
+	wayland_protocols_version="1.50"
 	gnutls_version="3.8.12"
 	nettle_version="3.10.2"
 	p11_kit_version="0.26.2"
@@ -220,7 +220,7 @@ cd ../bison-${bison_version}
 ./configure
 make -j$(nproc) install
 cd ../wayland-${wayland_version}
-meson setup build
+meson setup build -Ddocumentation=false
 meson compile -C build
 meson install -C build
 cd ../wayland-protocols-${wayland_protocols_version}
